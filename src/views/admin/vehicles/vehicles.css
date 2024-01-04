@@ -1,0 +1,145 @@
+.onlineClass {
+  background-color: #e8fff3;
+  padding-bottom: 4px;
+  padding-top: 2px;
+  color: #50cd89;
+  border-radius: 6px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  width: auto;
+}
+
+.offlineClass {
+  background-color: #f1f2f4;
+  padding-bottom: 4px;
+  padding-top: 2px;
+  color: #9ca3af;
+  border-radius: 6px;
+  padding-left: 10px; 
+  padding-right: 10px;
+  text-align: center;
+  width: auto;
+}
+
+.button-edit,
+.button-delete {
+  cursor: pointer;
+}
+
+.unselect-vehicle-type {
+  display: "block";
+  padding-bottom: "10px";
+  padding-top: "10px";
+  font-size: "14px";
+  font-weight: "500";
+  border: "1px solid #9CA3AF";
+  border-radius: "4px";
+  color: "#9CA3AF";
+}
+
+.select-vehicle-type {
+  display: "block";
+  padding-bottom: "10px";
+  padding-top: "10px";
+  font-size: "14px";
+  font-weight: "500";
+  border: "1px solid #9CA3AF";
+  border-radius: "4px";
+  color: "#000000";
+}
+
+.button-save-cancel {
+  text-align: right;
+  padding-right: 24px;
+}
+
+.input-custom {
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+}
+
+.input-custom::placeholder {
+  font-size: 14px;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.input-custom-label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000000;
+  margin-bottom: 8px;
+}
+
+.input-select-option {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000000;
+}
+
+.add-driver-button {
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.card {
+  border-radius: 4px;
+}
+
+.selectvehicle {
+  width: 90%;
+}
+
+.save-button {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 5px;
+}
+
+.save-button:hover {
+  background-color: #118f5e;
+  color: #ffffff;
+  padding-bottom: 8px;
+}
+
+.cancel-button {
+  background-color: #ffffff;
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: 1px solid #9ca3af;
+  margin-right: 6px;
+  border-radius: 5px;
+}
+
+.cancel-button:hover {
+  background-color: #9ca3af;
+  color: #ffffff;
+  border: 1px solid #9ca3af;
+}
+
+.error-input {
+  /* visibility: hidden; */
+  font-size: 12px;
+  margin-top: 6px;
+  color: red;
+  font-weight: 400;
+  margin-bottom: 12px;
+}

@@ -1,0 +1,43 @@
+.analytics-page {
+  width: 100%;
+  height: 85vh;
+  /* background-color: aqua; */
+
+  background: rgba(255, 255, 255, 1);
+  border-radius: 10px;
+}
+
+.gpt-input-button {
+  /* position: absolute; */
+  /* left:130px; */
+  /* bottom: 25px; */
+  width: 80%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin-bottom: 25px;
+  border-color: #d8d8d8;
+}
+
+.background-gtp-img {
+  z-index: -1;
+  padding-top: 0;
+  /* background-image: url("../../../assets/img/chat/bg-image.png"); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 350px 450px;
+  height: 55vh;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  /* height: 400px; */
+}
+
+.scroll-bar::-webkit-scrollbar{
+display: none;
+}

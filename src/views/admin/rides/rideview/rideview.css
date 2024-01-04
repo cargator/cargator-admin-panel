@@ -1,0 +1,45 @@
+/* .column {
+  float: left;
+  width: 50%;
+  word-wrap: break-word;
+}
+
+.row:after {
+  content: '';
+  display: table;
+  clear: both;
+
+} */
+
+.map-card{
+  background-color: #FFFFFF;
+  border-radius: 10px;
+}
+
+.completedClass {
+  background-color: #e8fff3;
+  padding-bottom: 4px;
+  padding-top: 2px;
+  color: #50cd89;
+  border-radius: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.ongoingClass {
+  background-color: #fffaeb;
+  padding-bottom: 4px;
+  padding-top: 2px;
+  color: #f2c94c;
+  border-radius: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+.cancelledClass {
+  background-color: #fff5f8;
+  padding-bottom: 4px;
+  padding-top: 2px;
+  color: #f1416c;
+  border-radius: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+}

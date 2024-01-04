@@ -1,0 +1,44 @@
+.chat-bubble {
+    position: relative;
+    width: 130px; 
+    padding: 15px;
+    border-radius: 20px;
+    margin: 20px auto;
+  }
+  
+  .dot-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100px;
+    height: 30px;
+  }
+  
+  .dot {
+    width: 10px;
+    height: 10px;
+    background-color: #333; 
+    border-radius: 50%;
+    margin: 0 5px;
+    animation: blink 1.5s infinite;
+  }
+  
+  .dot:nth-child(2) {
+    animation-delay: 0.5s;
+  }
+  
+  .dot:nth-child(3) {
+    animation-delay: 1s;
+  }
+  
+  @keyframes blink {
+    0%, 100% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
