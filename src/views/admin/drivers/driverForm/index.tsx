@@ -1,11 +1,18 @@
-import React, { useRef, useState } from "react";
-import Card from "../../../../components/card";
-import Select from "react-select";
 import { Button } from "@chakra-ui/react";
-import "./driverform.css";
+import axios from "axios";
+import Loader from "components/loader/loader";
 import { ErrorMessage, Formik, useFormikContext } from "formik";
+import React, { useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Select from "react-select";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
 import * as Yup from "yup";
+import cross from "../../../../assets/svg/cross.svg";
+import pdf from "../../../../assets/svg/pdf.svg";
+import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
+import Card from "../../../../components/card";
+import Navbar from "../../../../components/navbar";
 import {
   createDriverApi,
   deleteObjectFromS3Api,
@@ -14,14 +21,7 @@ import {
   getS3SignUrlApi,
   handleCreateDriverApi,
 } from "../../../../services/customAPI";
-import Loader from "components/loader/loader";
-import Navbar from "../../../../components/navbar";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
-import pdf from "../../../../assets/svg/pdf.svg";
-import cross from "../../../../assets/svg/cross.svg";
-import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
-import { toast } from "react-toastify";
+import "./driverform.css";
 
 const Logger = (props: any): JSX.Element => {
   const {
@@ -143,11 +143,11 @@ const DriverForm = () => {
 
   const driverSchema = Yup.object().shape({
     firstName: Yup.string()
-      .min(2, "First name must be atleast two characters.")
-      .required("First name is required"),
-    lastName: Yup.string()
-      .min(2, "Last name must be atleast two characters.")
-      .required("Last name is required"),
+      .min(2, "Name must be atleast two characters.")
+      .required("Name is required"),
+    // lastName: Yup.string()
+    //   .min(2, "Last name must be atleast two characters.")
+    //   .required("Last name is required"),
     mobileNumber: Yup.string()
       .matches(/^[0-9]+$/, "Invalid mobile number.")
       .min(10, "Mobile Number must be 10 digits only.")
@@ -583,7 +583,7 @@ const DriverForm = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        First Name:
+                        Name:
                       </label>
                       <input
                         required
@@ -591,7 +591,7 @@ const DriverForm = () => {
                         name="firstName"
                         type="text"
                         id="firstName"
-                        placeholder="Enter first name here"
+                        placeholder="Enter name here"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.firstName}
@@ -602,7 +602,7 @@ const DriverForm = () => {
                           : null}
                       </div>
                     </div>
-                    <div className="mb-3 ms-6 w-full">
+                    {/* <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="lastName"
                         className="input-custom-label dark:text-white"
@@ -625,7 +625,7 @@ const DriverForm = () => {
                           ? errors.lastName
                           : null}
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex justify-between">
@@ -1018,7 +1018,7 @@ const DriverForm = () => {
                     </Button>
                     <Button
                       type="submit"
-                      className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
+                      className="save-button my-2 ms-1 bg-brand-500 sm:my-0 dark:bg-brand-400"
                     >
                       Save
                     </Button>
