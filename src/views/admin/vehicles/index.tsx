@@ -1,17 +1,3 @@
-import React from "react";
-import { useEffect, useRef, useState } from "react";
-import ColumnsTableVehicles from "./components/ColumnsTableVehicles";
-import { useNavigate } from "react-router-dom";
-import {
-  deleteVehicleApi,
-  getPaginatedVehicleDataApi,
-  searchVehiclesApi,
-} from "../../../services/customAPI";
-import ReactPaginate from "react-paginate";
-import "./vehicles.css";
-import Loader from "components/loader/loader";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Modal,
@@ -22,9 +8,22 @@ import {
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { Button, ChakraProvider } from "@chakra-ui/react";
-import deleteIcon from "../../../assets/svg/deleteIcon.svg";
+import Loader from "components/loader/loader";
 import Navbar from "components/navbar";
-import { getS3SignUrlApi } from "../../../services/customAPI";
+import React, { useEffect, useRef, useState } from "react";
+import ReactPaginate from "react-paginate";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import deleteIcon from "../../../assets/svg/deleteIcon.svg";
+import {
+  deleteVehicleApi,
+  getPaginatedVehicleDataApi,
+  getS3SignUrlApi,
+  searchVehiclesApi,
+} from "../../../services/customAPI";
+import ColumnsTableVehicles from "./components/ColumnsTableVehicles";
+import "./vehicles.css";
 
 const Vehicles: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -125,7 +124,16 @@ const Vehicles: React.FC = () => {
             name: vehicle.vehicleName,
             path: path,
           },
-          vehicleNumber: vehicle.vehicleNumber,
+          vehicleNumber: `${vehicle.vehicleNumber.substring(
+            0,
+            2
+          )} ${vehicle.vehicleNumber.substring(
+            2,
+            4
+          )} ${vehicle.vehicleNumber.substring(
+            4,
+            6
+          )} ${vehicle.vehicleNumber.substring(6, 10)}`,
           vehicleType: vehicle.vehicleType,
           vehicleStatus: vehicle.vehicleStatus,
           action: {
@@ -188,19 +196,22 @@ const Vehicles: React.FC = () => {
 
   const searchVehicleFunction = async () => {
     try {
-    const response: any = await searchVehicles();
-    if (!response) {
-      return;
+      const response: any = await searchVehicles();
+      if (!response) {
+        return;
+      }
+      setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+      setVehicleData(await convertToUsableDriverArray(response?.data[0].data));
+      // setValues(data.map(extractSpecificValues))
+      setPageItemRange(
+        currentPage.current,
+        response?.data[0].count[0]?.totalcount
+      );
+    } catch (error) {
+      console.log("search vehicle error:", error);
+    } finally {
+      setIsLoading(false);
     }
-    setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-    setVehicleData(await convertToUsableDriverArray(response?.data[0].data));
-    // setValues(data.map(extractSpecificValues))
-    setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
-  } catch (error) {
-    console.log("search vehicle error:", error)    
-  } finally {
-    setIsLoading(false);
-  }
   };
 
   const deleteHandle = async (data: any) => {
@@ -292,8 +303,8 @@ const Vehicles: React.FC = () => {
       {isLoading ? (
         <Loader />
       ) : (
-<>
         <>
+          <>
             <div className="m-4">
               <ColumnsTableVehicles
                 tableData={vehicleData}
@@ -335,9 +346,9 @@ const Vehicles: React.FC = () => {
                 </div>
               </div>
             </div>
-</>
+          </>
           {/* )} */}
-         {isOpen && (
+          {isOpen && (
             <ChakraProvider>
               <Modal
                 isCentered={true}

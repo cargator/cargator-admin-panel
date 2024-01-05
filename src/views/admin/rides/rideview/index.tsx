@@ -1,24 +1,21 @@
-import React from "react";
-import { useEffect, useState, FC } from "react";
 import {
   GoogleMap,
   Marker,
   Polyline,
   useJsApiLoader,
 } from "@react-google-maps/api";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Navbar from "../../../../components/navbar";
-import Loader from "../../../../components/loader/loader";
-import Card from "../../../../components/card";
-import time from "../../../../assets/svg/time.svg";
-import date from "../../../../assets/svg/date.svg";
-import ridePickDest from "../../../../assets/svg/ridePickDest.svg";
 import call from "../../../../assets/svg/call.svg";
+import date from "../../../../assets/svg/date.svg";
 import dummyCar from "../../../../assets/svg/dummyCar.svg";
 import dummyProfile from "../../../../assets/svg/dummyProfile.svg";
+import ridePickDest from "../../../../assets/svg/ridePickDest.svg";
+import time from "../../../../assets/svg/time.svg";
+import Card from "../../../../components/card";
+import Loader from "../../../../components/loader/loader";
+import Navbar from "../../../../components/navbar";
 import "./rideview.css";
-import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
 
 import {
   getDriverLocationApi,
@@ -367,7 +364,19 @@ const RideView = () => {
                   <div>
                     <span style={{ fontSize: "12px", fontWeight: "600" }}>
                       {ride?.driverDetails[0]?.vehicleNumber
-                        ? ride?.driverDetails[0]?.vehicleNumber
+                        ? `${ride?.driverDetails[0]?.vehicleNumber.substring(
+                            0,
+                            2
+                          )} ${ride?.driverDetails[0]?.vehicleNumber.substring(
+                            2,
+                            4
+                          )} ${ride?.driverDetails[0]?.vehicleNumber.substring(
+                            4,
+                            6
+                          )} ${ride?.driverDetails[0]?.vehicleNumber.substring(
+                            6,
+                            10
+                          )}`
                         : "NA"}
                     </span>
                   </div>
