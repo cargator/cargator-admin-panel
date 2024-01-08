@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
 import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
-import car from "../../../assets/images/car.svg";
-import RidesIcon from "../../../assets/svg/RidesIcon.svg";
-import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
-import VehiclesIcon from "../../../assets/svg/VehiclesIcon.svg";
+import Card from "components/card";
+import Loader from "components/loader/loader";
+import Navbar from "components/navbar";
 import { isEmpty as _isEmpty } from "lodash";
+import React, { useEffect, useState } from "react";
+import car from "../../../assets/images/car.svg";
+import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
+import RidesIcon from "../../../assets/svg/RidesIcon.svg";
+import VehiclesIcon from "../../../assets/svg/VehiclesIcon.svg";
 import {
   dashboardDataApi,
   onlineDriversApi,
 } from "../../../services/customAPI";
-import Navbar from "components/navbar";
-import Loader from "components/loader/loader";
-import Card from "components/card";
 
 const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
 
@@ -46,8 +46,8 @@ const Dashboard = () => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    // googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-    googleMapsApiKey: "",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    // googleMapsApiKey: "",
   });
 
   // const getAllDrivers = async () => {

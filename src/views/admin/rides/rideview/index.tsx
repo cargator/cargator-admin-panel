@@ -59,10 +59,9 @@ const RideView = () => {
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    // googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-    googleMapsApiKey: "",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+    // googleMapsApiKey: "",
   });
-  // console.log('process.env.REACT_APP_GOOGLE_API_KEY', process.env.REACT_APP_GOOGLE_API_KEY)
 
   if (!isLoaded) {
     console.log("not loading");
