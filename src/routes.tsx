@@ -1,8 +1,8 @@
 // Admin Imports
-import Analytics from "views/admin/analytics";
 import Drivers from "views/admin/drivers";
-import DriverForm from "views/admin/drivers/driverForm";
+import Analytics from "views/admin/analytics";
 import Rides from "views/admin/rides";
+import DriverForm from "views/admin/drivers/driverForm";
 import RideView from "views/admin/rides/rideview";
 import Vehicles from "views/admin/vehicles";
 // import RTLDefault from "views/rtl/default";
@@ -11,14 +11,14 @@ import Vehicles from "views/admin/vehicles";
 
 // Icon Imports
 import {
-  MdBarChart,
   MdHome,
   MdOutlineShoppingCart,
+  MdBarChart,
   MdPerson,
 } from "react-icons/md";
-import Dashboard from "views/admin/dashboard";
 import Riders from "views/admin/riders";
 import VehicleForm from "views/admin/vehicles/vehicleform";
+import Dashboard from "views/admin/dashboard";
 
 const routes = [
   {
@@ -27,14 +27,6 @@ const routes = [
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
     component: <Dashboard />,
-  },
-
-  {
-    name: "Vehicles",
-    layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
-    path: "vehicles",
-    component: <Vehicles />,
   },
   {
     name: "Drivers",
@@ -50,6 +42,13 @@ const routes = [
     path: "riders",
     icon: <MdPerson className="h-6 w-6" />,
     component: <Riders />,
+  },
+  {
+    name: "Vehicles",
+    layout: "/admin",
+    icon: <MdBarChart className="h-6 w-6" />,
+    path: "vehicles",
+    component: <Vehicles />,
   },
   {
     name: "Rides",

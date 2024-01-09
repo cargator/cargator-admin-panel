@@ -53,7 +53,11 @@ export const getRideDetailsApi = (id) => {
 };
 
 export const deleteVehicleApi = (data) => {
-  return customAxios.post(`/deleteVehicle`, data);
+  const headers = {
+    "X-Profile-Image-Key": data.profileImageKey,
+    "X-Documents-Key": data.documentsKey.join(","), // Assuming info.documentsKey is an array
+  };
+  return customAxios.delete(`/deleteVehicle/${data.id}`, { headers });
 };
 
 export const getPaginatedVehicleDataApi = (data) => {
@@ -77,7 +81,11 @@ export const searchVehiclesApi = (data) => {
 };
 
 export const deleteDriverHandleApi = (info) => {
-  return customAxios.post(`/deleteDriver`, info);
+  const headers = {
+    "X-Profile-Image-Key": info.profileImageKey,
+    "X-Documents-Key": info.documentsKey.join(","), // Assuming info.documentsKey is an array
+  };
+  return customAxios.delete(`/deleteDriver/${info.id}`, { headers });
 };
 
 export const getPaginatedDriverDataApi = (data) => {

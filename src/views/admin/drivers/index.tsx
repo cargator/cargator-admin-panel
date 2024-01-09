@@ -1,32 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import ReactPaginate from "react-paginate";
+import ColumnsTable from "./components/ColumnsTable";
 import { useNavigate } from "react-router-dom";
 import {
+  getPaginatedDriverDataApi,
+  searchDriverApi,
+  updateDriverStatusApi,
   //   options,
   deleteDriverHandleApi,
-  getPaginatedDriverDataApi,
   searchDriversApi,
-  updateDriverStatusApi,
 } from "../../../services/customAPI";
-import ColumnsTable from "./components/ColumnsTable";
+import ReactPaginate from "react-paginate";
 // import "./rides.css";
+import Loader from "components/loader/loader";
+import { statusOptions } from "utils/constants";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Modal,
   ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { Button, ChakraProvider } from "@chakra-ui/react";
-import Loader from "components/loader/loader";
-import { toast } from "react-toastify";
-import blockIcon from "../../../assets/svg/blockIcon.svg";
 import deleteIcon from "../../../assets/svg/deleteIcon.svg";
-import Navbar from "../../../components/navbar";
-import { getS3SignUrlApi } from "../../../services/customAPI";
+import blockIcon from "../../../assets/svg/blockIcon.svg";
 import "./driverlist.css";
+import Navbar from "../../../components/navbar";
+import { toast } from "react-toastify";
+import { getS3SignUrlApi } from "../../../services/customAPI";
 
 const Drivers = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -44,6 +47,8 @@ const Drivers = () => {
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
+
+  const parser = new DOMParser();
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -101,7 +106,7 @@ const Drivers = () => {
     try {
       const response: any = await deleteDriverHandleApi(info);
       console.log("delete response", response);
-      if (response.message) {
+      if (response && response.message) {
         successToast("Driver Deleted Successfully");
         if (driverData.length % limit === 1) {
           currentPage.current = currentPage.current - 1;
@@ -112,8 +117,11 @@ const Drivers = () => {
       }
       setLoading(false);
     } catch (error: any) {
-      errorToast(error.response.data.message);
-      console.log("error :>> ", error);
+      const doc = parser.parseFromString(error.response?.data, 'text/html');
+      const errorElement = doc.querySelector('pre');
+      const errorText = errorElement ? errorElement.textContent : 'Unknown Error';
+      errorToast(errorText);
+      console.log("error :>> ", error.response.data.message);
       setLoading(false);
     }
   };
@@ -134,7 +142,7 @@ const Drivers = () => {
       console.log(error.response.data.message);
       setNoData(error.response.data.success);
     } finally {
-      setLoading(false);
+      setLoading(false);      
     }
   };
 
@@ -149,12 +157,9 @@ const Drivers = () => {
       const pathArr = await convertToUsableDriverArray(response?.data[0].data);
       const arr: any = convertToDriverArray(response?.data[0].data, pathArr);
       setDriverData(arr);
-      setPageItemRange(
-        currentPage.current,
-        response?.data[0].count[0]?.totalcount
-      );
+      setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
     } catch (error) {
-      console.log("search driver error:", error);
+      console.log("search driver error:", error)
     } finally {
       setLoading(false);
     }
@@ -163,7 +168,7 @@ const Drivers = () => {
   const handleSearchSubmit = async (e: any) => {
     console.log("object  searchText :>> ", searchText);
     e.preventDefault();
-    if (searchText.trim() == "") {
+    if (searchText.trim() === "") {
       setNoData(true);
       return;
     }
@@ -184,7 +189,7 @@ const Drivers = () => {
   const getPaginatedDriverData = async () => {
     try {
       setLoading(true);
-      console.log("???????????", currentPage.current, limit);
+      console.log("???????????", currentPage.current, limit)
       const response: any = await getPaginatedDriverDataApi({
         page: currentPage.current,
         limit: limit,
@@ -227,16 +232,7 @@ const Drivers = () => {
           path: path,
         },
         mobileNumber: driver.mobileNumber,
-        vehicleNumber: `${driver.vehicleNumber.substring(
-          0,
-          2
-        )} ${driver.vehicleNumber.substring(
-          2,
-          4
-        )} ${driver.vehicleNumber.substring(
-          4,
-          6
-        )} ${driver.vehicleNumber.substring(6, 10)}`,
+        vehicleNumber: driver.vehicleNumber,
         vehicleType: driver.vehicleType,
         status: driver.rideStatus,
         action: {
@@ -327,7 +323,7 @@ const Drivers = () => {
     if (firstRender.current) {
       firstRender.current = false;
     } else {
-      if (searchText.trim() == "") {
+      if (searchText.trim() === "") {
         setNoData(true);
         currentPage.current = 1;
         getPaginatedDriverData();
