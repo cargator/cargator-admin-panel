@@ -15,8 +15,8 @@ Follow these instructions to set up and run the Admin Panel locally:
 1. Clone the frontend repository:
 
     ```bash
-    $ git clone https://github.com/cargator/New_Admin_Panel.git
-    $ cd New_Admin_Panel
+    $ git clone https://github.com/cargator/cargator-admin-panel
+    $ cd cargator-admin-panel
     ```
 
 2. Install dependencies:
