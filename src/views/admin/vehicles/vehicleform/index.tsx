@@ -92,6 +92,8 @@ type formvalues = {
   vehicleName: string;
   vehicleNumber: string;
   vehicleType: string;
+  vehicleMake: string;
+  vehicleModel: string;
   image: any;
   documents: any;
 };
@@ -107,6 +109,8 @@ const VehicleForm: React.FC = () => {
     vehicleName: "",
     vehicleNumber: "",
     vehicleType: "",
+    vehicleMake: "",
+    vehicleModel: "",
     image: {},
     documents: [],
   });
@@ -306,6 +310,8 @@ const VehicleForm: React.FC = () => {
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
           vehicleType: values.vehicleType,
+          vehicleMake: values.vehicleMake,
+          vehicleModel: values.vehicleModel,
           profileImageKey: finalProfileImage.key,
           documentsKey: docKey,
         });
@@ -350,6 +356,8 @@ const VehicleForm: React.FC = () => {
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
           vehicleType: values.vehicleType,
+          vehicleMake: values.vehicleMake,
+          vehicleModel: values.vehicleModel,
           profileImageKey: finalProfileImage.key,
           documentsKey: docsKey,
         });
@@ -382,6 +390,8 @@ const VehicleForm: React.FC = () => {
         vehicleNumber: res.data.vehicleNumber,
         vehicleType: res.data.vehicleType,
         vehicleName: res.data.vehicleName,
+        vehicleMake: res.data.vehicleMake,
+        vehicleModel: res.data.vehicleModel,
         image: {},
         documents: [],
       });
@@ -588,6 +598,60 @@ const VehicleForm: React.FC = () => {
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
                       <label
+                        htmlFor="firstName"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Make:
+                      </label>
+                      <input
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        required
+                        name="vehicleMake"
+                        type="text"
+                        id="vehicleMake"
+                        width="90%"
+                        // label="Vehicle Name"
+                        placeholder="Vehicle Make"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.vehicleMake}
+                        aria-describedby="exampleFormControlInputHelpInline"
+                      />
+                      {errors.vehicleMake && touched.vehicleMake ? (
+                        <div className="error-input">{errors.vehicleMake}</div>
+                      ) : null}
+                    </div>
+                    <div className="mb-3 ms-6 w-full">
+                      <label
+                        htmlFor="firstName"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Model:
+                      </label>
+                      <input
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        required
+                        name="vehicleModel"
+                        type="text"
+                        id="vehicleModel"
+                        width="90%"
+                        // label="Vehicle Number"
+                        placeholder="Vehicle Model"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.vehicleModel}
+                        aria-describedby="exampleFormControlInputHelpInline"
+                      />
+                      {errors.vehicleModel && touched.vehicleModel ? (
+                        <div className="error-input">
+                          {errors.vehicleModel}
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="mb-3 me-6 w-full">
+                      <label
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
@@ -662,7 +726,8 @@ const VehicleForm: React.FC = () => {
                         <div className="error-input">{errors.vehicleType}</div>
                       ) : null}
                     </div>
-                    <div className="mb-3 me-6 w-full"></div>
+                    <div className="mb-3 ms-6 w-full">
+                    </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">

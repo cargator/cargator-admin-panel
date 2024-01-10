@@ -92,6 +92,8 @@ type formvalues = {
   mobileNumber: string;
   vehicleNumber: string;
   vehicleType: string;
+  vehicleModel: string;
+  vehicleMake: string;
   vehicleName: string;
   image: any;
   documents: any;
@@ -110,6 +112,8 @@ const DriverForm = () => {
     vehicleNumber: "",
     vehicleType: "",
     vehicleName: "",
+    vehicleMake: "",
+    vehicleModel: "",
     image: {},
     documents: [],
   });
@@ -386,6 +390,8 @@ const DriverForm = () => {
           mobileNumber: values.mobileNumber,
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
+          vehicleMake: values.vehicleMake,
+          vehicleModel: values.vehicleModel,
           vehicleType: values.vehicleType,
           profileImageKey: finalProfileImage.key,
           documentsKey: docsKey,
@@ -454,6 +460,8 @@ const DriverForm = () => {
         vehicleNumber: res.data.vehicleNumber,
         vehicleType: res.data.vehicleType,
         vehicleName: res.data.vehicleName,
+        vehicleMake: res.data.vehicleMake,
+        vehicleModel: res.data.vehicleModel,
         image: {},
         documents: [],
       });
