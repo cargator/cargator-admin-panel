@@ -5,6 +5,7 @@ import Rides from "views/admin/rides";
 import DriverForm from "views/admin/drivers/driverForm";
 import RideView from "views/admin/rides/rideview";
 import Vehicles from "views/admin/vehicles";
+import { GiSteeringWheel } from "react-icons/gi";
 // import RTLDefault from "views/rtl/default";
 
 // Auth Imports
@@ -19,6 +20,9 @@ import {
 import Riders from "views/admin/riders";
 import VehicleForm from "views/admin/vehicles/vehicleform";
 import Dashboard from "views/admin/dashboard";
+import { BsChatLeftText, BsFillCarFrontFill, BsWindow } from "react-icons/bs";
+import { IoCarSportSharp } from "react-icons/io5";
+import { RiRoadsterLine } from "react-icons/ri";
 
 const routes = [
   {
@@ -32,36 +36,36 @@ const routes = [
     name: "Drivers",
     layout: "/admin",
     path: "drivers",
-    icon: <MdOutlineShoppingCart className="h-6 w-6" />,
+    icon: <GiSteeringWheel className="h-6 w-6" />,
     component: <Drivers />,
     // secondary: true,
   },
   {
     name: "Riders",
     layout: "/admin",
+    icon: <MdPerson className="h-7 w-7" />,
     path: "riders",
-    icon: <MdPerson className="h-6 w-6" />,
     component: <Riders />,
   },
   {
     name: "Vehicles",
     layout: "/admin",
-    icon: <MdBarChart className="h-6 w-6" />,
+    icon: <IoCarSportSharp className="h-6 w-6" />,
     path: "vehicles",
     component: <Vehicles />,
   },
   {
     name: "Rides",
     layout: "/admin",
+    icon: <RiRoadsterLine className="h-5 w-5" />,
     path: "rides",
-    icon: <MdPerson className="h-6 w-6" />,
     component: <Rides />,
   },
   {
     name: "Analytics",
     layout: "/admin",
     path: "analytics",
-    icon: <MdPerson className="h-6 w-6" />,
+    icon: <BsChatLeftText className="h-5 w-5" />,
     component: <Analytics />,
   },
   {
