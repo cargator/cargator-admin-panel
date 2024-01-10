@@ -5,7 +5,7 @@ import Rides from "views/admin/rides";
 import DriverForm from "views/admin/drivers/driverForm";
 import RideView from "views/admin/rides/rideview";
 import Vehicles from "views/admin/vehicles";
-import { GiSteeringWheel } from "react-icons/gi";
+import { GiMountainRoad, GiSteeringWheel } from "react-icons/gi";
 // import RTLDefault from "views/rtl/default";
 
 // Auth Imports
@@ -43,7 +43,7 @@ const routes = [
   {
     name: "Riders",
     layout: "/admin",
-    icon: <MdPerson className="h-7 w-7" />,
+    icon: <MdPerson className="h-6 w-6" />,
     path: "riders",
     component: <Riders />,
   },
@@ -57,7 +57,7 @@ const routes = [
   {
     name: "Rides",
     layout: "/admin",
-    icon: <RiRoadsterLine className="h-5 w-5" />,
+    icon: <GiMountainRoad className="h-6 w-6" />,
     path: "rides",
     component: <Rides />,
   },

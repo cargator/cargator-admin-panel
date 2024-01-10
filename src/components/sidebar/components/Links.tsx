@@ -39,7 +39,6 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                   }`}
                 >
                   {route.icon ? route.icon : <DashIcon />}{" "}
-                  {route.name === 'Rides' ? <GiRoad  className="h-5 w-5" /> : "" }
                 </span>
                 <p
                   className={`leading-1 ml-4 flex ${
