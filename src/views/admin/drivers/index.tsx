@@ -232,7 +232,7 @@ const Drivers = () => {
           path: path,
         },
         mobileNumber: driver.mobileNumber,
-        vehicleNumber: driver.vehicleNumber,
+        vehicleNumber: `${driver?.vehicleNumber?.substring(0, 2) || ''} ${driver?.vehicleNumber?.substring(2, 4) || ''} ${driver?.vehicleNumber?.substring(4, 6) || ''} ${driver?.vehicleNumber?.substring(6, 10) || ''}`,
         vehicleType: driver.vehicleType,
         status: driver.rideStatus,
         action: {
