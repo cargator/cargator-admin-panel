@@ -591,7 +591,7 @@ const DriverForm = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        First Name:
+                        First Name
                       </label>
                       <input
                         required
@@ -615,7 +615,7 @@ const DriverForm = () => {
                         htmlFor="lastName"
                         className="input-custom-label dark:text-white"
                       >
-                        Last Name:
+                        Last Name
                       </label>
                       <input
                         required
@@ -642,7 +642,7 @@ const DriverForm = () => {
                         htmlFor="mobileNumber"
                         className="input-custom-label dark:text-white"
                       >
-                        Mobile Number:
+                        Mobile Number
                       </label>
                       <input
                         required
@@ -666,7 +666,7 @@ const DriverForm = () => {
                         htmlFor="vehicleNumber"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Number:
+                        Vehicle Number
                       </label>
                       <Select
                         options={options}
@@ -723,7 +723,7 @@ const DriverForm = () => {
                         htmlFor="vehicleName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Name:
+                        Vehicle Name
                       </label>
                       <input
                         required
@@ -751,7 +751,7 @@ const DriverForm = () => {
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Type:
+                        Vehicle Type
                       </label>
                       <input
                         required

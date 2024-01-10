@@ -547,7 +547,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Name:
+                        Vehicle Name
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -572,7 +572,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="vehicleNumber"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Number:
+                        Vehicle Number
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -601,7 +601,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Make:
+                        Vehicle Make
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -626,7 +626,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Model:
+                        Vehicle Model
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -655,7 +655,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Type:
+                        Vehicle Type
                       </label>
                       <Select
                         // style={{ width: "80%" }}
