@@ -149,9 +149,9 @@ const DriverForm = () => {
     firstName: Yup.string()
       .min(2, "First name must be atleast two characters.")
       .required("First name is required"),
-    lastName: Yup.string()
-      .min(2, "Last name must be atleast two characters.")
-      .required("Last name is required"),
+    // lastName: Yup.string()
+    //   .min(2, "Last name must be atleast two characters.")
+    //   .required("Last name is required"),
     mobileNumber: Yup.string()
       .matches(/^[0-9]+$/, "Invalid mobile number.")
       .min(10, "Mobile Number must be 10 digits only.")
@@ -591,7 +591,7 @@ const DriverForm = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        First Name
+                        Name
                       </label>
                       <input
                         required
@@ -599,7 +599,7 @@ const DriverForm = () => {
                         name="firstName"
                         type="text"
                         id="firstName"
-                        placeholder="Enter first name here"
+                        placeholder="Enter your name here"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.firstName}
@@ -610,7 +610,7 @@ const DriverForm = () => {
                           : null}
                       </div>
                     </div>
-                    <div className="mb-3 ms-6 w-full">
+                    {/* <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="lastName"
                         className="input-custom-label dark:text-white"
@@ -633,7 +633,9 @@ const DriverForm = () => {
                           ? errors.lastName
                           : null}
                       </div>
-                    </div>
+                    </div> */}
+                    {/* <div className="mb-3 ms-6 w-full">
+                    </div> */}
                   </div>
 
                   <div className="flex justify-between">
