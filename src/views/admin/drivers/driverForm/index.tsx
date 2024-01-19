@@ -169,7 +169,7 @@ const DriverForm = () => {
       ? Yup.mixed()
           // .nullable()
           .required("A file is required")
-          .test("fileSize", "File too large", (value: any) => {
+          .test("fileSize", "Please upload file below 1 MB size",(value: any) => {
             return value && value.size <= FILE_SIZE;
           })
           .test(
