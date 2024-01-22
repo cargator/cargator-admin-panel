@@ -148,7 +148,7 @@ const DriverForm = () => {
   const driverSchema = Yup.object().shape({
     firstName: Yup.string()
       .min(2, "First name must be atleast two characters.")
-      .required("First name is required"),
+      .required("Name is required"),
     // lastName: Yup.string()
     //   .min(2, "Last name must be atleast two characters.")
     //   .required("Last name is required"),
