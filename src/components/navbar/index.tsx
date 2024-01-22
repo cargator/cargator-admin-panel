@@ -32,7 +32,7 @@ const dispatch = useDispatch();
   };
 
   return (
-    <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-end rounded-xl bg-white/10 p-2 backdrop-blur-xl dark:bg-[#0b14374d]">
+    <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-end rounded-xl bg-white/10 p-2  dark:bg-[#0b14374d]">
       <form onSubmit={handleSearch}>
         <div
           className={
