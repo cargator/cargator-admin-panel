@@ -8,6 +8,7 @@ import cancelRide from "../../../../assets/svg/cancelRide.svg";
 import ongoingRide from "../../../../assets/svg/ongoingRide.svg";
 import filterIcon from "../../../../assets/svg/filterIcon.svg";
 import arrow_down from "../../../../assets/svg/arrow_down.svg";
+import whatsApp_logo from "../../../../assets/images/Logo-WhatsApp.png"
 
 import "../rides.css";
 import {
@@ -21,6 +22,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 type RowObj = {
+  logo: string;
   bookingDate: string;
   bookingTime: string;
   riderMobileNum: string;
@@ -47,6 +49,19 @@ function ColumnsTable(props: {
   const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const columns = [
+    columnHelper.accessor("fare", {
+      id: "logo",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Logo
+        </p>
+      ),
+      cell: (info: any) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()==undefined && <img src={whatsApp_logo} alt="whatsApp_logo" width={30} height={30}/>}
+        </p>
+      ),
+    }),
     columnHelper.accessor("bookingDate", {
       id: "bookingDate",
       header: () => (
