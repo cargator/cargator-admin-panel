@@ -55,7 +55,7 @@ function ColumnsTable(props: {
       id: "logo",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Logo
+          Source
         </p>
       ),
       cell: (info: any) => (
