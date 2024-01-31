@@ -218,6 +218,36 @@ export default function Analytics() {
             </Flex>
             LAST WEEK
           </Flex>
+          <Flex
+            cursor={"pointer"}
+            transition="0.3s"
+            justify={"center"}
+            align="center"
+            bg={model === "lastMonth" ? buttonBg : "transparent"}
+            w="150px"
+            h="50px"
+            boxShadow={model === "lastMonth" ? buttonShadow : "none"}
+            borderRadius="14px"
+            color={textColor}
+            fontSize="16px"
+            fontWeight={"700"}
+            onClick={() => onTimeChange("lastMonth")}
+            border={model === "lastMonth" ? "1px solid" : "none"}
+            borderColor="#50CD89"
+            className="dark:!bg-navy-800"
+          >
+            <Flex
+              borderRadius="full"
+              justify="center"
+              align="center"
+              me="10px"
+              h="30px"
+              w="30px"
+            >
+              <img src={oneWeek} width="25px" height="25px" />
+            </Flex>
+            LAST MONTH
+          </Flex>
         </Flex>
         {/* main box */}
         <div
