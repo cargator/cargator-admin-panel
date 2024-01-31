@@ -9,7 +9,8 @@ import ongoingRide from "../../../../assets/svg/ongoingRide.svg";
 import filterIcon from "../../../../assets/svg/filterIcon.svg";
 import arrow_down from "../../../../assets/svg/arrow_down.svg";
 import whatsApp_logo from "../../../../assets/images/Logo-WhatsApp.png"
-
+import android_logo from "../../../../assets/images/android_logo.png"
+import ios_logo from "../../../../assets/images/ios_logo.png"
 import "../rides.css";
 import {
   createColumnHelper,
@@ -29,6 +30,7 @@ type RowObj = {
   DriverMobileNum: string;
   fare: number;
   status: string;
+  platform: string;
   origin: string;
   destination: string;
   view: string;
@@ -49,7 +51,7 @@ function ColumnsTable(props: {
   const navigate = useNavigate();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const columns = [
-    columnHelper.accessor("fare", {
+    columnHelper.accessor("platform", {
       id: "logo",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
@@ -58,7 +60,7 @@ function ColumnsTable(props: {
       ),
       cell: (info: any) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()==undefined && <img src={whatsApp_logo} alt="whatsApp_logo" width={30} height={30}/>}
+          {info.getValue()==="whatsApp" ? <img src={whatsApp_logo} alt="whatsApp_logo" width={30} height={30}/> : info.getValue()==="android" ? <img src={android_logo} alt="android_logo" width={30} height={30}/> : info.getValue()==="ios"  ? <img src={ios_logo} alt="whatsApp_logo" width={30} height={30}/> : ""}
         </p>
       ),
     }),

@@ -68,6 +68,7 @@ const Rides = () => {
           ? ride?.driverDetails[0]?.mobileNumber
           : "N/A",
         fare: ride.fare,
+        platform: ride.platform,
         status: ride.status,
         origin: ride.pickUpAddress,
         destination: ride.dropAddress,
