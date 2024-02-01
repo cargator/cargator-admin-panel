@@ -15,6 +15,7 @@ import {
 } from "@tanstack/react-table";
 import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 type RowObj = {
   vehicleName: customFieldType1;
   vehicleNumber: string;
@@ -254,15 +255,28 @@ function ColumnsTableVehicles(props: {
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
-                      <div className="items-center justify-between text-xs text-gray-200">
+                      <div className="flex gap-4 text-xs text-gray-200">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {{
+                        {/* {{
                           asc: "",
                           desc: "",
-                        }[header.column.getIsSorted() as string] ?? null}
+                        }[header.column.getIsSorted() as string] ?? null} */}
+                         {
+                          <>
+                            {header.column.getIsSorted() === "asc" ? (
+                              <FaCaretUp className="mr-[-6]" size={20} color="black" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <FaCaretDown size={20} color="black" />
+                            ) : (
+                              <div className="flex mr-[-6]">
+                               <FaCaretDown size={20} color="black" />
+                              </div>
+                            )}
+                          </>
+                        }
                       </div>
                     </th>
                   );

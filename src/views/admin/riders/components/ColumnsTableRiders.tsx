@@ -16,6 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 type RowObj = {
   _id: string;
@@ -195,15 +196,28 @@ function ColumnsTableRiders(props: {
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4"
                     >
-                      <div className="items-center justify-between text-xs text-gray-200">
+                      <div className="flex gap-2 text-xs text-gray-200">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {{
+                        {/* {{
                           asc: "",
                           desc: "",
-                        }[header.column.getIsSorted() as string] ?? null}
+                        }[header.column.getIsSorted() as string] ?? null} */}
+                         {
+                          <>
+                            {header.column.getIsSorted() === "asc" ? (
+                              <FaCaretUp size={20} color="black" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <FaCaretDown size={20} color="black" />
+                            ) : (
+                              <div>
+                               <FaCaretDown size={20} color="black" />
+                              </div>
+                            )}
+                          </>
+                        }
                       </div>
                     </th>
                   );
@@ -234,7 +248,7 @@ function ColumnsTableRiders(props: {
                         return (
                           <td
                             key={cell.id}
-                            className="min-w-[20%] border-white/0 py-3 pr-4"
+                            className="min-w-[20%] border-white/0 py-3 pr-4 text-left"
                           >
                             {flexRender(
                               cell.column.columnDef.cell,

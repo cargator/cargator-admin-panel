@@ -15,7 +15,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { Navigate, useNavigate } from "react-router-dom";
-
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 type RowObj = {
   fullName: customFieldType1;
@@ -29,7 +29,7 @@ type RowObj = {
 type customFieldType1 = {
   name: string;
   path: string;
-}
+};
 
 type customFieldType2 = {
   driverStatus: string;
@@ -77,7 +77,7 @@ function ColumnsTable(props: {
                 backgroundColor: "#F4F7FE",
               }}
             >
-              <span 
+              <span
                 style={{
                   position: "relative",
                   left: "14px",
@@ -175,7 +175,7 @@ function ColumnsTable(props: {
           >
             {" "}
             {info.getValue()?.charAt(0).toUpperCase() +
-                            info.getValue()?.slice(1)}
+              info.getValue()?.slice(1)}
             {/* {info.getValue()} */}
           </p>
         </div>
@@ -244,15 +244,11 @@ function ColumnsTable(props: {
     debugTable: true,
   });
 
-  
-
   useEffect(() => {
     setData([...tableData]);
   }, [tableData]);
 
-  useEffect(() => {
-    
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
@@ -285,15 +281,24 @@ function ColumnsTable(props: {
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
-                      <div className="items-center justify-between text-xs text-gray-200">
+                      <div className="flex items-center justify-between text-xs text-gray-200 p-3 gap-[-6]">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {{
-                          asc: "",
-                          desc: "",
-                        }[header.column.getIsSorted() as string] ?? null}
+                        {
+                          <>
+                            {header.column.getIsSorted() === "asc" ? (
+                              <FaCaretUp className="mr-[-6]" size={20} color="black" />
+                            ) : header.column.getIsSorted() === "desc" ? (
+                              <FaCaretDown size={20} color="black" />
+                            ) : (
+                              <div className="flex mr-[-6]">
+                               <FaCaretDown size={20} color="black" />
+                              </div>
+                            )}
+                          </>
+                        }
                       </div>
                     </th>
                   );
