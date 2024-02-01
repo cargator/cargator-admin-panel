@@ -23,6 +23,8 @@ import Dashboard from "views/admin/dashboard";
 import { BsChatLeftText, BsFillCarFrontFill, BsWindow } from "react-icons/bs";
 import { IoCarSportSharp } from "react-icons/io5";
 import { RiRoadsterLine } from "react-icons/ri";
+import { FcSettings } from "react-icons/fc";
+import Settings from "views/admin/settings/settings";
 
 const routes = [
   {
@@ -67,6 +69,14 @@ const routes = [
     path: "analytics",
     icon: <BsChatLeftText className="h-5 w-5" />,
     component: <Analytics />,
+  },
+  {
+    name: "Settings",
+    layout: "/admin",
+    path: "settings",
+    icon: <FcSettings className="h-6 w-6" />,
+    component: <Settings />,
+    // secondary: true,
   },
   {
     name: "VehicleForm",
