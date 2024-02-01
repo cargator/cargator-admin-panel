@@ -12,6 +12,7 @@ import {
 import Navbar from "components/navbar";
 import Loader from "components/loader/loader";
 import Card from "components/card";
+import { Link } from "react-router-dom";
 
 const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
 
@@ -168,7 +169,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> : ongoingRidesCount}
+                    {isSpinner ? <CustomSpinner /> :  <Link to={`/admin/rides/current-rides`}>{ongoingRidesCount}</Link>}
                   </h3>
                 </div>
               </Card>
@@ -233,7 +234,7 @@ const Dashboard = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        {isSpinner ? <CustomSpinner /> : totalDriver}
+                        {isSpinner ? <CustomSpinner /> : <Link to="/admin/drivers">{totalDriver}</Link>}
                       </h4>
                     </div>
 
@@ -257,7 +258,7 @@ const Dashboard = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        {isSpinner ? <CustomSpinner /> : onlineDriversCount}
+                        {isSpinner ? <CustomSpinner /> : <Link to="/admin/drivers">{onlineDriversCount}</Link>}
                       </h4>
                     </div>
                   </div>
@@ -299,7 +300,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> : completeRidesCount}
+                    {isSpinner ? <CustomSpinner /> : <Link to={`/admin/rides/completed`}>{completeRidesCount}</Link>}
                   </h3>
                 </div>
               </Card>

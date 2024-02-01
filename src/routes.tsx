@@ -58,7 +58,7 @@ const routes = [
     name: "Rides",
     layout: "/admin",
     icon: <GiMountainRoad className="h-6 w-6" />,
-    path: "rides",
+    path: "rides/:value",
     component: <Rides />,
   },
   {

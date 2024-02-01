@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ColumnsTable from "./components/ColumnsTable";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getAllRidesApi,
   getCurrentRidesApi,
@@ -14,16 +14,40 @@ import { statusOptions } from "utils/constants";
 import Navbar from "components/navbar";
 
 const Rides = () => {
+  const { value } = useParams();
+  const displayValue = value === "completed" ? "completed" : value === "current-rides" ? 'current-rides' : 'all' ;
   const currentPage = useRef<number>();
   const [allRideData, setAllRideData] = useState([]);
   const [pageCount, setPageCount] = useState(1);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
-  const [rideStatus, setRideStatus] = useState("all");
+  const [rideStatus, setRideStatus] = useState(displayValue);
   const [searchText, setSearchText] = useState("");
   const firstRender = useRef(true);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
+
+  useEffect(() => {
+    if (rideStatus === 'completed' || rideStatus === 'current-rides') {
+      console.log("hiiiiiii")
+      async function callApi() {
+        const  response = await getRidesByFilterApi({
+          page: 1,
+          limit: 10,
+          filter: rideStatus
+        });
+        console.log("res",response)
+        if (!response) {
+          return;
+        }
+        setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+        setAllRideData(await convertToUsableRideArray(response?.data[0].data));
+        setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
+        setLoading(false);
+      }
+      callApi();
+    }
+  }, []);
 
   const setPageItemRange = (currPageNumber: number, maxItemRange: number) => {
     let startNumber = currPageNumber * limit - limit + 1;
@@ -55,8 +79,8 @@ const Rides = () => {
   }
 
   async function convertToUsableRideArray(rideArray: any) {
-    console.log("ridearray",rideArray)
-    const res = rideArray.map((ride:any) => {
+    console.log("ridearray", rideArray);
+    const res = rideArray.map((ride: any) => {
       let dateTime = convertUtcToIst(ride.createdAt);
       return {
         bookingDate: dateTime.substring(0, 10),
@@ -82,13 +106,16 @@ const Rides = () => {
   const getAllRides = async () => {
     try {
       setLoading(true);
-      const response:any = await getAllRidesApi({
+      const response: any = await getAllRidesApi({
         page: currentPage.current,
         limit: limit,
       });
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
       setAllRideData(await convertToUsableRideArray(response?.data[0].data));
-      setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
+      setPageItemRange(
+        currentPage.current,
+        response?.data[0].count[0]?.totalcount
+      );
     } catch (error) {
       console.log(`get-all-rides >> error :>> `, error);
     } finally {
@@ -97,9 +124,10 @@ const Rides = () => {
   };
 
   const handleRideStatusSelect = async (status: string) => {
+    console.log("status", status);
     try {
       setLoading(true);
-      let response:any;
+      let response: any;
 
       if (status === "all") {
         response = await getAllRidesApi({
@@ -112,16 +140,19 @@ const Rides = () => {
           limit: limit,
         });
       } else {
-        const filter = status ;
+        const filter = status;
         response = await getRidesByFilterApi({
           page: currentPage.current,
           limit: limit,
-          filter: filter
+          filter: filter,
         });
       }
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
       setAllRideData(await convertToUsableRideArray(response?.data[0].data));
-      setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);     
+      setPageItemRange(
+        currentPage.current,
+        response?.data[0].count[0]?.totalcount
+      );
     } catch (error) {
       console.log(`handleRideStatusSelect error :>> `, error);
     } finally {
@@ -144,7 +175,7 @@ const Rides = () => {
       setPageCount(1);
       setLoading(false);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -155,19 +186,22 @@ const Rides = () => {
     }
     setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
     setAllRideData(await convertToUsableRideArray(response?.data[0].data));
-    setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
+    setPageItemRange(
+      currentPage.current,
+      response?.data[0].count[0]?.totalcount
+    );
     setLoading(false);
   };
 
   const handleSearchSubmit = async (e: any) => {
     e.preventDefault();
     // if (searchText.trim() == "") {
-      //   setNoData(true);
-      //   return;
-      // }
-      // currentPage.current = 1;
-      searchRideFunction();
-      setLoading(false);
+    //   setNoData(true);
+    //   return;
+    // }
+    // currentPage.current = 1;
+    searchRideFunction();
+    setLoading(false);
   };
 
   async function handlePageClick(event: any) {
