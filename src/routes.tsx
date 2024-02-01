@@ -21,7 +21,7 @@ import Riders from "views/admin/riders";
 import VehicleForm from "views/admin/vehicles/vehicleform";
 import Dashboard from "views/admin/dashboard";
 import { BsChatLeftText, BsFillCarFrontFill, BsWindow } from "react-icons/bs";
-import { IoCarSportSharp } from "react-icons/io5";
+import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
 import { RiRoadsterLine } from "react-icons/ri";
 import { FcSettings } from "react-icons/fc";
 import Settings from "views/admin/settings/settings";
@@ -74,7 +74,7 @@ const routes = [
     name: "Settings",
     layout: "/admin",
     path: "settings",
-    icon: <FcSettings className="h-6 w-6" />,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
     component: <Settings />,
     // secondary: true,
   },
