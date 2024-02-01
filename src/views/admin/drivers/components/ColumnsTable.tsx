@@ -281,7 +281,7 @@ function ColumnsTable(props: {
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
-                      <div className="flex items-center justify-between text-xs text-gray-200 p-3 gap-[-6]">
+                      <div className="flex gap-4 text-xs text-gray-200 text-left">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
