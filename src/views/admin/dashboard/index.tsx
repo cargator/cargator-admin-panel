@@ -169,7 +169,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> :  <Link to={`/admin/rides/current-rides`}>{ongoingRidesCount}</Link>}
+                    {isSpinner ? <CustomSpinner /> :  <Link style={{fontSize:32}} to={`/admin/rides/current-rides`}>{ongoingRidesCount}</Link>}
                   </h3>
                 </div>
               </Card>
@@ -234,7 +234,7 @@ const Dashboard = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        {isSpinner ? <CustomSpinner /> : <Link to="/admin/drivers">{totalDriver}</Link>}
+                        {isSpinner ? <CustomSpinner /> : <Link style={{fontSize:32}} to="/admin/drivers">{totalDriver}</Link>}
                       </h4>
                     </div>
 
@@ -258,7 +258,7 @@ const Dashboard = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        {isSpinner ? <CustomSpinner /> : <Link to="/admin/drivers">{onlineDriversCount}</Link>}
+                        {isSpinner ? <CustomSpinner /> : <Link style={{fontSize:32}} to="/admin/drivers">{onlineDriversCount}</Link>}
                       </h4>
                     </div>
                   </div>
@@ -300,7 +300,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> : <Link to={`/admin/rides/completed`}>{completeRidesCount}</Link>}
+                    {isSpinner ? <CustomSpinner /> : <Link style={{fontSize:32}} to={`/admin/rides/completed`}>{completeRidesCount}</Link>}
                   </h3>
                 </div>
               </Card>
