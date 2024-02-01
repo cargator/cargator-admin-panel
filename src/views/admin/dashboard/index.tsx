@@ -169,7 +169,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> :  <Link style={{fontSize:32}} to={`/admin/rides/current-rides`}>{ongoingRidesCount}</Link>}
+                    {isSpinner ? <CustomSpinner /> :  <Link style={{fontSize:33}} to={`/admin/rides/current-rides`}>{ongoingRidesCount}</Link>}
                   </h3>
                 </div>
               </Card>

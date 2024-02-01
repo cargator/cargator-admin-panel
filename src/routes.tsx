@@ -20,10 +20,8 @@ import {
 import Riders from "views/admin/riders";
 import VehicleForm from "views/admin/vehicles/vehicleform";
 import Dashboard from "views/admin/dashboard";
-import { BsChatLeftText, BsFillCarFrontFill, BsWindow } from "react-icons/bs";
+import { BsChatLeftText } from "react-icons/bs";
 import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
-import { RiRoadsterLine } from "react-icons/ri";
-import { FcSettings } from "react-icons/fc";
 import Settings from "views/admin/settings/settings";
 
 const routes = [
