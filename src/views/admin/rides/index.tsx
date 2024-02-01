@@ -29,14 +29,12 @@ const Rides = () => {
 
   useEffect(() => {
     if (rideStatus === 'completed' || rideStatus === 'current-rides') {
-      console.log("hiiiiiii")
       async function callApi() {
         const  response = await getRidesByFilterApi({
           page: 1,
           limit: 10,
           filter: rideStatus
         });
-        console.log("res",response)
         if (!response) {
           return;
         }
