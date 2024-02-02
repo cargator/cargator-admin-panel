@@ -11,11 +11,12 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import Navbar from "components/navbar";
-import { getVehicleTypeList } from "services/customAPI";
-import { useDisclosure } from "@chakra-ui/hooks";
+import { deleteVehicleType, getVehicleTypeList } from "services/customAPI";
+import Loader from "components/loader/loader";
+import { toast } from "react-toastify";
 
 type RowObj = {
   vehicleType: string;
@@ -23,13 +24,10 @@ type RowObj = {
 };
 
 function VehicleTypeList() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [modalState, setModalState] = useState(true);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [loading, setLoading] = useState(false)
   
   const columns = [
     columnHelper.accessor("vehicleType", {
@@ -58,9 +56,9 @@ function VehicleTypeList() {
             <img
               src={ButtonEdit}
               style={{ marginRight: "8px" }}
-              // onClick={() =>
-              //   navigate(`/admin/settings/${info.getValue()?.id}`)
-              // }
+              onClick={() =>
+                handleUpdate(info.row.original)
+              }
             />
           </div>
           <div className="cursor-pointer">
@@ -72,17 +70,53 @@ function VehicleTypeList() {
         </div>
       ),
     }),
-  ]; // eslint-disable-next-line
+  ]; 
 
-  const handleClickForDeleteModal = (data: any) => {
-    console.log("data delete :>> ", data);
+  const successToast = (message: string) => {
+    toast.success(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const errorToast = (message: string) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const handleClickForDeleteModal = async (data: any) => {
     setLoading(true);
-    setModalState(true);
-    setSelectedItem(data);
-    //   setVisibleModal(true);
-    onOpen();
+    const result: any = await deleteVehicleType(data?._id);
+    getData();
+    if (result.message) {
+      successToast("VehicleType deleted successfully");
+      setLoading(false);
+    } else {
+      errorToast("Something went wrong");
+    }
     setLoading(false);
   };
+
+  const handleUpdate = (data: any) =>{
+    const id = data._id;
+    navigate(`/admin/settings/vehicletypeform/${id}`)
+  }
 
   const table = useReactTable({
     data,
@@ -96,115 +130,104 @@ function VehicleTypeList() {
     debugTable: true,
   });
 
+  const getData = async() => {
+    setLoading(true);
+    const res = await getVehicleTypeList();
+    setData(res.data)
+    setLoading(false);
+  }
+
   useEffect(() => {
-    async function getData(){
-      const res = await getVehicleTypeList();
-      console.log("res",res)
-      setData(res.data)
-    }
     getData();
   }, []);
 
   return (
     <>
       <Navbar flag={false} brandText="Settings" />
-      <Card extra={"w-full mt-4 pb-10 p-4 h-full"}>
-        <header className="relative flex items-center justify-between">
-          <div className="text-xl font-bold text-navy-700 dark:text-white">
-            Vehicles Type
-          </div>
-          <div>
-            <button
-              className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
-              type="submit"
-              onClick={() => navigate("/admin/settings/vehicletypeform")}
-            >
-              Add Vehicle Type
-            </button>
-          </div>
-        </header>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Card extra="w-full mt-4 pb-10 p-4 h-full">
+          <header className="relative flex items-center justify-between">
+            <div className="text-xl font-bold text-navy-700 dark:text-white">
+              Vehicles Type
+            </div>
+            <div>
+              <button
+                className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
+                type="submit"
+                onClick={() => navigate("/admin/settings/vehicletypeform")}
+              >
+                Add Vehicle Type
+              </button>
+            </div>
+          </header>
 
-        <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">
-        <table className="w-full">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="!border-px !border-gray-400">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
-                    >
-                      <div className="flex gap-4 text-xs text-gray-200 text-left">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {
-                          <>
-                            {header.column.getIsSorted() === "asc" ? (
-                              <FaCaretUp className="mr-[-6]" size={20} color="black" />
-                            ) : header.column.getIsSorted() === "desc" ? (
+          <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">
+            <table className="w-full">
+              <thead>
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id} className="!border-px !border-gray-400">
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        onClick={header.column.getToggleSortingHandler()}
+                        className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
+                      >
+                        <div className="flex gap-4 text-xs text-gray-200 text-left">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                          {header.column.getIsSorted() === "asc" ? (
+                            <FaCaretUp className="mr-[-6]" size={20} color="black" />
+                          ) : header.column.getIsSorted() === "desc" ? (
+                            <FaCaretDown size={20} color="black" />
+                          ) : (
+                            <div className="flex mr-[-6]">
                               <FaCaretDown size={20} color="black" />
-                            ) : (
-                              <div className="flex mr-[-6]">
-                               <FaCaretDown size={20} color="black" />
-                              </div>
-                            )}
-                          </>
-                        }
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          {data.length == 0 ? (
-            <tbody>
-              <tr>
-                <td colSpan={columns.length} style={{ textAlign: "center" }}>
-                  <h2 className="m-4" style={{ fontSize: "30px" }}>
-                    No Results!
-                  </h2>
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {table
-                .getRowModel()
-                .rows?.slice(0, 10)
-                .map((row) => {
-                  // console.log("object row :>> ", row);
-                  return (
+                            </div>
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              {data.length === 0 ? (
+                <tbody>
+                  <tr>
+                    <td colSpan={columns.length} style={{ textAlign: "center" }}>
+                      <h2 className="m-4" style={{ fontSize: "30px" }}>
+                        No Results!
+                      </h2>
+                    </td>
+                  </tr>
+                </tbody>
+              ) : (
+                <tbody>
+                  {table.getRowModel().rows?.slice(0, 10).map((row) => (
                     <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
-                        return (
-                          <td
-                            key={cell.id}
-                            className="min-w-[135px] border-white/0 py-3 pr-4 text-start"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
-                        );
-                      })}
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="min-w-[135px] border-white/0 py-3 pr-4 text-start"
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
                     </tr>
-                  );
-                })}
-            </tbody>
-          )}
-        </table>
-        </div>
-      </Card>
+                  ))}
+                </tbody>
+              )}
+            </table>
+          </div>
+        </Card>
+      )}
     </>
   );
-}
+};
 
 export default VehicleTypeList;
 const columnHelper = createColumnHelper<RowObj>();
