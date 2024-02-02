@@ -1,54 +1,23 @@
 import Loader from 'components/loader/loader';
 import Card from "../../../../components/card";
 import Navbar from 'components/navbar'
-import { Formik, useFormikContext } from 'formik';
-import React, { useRef, useState } from 'react'
+import { Formik } from 'formik';
+import React, { useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
-import { createVehicleTypeApi, handleCreateVehicleTypeApi } from 'services/customAPI';
+import { createVehicleTypeApi, getVehicleTypeById, handleCreateVehicleTypeApi } from 'services/customAPI';
 
 type formvalues = {
  vehicleType: string;
-};
-
-const Logger = (props: any): JSX.Element => {
-  const {
-    setVehicleType,
-  } = props;
-  const firstRender = useRef(true);
-  const formik = useFormikContext<any>();
-  const params = useParams();
-
-  React.useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-    } else {
-      // if (formik.values?.vehicleType) {
-      //   allAvailableVehicles.map((data: any) => {
-      //     if (data.vehicleNumber === formik.values.vehicleNumber) {
-      //       formik.values.vehicleType = data.vehicleType;
-      //       formik.values.vehicleName = data.vehicleName;
-      //       setVehicleType(data.vehicleType);
-      //     }
-      //   });
-      // } else {
-      // }
-    }
-  }, [formik.values?.vehicleNumber]);
-  return null;
 };
 
 function VehicleType() {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({ vehicleType: ""});
-  const [vehicleType, setVehicleType] = useState("");
   const navigate = useNavigate();
-  const [isProfileImage, setIsProfileImage] = useState(
-    params.id ? false : true
-  );
 
   const vehicleTypeSchema = Yup.object().shape({
     vehicleType: Yup.string().required("Vehicle type is required"),
@@ -57,6 +26,7 @@ function VehicleType() {
 
   React.useEffect(() => {
     if (params.id) {
+      console.log("id",params.id)
       getData(params.id);
     }
   }, [params]);
@@ -65,12 +35,11 @@ function VehicleType() {
     console.log("get data called :>> ");
     setIsLoading(true);
     try {
-      // const res = await getDriverByIdApi(id);
-      let docsURLandkeyarray = [];
+      const res = await getVehicleTypeById(id);
 
-      // setInitialFormValues({
-      //   vehicleType: res.data.vehicleType,
-      // });
+      setInitialFormValues({
+        vehicleType: res.data.vehicleType,
+      });
       setIsLoading(false);
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -79,7 +48,6 @@ function VehicleType() {
   };
 
   const successToast = (message: string) => {
-    // console.log("Inside successToast", message); // Add this line for debugging
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 4000,
@@ -176,7 +144,6 @@ function VehicleType() {
                 values,
                 errors,
                 touched,
-                setFieldValue,
               }) => (
                 <form onSubmit={handleSubmit}>
                   <div className="flex justify-between"> 

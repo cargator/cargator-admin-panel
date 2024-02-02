@@ -101,6 +101,13 @@ const routes = [
     secondary: true,
   },
   {
+    name: "VehicleType Id",
+    layout: "/admin",
+    path: "settings/vehicletypeform/:id",
+    component: <VehicleType />,
+    secondary: true,
+  },
+  {
     name: "VehicleForm",
     layout: "/admin",
     path: "vehicles/vehicleform",
