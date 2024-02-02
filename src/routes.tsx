@@ -23,8 +23,9 @@ import Dashboard from "views/admin/dashboard";
 import { BsChatLeftText } from "react-icons/bs";
 import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
 import Settings from "views/admin/settings/settings";
-import VehicleType from "views/admin/settings/vehicleType";
+import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
+import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 
 const routes = [
   {
@@ -75,7 +76,7 @@ const routes = [
     layout: "/admin",
     path: "settings",
     icon: <IoSettingsOutline className="h-6 w-6" />,
-    component: <Settings />,
+    component: <VehicleTypeList />,
     // secondary: true,
   },
   {
@@ -85,10 +86,17 @@ const routes = [
     component: <Fare />,
     secondary: true,
   },
+  // {
+  //   name: "VehicleType",
+  //   layout: "/admin",
+  //   path: "settings/vehicle-type",
+  //   component: <VehicleTypeList />,
+  //   secondary: true,
+  // },
   {
     name: "VehicleType",
     layout: "/admin",
-    path: "settings/vehicle-type",
+    path: "settings/vehicletypeform",
     component: <VehicleType />,
     secondary: true,
   },

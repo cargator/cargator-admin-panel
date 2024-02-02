@@ -4,7 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
 import { GiRoad } from "react-icons/gi";
 import { Select } from "@chakra-ui/react";
-import VehicleType from "views/admin/settings/vehicleType";
+import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 // chakra imports
 
 export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
@@ -72,7 +72,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                 <div className="flex flex-col ml-10">
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
-                    to={route.layout + "/" + route.path + "/vehicle-type"}
+                    to={route.layout + "/" + route.path }
                   >
                     Vehicle Type Add
                   </Link>

@@ -5,8 +5,8 @@ function Settings() {
 
   return (
     <div>
-      <Navbar flag={false} brandText="Settings" />
-      <div>vehicleType</div>
+      {/* <Navbar flag={false} brandText="Settings" />
+      <div>vehicleType</div> */}
     </div>
   );
 }

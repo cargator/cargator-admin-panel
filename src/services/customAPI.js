@@ -114,8 +114,26 @@ export const handleCreateDriverApi = (id, data) => {
   return customAxios.patch(`/updateDriver/${id}`, data);
 };
 
+export const handleCreateApi = (id, data) => {
+  return customAxios.patch(`/updateDriver/${id}`, data);
+};
+
+export const handleCreateVehicleTypeApi = (id, data) => {
+  return customAxios.patch(`/updateVehicleType/${id}`, data);
+};
+
 export const createDriverApi = (data) => {
   return customAxios.post("/create-driver", data);
+};
+
+// vehicle Type
+
+export const createVehicleTypeApi = (data) => {
+  return customAxios.post("/create-vehicle-type", data);
+};
+
+export const getVehicleTypeList = () => {
+  return customAxios.get("/get-vehicle-type");
 };
 
 export const getDriverByIdApi = (id) => {
