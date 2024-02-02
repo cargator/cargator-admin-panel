@@ -11,6 +11,7 @@ import {
   deleteObjectFromS3Api,
   getS3SignUrlApi,
   getVehicleByIdApi,
+  getVehicleTypeList,
   handleCreateVehicleApi,
 } from "services/customAPI";
 import Loader from "components/loader/loader";
@@ -133,6 +134,7 @@ const VehicleForm: React.FC = () => {
   const [initialDocArray, setInitialDocArray] = useState<any>([]);
   const [finalProfileImage, setFinalProfileImage] = useState<profImage>();
   const [finalDocArray, setFinalDocArray] = useState<docState>([]);
+  const [vehicleType, setVehicleType] = useState([]);
   const [isdocuments, setIsDocuments] = useState(params.id ? false : true);
   const [isProfileImage, setIsProfileImage] = useState(
     params.id ? false : true
@@ -198,6 +200,21 @@ const VehicleForm: React.FC = () => {
       : Yup.mixed(),
   });
 
+  const getDataVehicleType = async() => {
+    setIsLoading(true);
+    const res = await getVehicleTypeList();
+    setVehicleType(res?.data?.map((vehicle:any) => ({
+      value: vehicle._id,
+      label: vehicle.vehicleType,
+    })))
+    setIsLoading(false);
+  }
+
+  useEffect(() => {
+    getDataVehicleType();
+  }, []);
+  
+
   const successToast = (message: string) => {
     // console.log("Inside successToast", message); // Add this line for debugging
     toast.success(`${message}`, {
@@ -247,7 +264,6 @@ const VehicleForm: React.FC = () => {
   }
 
   const handleCreateVehicle = async (values: any) => {
-    console.log("createVehicle", values);
     setIsLoading(true);
     try {
       if (params.id) {
@@ -288,7 +304,7 @@ const VehicleForm: React.FC = () => {
             if (data.url) {
               res1 = await pushProfilePhotoToS3(data.url, ele.file);
               if (res1.status === 200) {
-                console.log("uploaded correcly ");
+                console.log("uploaded correctly ");
               }
             }
           }
