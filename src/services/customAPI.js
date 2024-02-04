@@ -145,6 +145,23 @@ export const deleteVehicleType = (id) => {
   return customAxios.delete(`/delete-vehicle-type/${id}`);
 };
 
+// fare
+
+export const addFare = (data) => {
+  return customAxios.post(`/add-fare`,data);
+};
+
+export const getFare = () => {
+  return customAxios.get(`/get-fare`);
+};
+
+export const upDateFare = (id,data) => {
+  return customAxios.patch(`/update-fare/${id}`,data);
+};
+
+
+//
+
 export const getDriverByIdApi = (id) => {
   console.log("Params1>>", id);
   return customAxios.get(`/getDriverById/${id}`);
