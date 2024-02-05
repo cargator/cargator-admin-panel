@@ -134,7 +134,7 @@ function Fare() {
               </div>
             ) : ( */}
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Fare
+                Fare
               </div>
             {/* )} */}
           </header>

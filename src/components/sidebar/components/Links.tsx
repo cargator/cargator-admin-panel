@@ -74,13 +74,13 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path }
                   >
-                    Vehicle Type Add
+                    Vehicle Type
                   </Link>
                   <Link
                     className="text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path + "/fare"}
                   >
-                    Fare Add
+                    Fare 
                   </Link>
                 </div>
               )}
