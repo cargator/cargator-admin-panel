@@ -9,12 +9,15 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 import {
   addFare,
-  getFare,
+  createAppNameAndImageApi,
+  deleteObjectFromS3Api,
+  getAppNameAndImage,
   getS3SignUrlApi,
-  upDateFare,
+  handleCreateAppNameAndImageApi,
 } from "services/customAPI";
 import Loader from "components/loader/loader";
 import uploadCloud from "../../../assets/svg/upload-cloud.svg";
+import axios from "axios";
 
 type formvalues = {
   name: string;
@@ -45,8 +48,24 @@ function General() {
     params.id ? false : true
   );
 
-  const driverSchema = Yup.object().shape({
-    fare: Yup.string().min(1).required("Fare is required"),
+  const FILE_SIZE = 1024 * 1024;
+  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
+
+  const appSchema = Yup.object().shape({
+    name: Yup.string().min(1).required("AppName is required"),
+    image: isProfileImage
+    ? Yup.mixed()
+        // .nullable()
+        .required("A file is required")
+        .test("fileSize", "Please upload file below 1 MB size", (value: any) => {
+          return value && value.size <= FILE_SIZE;
+        })
+        .test(
+          "fileFormat",
+          "Unsupported Format",
+          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+        )
+    : Yup.mixed(),
   });
 
   const successToast = (message: string) => {
@@ -83,98 +102,137 @@ function General() {
     }
   };
 
-  const handleAddFare = async (values: any) => {
-    console.log("get data called :>> ");
-    setIsLoading(true);
-    // try {
-    //   if (check) {
-    //     const res: any = await upDateFare(id, { fare: values.fare });
-    //     // setInitialFormValues({
-    //     //   name: res.data.fare,
-    //     //   image: {},
-    //     // });
-    //     if (res.message) {
-    //       successToast("Fare updated successfully");
-    //       setIsLoading(false);
-    //     } else {
-    //       errorToast("Something went wrong");
-    //     }
-    //     setIsLoading(false);
-    //     return;
-    //   }
-    //   const res: any = await addFare(values);
-    //   setCheck(true);
-    //   // setInitialFormValues({
-    //   //   name: res?.data[0].fare,
-    //   //   image: {},
-    //   // });
-    //   setId(res?.data[0]._id);
-    //   if (res.message) {
-    //     successToast("Fare added successfully");
-    //     setIsLoading(false);
-    //   } else {
-    //     errorToast("Something went wrong");
-    //   }
-
-    //   setIsLoading(false);
-    // } catch (error: any) {
-    //   errorToast(error.response.data.message);
-    //   setIsLoading(false);
-    // }
-  };
-
   React.useEffect(() => {
     getData();
   }, []);
 
-  // async function getS3SignUrl(key: string, contentType: string, type: string) {
-  //   const headers = { "Content-Type": "application/json" };
-  //   const response: any = await getS3SignUrlApi(
-  //     {
-  //       key,
-  //       contentType,
-  //       type,
-  //     },
-  //     { headers }
-  //   );
-  //   return response;
-  // }
+  async function getS3SignUrl(key: string, contentType: string, type: string) {
+    const headers = { "Content-Type": "application/json" };
+    const response: any = await getS3SignUrlApi(
+      {
+        key,
+        contentType,
+        type,
+      },
+      { headers }
+    );
+    return response;
+  }
 
-  const getData = async () => {
-    console.log("get data called :>> ");
-    // setIsLoading(true);
-    // try {
-    //   const res = await getFare();
-    //   const key = res.data?.profileImageKey;
-    //   if (key) {
-    //     {
-    //       const contentType = "image/png";
-    //       const type = "get";
-    //       const data: any = await getS3SignUrl(key, contentType, type);
-    //       setInitialProfileImage({ key: key, url: data.url });
-    //       setFinalProfileImage({ key: key, url: data.url });
-    //       setImagePreview(data.url);
-    //     }
-    //   }
-    //   if (res.data.length !== 0) {
-    //     setCheck(true);
-    //     setId(res?.data[0]._id);
-    //   } else {
-    //     setIsLoading(false);
-    //     return;
-    //   }
+  async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
+    const response = await axios.put(presignedUrl, uploadPhoto);
+    // console.log("pushProfilePhotoToS3  :>> ", response);
+    return response;
+  }
 
-    //   setInitialFormValues({
-    //     name: res?.data[0].fare,
-    //     image: {},
-    //   });
-    //   setIsLoading(false);
-    // } catch (error: any) {
-    //   errorToast(error.response.data.message);
-    //   setIsLoading(false);
-    // }
+  const handleCreateApp= async (values: any) => {
+    setIsLoading(true);
+    try {
+      if (params.id) {
+        let res, res1;
+        if (finalProfileImage.url === "") {
+          // console.log("image key to upload :>> ", finalProfileImage.url);
+          {
+            const key = finalProfileImage.key;
+            console.log("image key to upload :>> ", key);
+            const contentType = "image/*";
+            const type = "put";
+            const data: any = await getS3SignUrl(key, contentType, type);
+            if (data.url) {
+              res = await pushProfilePhotoToS3(
+                data.url,
+                finalProfileImage.file
+              );
+            }
+            if (initialProfileImage) {
+              const response = deleteObjectFromS3Api({
+                key: initialProfileImage?.key,
+              });
+            }
+          }
+        }
+
+        console.log("image key db:>> ", finalProfileImage.key);
+
+        const result: any = await handleCreateAppNameAndImageApi(params.id, {
+          name: values.name,
+          profileImageKey: finalProfileImage.key,
+        });
+        console.log("result :>> ", result);
+
+        if (result.message) {
+          successToast("app Updated Successfully");
+          // navigate("/admin/vehicles");
+          setIsLoading(false);
+        } else {
+          errorToast("Something went wrong");
+        }
+      } else {
+        let res;
+        {
+          const key = finalProfileImage.key;
+          const contentType = "image/*";
+          const type = "put";
+          const data: any = await getS3SignUrl(key, contentType, type);
+
+          if (data.url) {
+            res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
+            console.log("resData",res)
+          }
+        }
+
+        const result: any = await createAppNameAndImageApi({
+          name: values.name,
+          profileImageKey: finalProfileImage.key,
+        });
+        console.log("result :>> ", result);
+        if (result.message) {
+          successToast("App Created Successfully");
+          // navigate("/admin/vehicles");
+          setIsLoading(false);
+        } else {
+          errorToast("Something went wrong");
+        }
+      }
+    } catch (error: any) {
+      errorToast(error.response.data.message);
+      console.log(error);
+      setIsLoading(false);
+    }
   };
 
+  const getData = async () => {
+    // console.log("get data called :>> ", id);
+    setIsLoading(true);
+    try {
+      const res: any = await getAppNameAndImage();
+
+      console.log("res  :>> ", res);
+
+      setInitialFormValues({
+        name: res.data.name,
+        image: {},
+      });
+      // setVehicleTypes(res.data.vehicleType);
+
+      const key = res.data?.profileImageKey;
+      if (key) {
+        {
+          const contentType = "image/png";
+          const type = "get";
+          const data: any = await getS3SignUrl(key, contentType, type);
+          setInitialProfileImage({ key: key, url: data.url });
+          setFinalProfileImage({ key: key, url: data.url });
+          setImagePreview(data.url);
+        }
+      }
+      
+      setIsLoading(false);
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  };
   return (
     <div>
       <Navbar flag={false} brandText="fare" />
@@ -197,8 +255,8 @@ function General() {
             <Formik
               enableReinitialize={true}
               initialValues={initialFormValues}
-              onSubmit={(values) => handleAddFare(values)}
-              validationSchema={driverSchema}
+              onSubmit={(values) => handleCreateApp(values)}
+              validationSchema={appSchema}
             >
               {({
                 values,
@@ -320,7 +378,7 @@ function General() {
                                 setFieldValue("image", event.target.files[0]);
                                 const file = event.target.files[0];
                                 setFinalProfileImage({
-                                  key: `drivers/profileImages/${uuidv4()}.png`,
+                                  key: `app/appImage/${uuidv4()}.png`,
                                   url: "",
                                   file: file,
                                 });

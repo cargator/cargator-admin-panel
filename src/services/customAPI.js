@@ -211,6 +211,18 @@ export const getS3SignUrlApi = (data, headers) => {
   return customAxios.post(`/presignedurl`, data, headers);
 };
 
+export const getAppNameAndImage = () => {
+  return customAxios.get(`/get-app`);
+};
+
+export const handleCreateAppNameAndImageApi = (id, data) => {
+  return customAxios.patch(`/update-app/${id}`, data);
+};
+
+export const createAppNameAndImageApi = (data) => {
+  return customAxios.post("/create-app", data);
+};
+
 export const deleteObjectFromS3Api = (data) => {
   return customAxios.post("/delete-object-from-s3", data);
 };
