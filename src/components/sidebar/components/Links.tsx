@@ -69,10 +69,16 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
               </Link>
               {/* Conditionally render additional options if Settings is active */}
               {settingsActive && activeRoute(route.path) && (
-                <div className="flex flex-col ml-10">
+                <div className="ml-10 flex flex-col">
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
-                    to={route.layout + "/" + route.path }
+                    to={route.layout + "/" + route.path + "/general"}
+                  >
+                    General
+                  </Link>
+                  <Link
+                    className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
+                    to={route.layout + "/" + route.path}
                   >
                     Vehicle Type
                   </Link>
@@ -80,7 +86,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     className="text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path + "/fare"}
                   >
-                    Fare 
+                    Fare
                   </Link>
                 </div>
               )}

@@ -26,6 +26,7 @@ import Settings from "views/admin/settings/settings";
 import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
 import VehicleTypeList from "views/admin/settings/vehicleTypeList";
+import General from "views/admin/settings/general";
 
 const routes = [
   {
@@ -70,6 +71,13 @@ const routes = [
     path: "analytics",
     icon: <BsChatLeftText className="h-5 w-5" />,
     component: <Analytics />,
+  },
+  {
+    name: "Fare",
+    layout: "/admin",
+    path: "settings/general",
+    component: <General/>,
+    secondary: true,
   },
   {
     name: "Settings",
