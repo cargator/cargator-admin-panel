@@ -805,8 +805,8 @@ const VehicleForm: React.FC = () => {
                               </div>
                               <div className="mb-3">
                                 {!params.id
-                                  ? "Click here to upload your image"
-                                  : "Click here to change your image"}
+                                  ? "Click here to upload your vehicle image"
+                                  : "Click here to update your vehicle image"}
                               </div>
                             </div>
                             <input

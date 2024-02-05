@@ -833,13 +833,13 @@ const DriverForm = () => {
                                   alt="Upload Cloud"
                                   height="24px"
                                   width="24px"
-                                  className="mr-2"
+                                  className="mr-1"
                                 />
                               </div>
                               <div className="mb-3">
                                 {!params.id
-                                  ? "Click here to upload your image"
-                                  : "Click here to change your image"}
+                                  ? "Click here to upload your profile image (file size below 1MB)"
+                                  : "Click here to update your profile image(file size below 1MB)"}
                               </div>
                             </div>
                             <input
@@ -987,8 +987,8 @@ const DriverForm = () => {
                             </div>
                             <div className="mb-3">
                               {!params.id
-                                ? "Click here to upload your documents"
-                                : "Click here to change your documents"}
+                                ? "Click here to upload your documents (file size below 1MB)"
+                                : "Click here to update your documents (file size below 1MB)"}
                             </div>
                           </div>
                           <input
