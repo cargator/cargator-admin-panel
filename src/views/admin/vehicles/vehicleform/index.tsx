@@ -800,14 +800,14 @@ const VehicleForm: React.FC = () => {
                                   alt="Upload Cloud"
                                   height="24px"
                                   width="24px"
-                                  className="mr-2"
+                                  className="mr-1"
                                 />
                               </div>
                               <div className="mb-3">
                                 {!params.id
-                                  ? "Click here to upload your vehicle image"
-                                  : "Click here to update your vehicle image"}
-                              </div>
+                                  ? "Click here to upload your vehicle image (file size below 1MB)"
+                                  : "Click here to change your vehicle image (file size below 1MB)"}
+                              </div> 
                             </div>
                             <input
                               // required
@@ -954,8 +954,8 @@ const VehicleForm: React.FC = () => {
                             </div>
                             <div className="mb-3">
                               {!params.id
-                                ? "Click here to upload your documents"
-                                : "Click here to change your documents"}
+                                ? "Click here to upload your vehicle documents (file size below 1MB)"
+                                : "Click here to change your vehicle documents (file size below 1MB)"}
                             </div>
                           </div>
                           <input
