@@ -107,34 +107,40 @@ function General() {
   }, []);
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {
-    const headers = { "Content-Type": "application/json" };
-    const response: any = await getS3SignUrlApi(
-      {
-        key,
-        contentType,
-        type,
-      },
-      { headers }
-    );
-    return response;
+    try {
+      const headers = { "Content-Type": "application/json" };
+      const response: any = await getS3SignUrlApi(
+        {
+          key,
+          contentType,
+          type,
+        },
+        { headers }
+      );
+      return response;
+    } catch (error:any) {
+      errorToast(error.response.data.message);
+      console.log(error);
+    }
   }
 
   async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
-    const response = await axios.put(presignedUrl, uploadPhoto);
-    // console.log("pushProfilePhotoToS3  :>> ", response);
-    return response;
+    try {
+      const response = await axios.put(presignedUrl, uploadPhoto);
+      return response;
+    } catch (error:any) {
+      errorToast(error.response.data.message);
+    }
   }
 
   const handleCreateApp= async (values: any) => {
     setIsLoading(true);
     try {
       if (params.id) {
-        let res, res1;
+        let res
         if (finalProfileImage.url === "") {
-          // console.log("image key to upload :>> ", finalProfileImage.url);
           {
             const key = finalProfileImage.key;
-            console.log("image key to upload :>> ", key);
             const contentType = "image/*";
             const type = "put";
             const data: any = await getS3SignUrl(key, contentType, type);
@@ -152,13 +158,10 @@ function General() {
           }
         }
 
-        console.log("image key db:>> ", finalProfileImage.key);
-
         const result: any = await handleCreateAppNameAndImageApi(params.id, {
           name: values.name,
           profileImageKey: finalProfileImage.key,
         });
-        console.log("result :>> ", result);
 
         if (result.message) {
           successToast("app Updated Successfully");
@@ -177,7 +180,6 @@ function General() {
 
           if (data.url) {
             res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
-            console.log("resData",res)
           }
         }
 
@@ -185,7 +187,6 @@ function General() {
           name: values.name,
           profileImageKey: finalProfileImage.key,
         });
-        console.log("result :>> ", result);
         if (result.message) {
           successToast("App Created Successfully");
           // navigate("/admin/vehicles");
@@ -207,7 +208,7 @@ function General() {
     try {
       const res: any = await getAppNameAndImage();
 
-      console.log("res  :>> ", res);
+      // console.log("res  :>> ", res);
 
       setInitialFormValues({
         name: res.data.name,
@@ -289,6 +290,7 @@ function General() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.name}
+                        disabled
                       />
                       <div className="error-input">
                         {errors.name && touched.name ? errors.name : null}
