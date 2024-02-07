@@ -108,9 +108,9 @@ function VehicleTypeList() {
       successToast("VehicleType deleted successfully");
       setLoading(false);
     } else {
+      setLoading(false);
       errorToast("Something went wrong");
     }
-    setLoading(false);
   };
 
   const handleUpdate = (data: any) =>{
@@ -131,10 +131,15 @@ function VehicleTypeList() {
   });
 
   const getData = async() => {
-    setLoading(true);
-    const res = await getVehicleTypeList();
-    setData(res.data)
-    setLoading(false);
+    try {
+      setLoading(true);
+      const res = await getVehicleTypeList();
+      setData(res.data)
+      setLoading(false)
+    } catch (error) {
+      setLoading(false)
+      errorToast("Something went wrong");
+    }
   }
 
   useEffect(() => {
