@@ -25,6 +25,8 @@ import {
   getRideDetailsApi,
   getS3SignUrlApi,
 } from "services/customAPI";
+import { FaArrowLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
 
 const ImageWithFallback: React.FC<{
@@ -166,6 +168,13 @@ const RideView = () => {
   return (
     <>
       <Navbar flag={false} brandText="Ride details" />
+      <Link
+        to="/admin/rides/:value"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
+        <FaArrowLeft />
+        <div>Back</div>
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (
@@ -366,7 +375,27 @@ const RideView = () => {
                   <div>
                     <span style={{ fontSize: "12px", fontWeight: "600" }}>
                       {ride?.driverDetails[0]?.vehicleNumber
-                        ?  `${ride?.driverDetails[0]?.vehicleNumber?.substring(0, 2) || ''} ${ride?.driverDetails[0]?.vehicleNumber?.substring(2, 4) || ''} ${ride?.driverDetails[0]?.vehicleNumber?.substring(4, 6) || ''} ${ride?.driverDetails[0]?.vehicleNumber?.substring(6, 10) || ''}`
+                        ? `${
+                            ride?.driverDetails[0]?.vehicleNumber?.substring(
+                              0,
+                              2
+                            ) || ""
+                          } ${
+                            ride?.driverDetails[0]?.vehicleNumber?.substring(
+                              2,
+                              4
+                            ) || ""
+                          } ${
+                            ride?.driverDetails[0]?.vehicleNumber?.substring(
+                              4,
+                              6
+                            ) || ""
+                          } ${
+                            ride?.driverDetails[0]?.vehicleNumber?.substring(
+                              6,
+                              10
+                            ) || ""
+                          }`
                         : "NA"}
                     </span>
                   </div>
