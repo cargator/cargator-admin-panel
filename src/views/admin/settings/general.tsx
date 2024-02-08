@@ -252,7 +252,7 @@ function General() {
             </div>
             {/* )} */}
           </header>
-          <div className="p-10 pb-5 pe-20 ps-20">
+          <div className="p-5">
             <Formik
               enableReinitialize={true}
               initialValues={initialFormValues}
@@ -269,7 +269,7 @@ function General() {
                 setFieldValue,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between gap-4 ">
+                  <div className="flex justify-between gap-8">
                     <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="name"

@@ -169,9 +169,13 @@ const DriverForm = () => {
       ? Yup.mixed()
           // .nullable()
           .required("A file is required")
-          .test("fileSize", "Please upload file below 1 MB size",(value: any) => {
-            return value && value.size <= FILE_SIZE;
-          })
+          .test(
+            "fileSize",
+            "Please upload file below 1 MB size",
+            (value: any) => {
+              return value && value.size <= FILE_SIZE;
+            }
+          )
           .test(
             "fileFormat",
             "Unsupported Format",
@@ -780,14 +784,14 @@ const DriverForm = () => {
 
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
-                      <div className="mt-4">
+                      <div className="mt-2">
                         {imagePreview && (
                           <>
                             <div
                               className="image-preview"
                               style={{
-                                width: "55px",
-                                height: "55px",
+                                width: "65px",
+                                height: "65px",
                                 padding: "2px",
                                 border: "2px solid #9CA3AF",
                                 borderRadius: "4px",
@@ -820,11 +824,11 @@ const DriverForm = () => {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
-                          className="mt-2 h-12 rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                          className="mt-2 h-15 rounded-xl border bg-white/0 p-2 text-sm outline-none"
                         >
                           <label>
                             <div
-                              className="flex items-center justify-center"
+                              className="flex items-center justify-center gap-3"
                               style={{ cursor: "pointer" }}
                             >
                               <div className="mb-3">
@@ -833,13 +837,18 @@ const DriverForm = () => {
                                   alt="Upload Cloud"
                                   height="24px"
                                   width="24px"
-                                  className="mr-1"
+                                  className="mr-3"
                                 />
                               </div>
-                              <div className="mb-3">
+                              <div
+                                className="mb-3 mt-3"
+                                style={{ textAlign: "center" }}
+                              >
                                 {!params.id
-                                  ? "Click here to upload your profile image (file size below 1MB)"
-                                  : "Click here to update your profile image(file size below 1MB)"}
+                                  ? "Click here to upload driver profile image"
+                                  : "Click here to change driver profile image"}
+                                <br />
+                                (file size below 1MB)
                               </div>
                             </div>
                             <input
@@ -849,7 +858,7 @@ const DriverForm = () => {
                                 backgroundColor: "rgba(242, 242, 242, 0.5)",
                                 display: "none",
                               }}
-                              className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                              className="mt-2 h-15 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
                               name="image"
                               type="file"
                               id="image"
@@ -969,11 +978,11 @@ const DriverForm = () => {
                           borderRadius: "4px",
                           cursor: "pointer",
                         }}
-                        className="mt-4 h-12 rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        className="mt-4 h-15 rounded-xl border bg-white/0 p-2 text-sm outline-none"
                       >
                         <label>
                           <div
-                            className="flex items-center justify-center"
+                            className="flex items-center justify-center gap-3"
                             style={{ cursor: "pointer" }}
                           >
                             <div className="mb-3">
@@ -982,13 +991,18 @@ const DriverForm = () => {
                                 alt="Upload Cloud"
                                 height="24px"
                                 width="24px"
-                                className="mr-2"
+                                className="mr-3"
                               />
                             </div>
-                            <div className="mb-3">
+                            <div
+                              className="mb-3 mt-3"
+                              style={{ textAlign: "center" }}
+                            >
                               {!params.id
-                                ? "Click here to upload your documents (file size below 1MB)"
-                                : "Click here to update your documents (file size below 1MB)"}
+                                ? "Click here to upload driver documents"
+                                : "Click here to change driver documents"}
+                              <br />
+                              (file size below 1MB)
                             </div>
                           </div>
                           <input
