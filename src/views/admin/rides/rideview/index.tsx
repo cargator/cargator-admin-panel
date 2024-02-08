@@ -366,7 +366,7 @@ const RideView = () => {
                   <div>
                     <span style={{ fontSize: "12px", fontWeight: "600" }}>
                       {ride?.driverDetails[0]?.vehicleNumber
-                        ? ride?.driverDetails[0]?.vehicleNumber
+                        ?  `${ride?.driverDetails[0]?.vehicleNumber?.substring(0, 2) || ''} ${ride?.driverDetails[0]?.vehicleNumber?.substring(2, 4) || ''} ${ride?.driverDetails[0]?.vehicleNumber?.substring(4, 6) || ''} ${ride?.driverDetails[0]?.vehicleNumber?.substring(6, 10) || ''}`
                         : "NA"}
                     </span>
                   </div>

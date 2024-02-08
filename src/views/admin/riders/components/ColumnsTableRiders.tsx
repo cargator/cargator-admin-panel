@@ -208,12 +208,12 @@ function ColumnsTableRiders(props: {
                          {
                           <>
                             {header.column.getIsSorted() === "asc" ? (
-                              <FaCaretUp size={20} color="black" />
+                              <FaCaretUp size={20} className="text-gray-600 font-bold" />
                             ) : header.column.getIsSorted() === "desc" ? (
-                              <FaCaretDown size={20} color="black" />
+                              <FaCaretDown size={20} className="text-gray-600 font-bold" />
                             ) : (
                               <div>
-                               <FaCaretDown size={20} color="black" />
+                               <FaCaretDown size={20} className="text-gray-600 font-bold" />
                               </div>
                             )}
                           </>

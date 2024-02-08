@@ -125,7 +125,7 @@ const Vehicles: React.FC = () => {
             name: vehicle.vehicleName,
             path: path,
           },
-          vehicleNumber: vehicle.vehicleNumber,
+          vehicleNumber:`${vehicle?.vehicleNumber?.substring(0, 2) || ''} ${vehicle?.vehicleNumber?.substring(2, 4) || ''} ${vehicle?.vehicleNumber?.substring(4, 6) || ''} ${vehicle?.vehicleNumber?.substring(6, 10) || ''}`,
           vehicleType: vehicle.vehicleType,
           vehicleStatus: vehicle.vehicleStatus,
           action: {

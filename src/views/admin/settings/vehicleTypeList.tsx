@@ -186,12 +186,12 @@ function VehicleTypeList() {
                             header.getContext()
                           )}
                           {header.column.getIsSorted() === "asc" ? (
-                            <FaCaretUp className="mr-[-6]" size={20} color="black" />
+                            <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} color="black" />
                           ) : header.column.getIsSorted() === "desc" ? (
-                            <FaCaretDown size={20} color="black" />
+                            <FaCaretDown size={20} className="text-gray-600 font-bold" />
                           ) : (
                             <div className="flex mr-[-6]">
-                              <FaCaretDown size={20} color="black" />
+                              <FaCaretDown size={20} className="text-gray-600 font-bold" />
                             </div>
                           )}
                         </div>
