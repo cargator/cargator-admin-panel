@@ -841,8 +841,7 @@ const DriverForm = () => {
                                 />
                               </div>
                               <div
-                                className="mb-3 mt-3"
-                                style={{ textAlign: "center" }}
+                                className="mb-1 mt-1 text-center"
                               >
                                 {!params.id
                                   ? "Click here to upload driver profile image"
@@ -995,8 +994,7 @@ const DriverForm = () => {
                               />
                             </div>
                             <div
-                              className="mb-3 mt-3"
-                              style={{ textAlign: "center" }}
+                              className="mb-1 mt-1 text-center"
                             >
                               {!params.id
                                 ? "Click here to upload driver documents"

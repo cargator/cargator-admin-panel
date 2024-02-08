@@ -161,9 +161,13 @@ const VehicleForm: React.FC = () => {
       ? Yup.mixed()
           // .nullable()
           .required("A file is required")
-          .test("fileSize", "Please upload file below 1 MB size", (value: any) => {
-            return value && value.size <= FILE_SIZE;
-          })
+          .test(
+            "fileSize",
+            "Please upload file below 1 MB size",
+            (value: any) => {
+              return value && value.size <= FILE_SIZE;
+            }
+          )
           .test(
             "fileFormat",
             "Unsupported Format",
@@ -200,20 +204,21 @@ const VehicleForm: React.FC = () => {
       : Yup.mixed(),
   });
 
-  const getDataVehicleType = async() => {
+  const getDataVehicleType = async () => {
     setIsLoading(true);
     const res = await getVehicleTypeList();
-    setVehicleType(res?.data?.map((vehicle:any) => ({
-      value: vehicle._id,
-      label: vehicle.vehicleType,
-    })))
+    setVehicleType(
+      res?.data?.map((vehicle: any) => ({
+        value: vehicle._id,
+        label: vehicle.vehicleType,
+      }))
+    );
     setIsLoading(false);
-  }
+  };
 
   useEffect(() => {
     getDataVehicleType();
   }, []);
-  
 
   const successToast = (message: string) => {
     // console.log("Inside successToast", message); // Add this line for debugging
@@ -659,9 +664,7 @@ const VehicleForm: React.FC = () => {
                         aria-describedby="exampleFormControlInputHelpInline"
                       />
                       {errors.vehicleModel && touched.vehicleModel ? (
-                        <div className="error-input">
-                          {errors.vehicleModel}
-                        </div>
+                        <div className="error-input">{errors.vehicleModel}</div>
                       ) : null}
                     </div>
                   </div>
@@ -742,8 +745,7 @@ const VehicleForm: React.FC = () => {
                         <div className="error-input">{errors.vehicleType}</div>
                       ) : null}
                     </div>
-                    <div className="mb-3 ms-6 w-full">
-                    </div>
+                    <div className="mb-3 ms-6 w-full"></div>
                   </div>
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
@@ -787,11 +789,11 @@ const VehicleForm: React.FC = () => {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
-                          className="mt-2 h-12 rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                          className="mt-2 h-15 rounded-xl border bg-white/0 p-3 text-sm outline-none"
                         >
                           <label>
                             <div
-                              className="flex items-center justify-center"
+                              className="flex items-center justify-center gap-3"
                               style={{ cursor: "pointer" }}
                             >
                               <div className="mb-3">
@@ -803,11 +805,13 @@ const VehicleForm: React.FC = () => {
                                   className="mr-1"
                                 />
                               </div>
-                              <div className="mb-3">
+                              <div className="mb-1 mt-1 text-center">
                                 {!params.id
-                                  ? "Click here to upload your vehicle image (file size below 1MB)"
-                                  : "Click here to change your vehicle image (file size below 1MB)"}
-                              </div> 
+                                  ? "Click here to upload your vehicle image"
+                                  : "Click here to change your vehicle image"}
+                                <br />
+                                (file size below 1MB)
+                              </div>
                             </div>
                             <input
                               // required
@@ -936,11 +940,11 @@ const VehicleForm: React.FC = () => {
                           borderRadius: "4px",
                           cursor: "pointer",
                         }}
-                        className="mt-4 h-12 rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        className="h-15 mt-4 rounded-xl border bg-white/0 p-3 text-sm outline-none"
                       >
                         <label>
                           <div
-                            className="flex items-center justify-center"
+                            className="flex items-center justify-center gap-3"
                             style={{ cursor: "pointer" }}
                           >
                             <div className="mb-3">
@@ -952,10 +956,12 @@ const VehicleForm: React.FC = () => {
                                 className="mr-2"
                               />
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-1 mt-1 text-center">
                               {!params.id
-                                ? "Click here to upload your vehicle documents (file size below 1MB)"
-                                : "Click here to change your vehicle documents (file size below 1MB)"}
+                                ? "Click here to upload your vehicle documents"
+                                : "Click here to change your vehicle documents"}
+                              <br />
+                              (file size below 1MB)
                             </div>
                           </div>
                           <input
