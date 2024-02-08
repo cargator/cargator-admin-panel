@@ -682,8 +682,8 @@ const VehicleForm: React.FC = () => {
                         // defaultValue={vehicleType[0]}
                         onChange={(selectedOption) => {
                           setVehicleTypes(selectedOption.value);
-                          values.vehicleType = selectedOption.value;
-                          setFieldValue("vehicleType", selectedOption.value);
+                          values.vehicleType = selectedOption.label;
+                          setFieldValue("vehicleType", selectedOption.label);
                         }}
                         value={vehicleType.filter(function (option: any) {
                           return option.value == vehicleTypes;
