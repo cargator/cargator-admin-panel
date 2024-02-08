@@ -12,7 +12,7 @@ import {
 import Navbar from "components/navbar";
 import Loader from "components/loader/loader";
 import Card from "components/card";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
 
@@ -35,6 +35,7 @@ const CustomSpinner: React.FC<LoaderProps> = ({ size = 40 }) => {
 };
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [intervalState, setIntervalState] = useState();
   const [allOnlineDrivers, setAllOnlineDrivers] = useState([]);
   const [dashboardData, setDashboardData] = useState([]);
@@ -92,6 +93,14 @@ const Dashboard = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleNavigation = () => {
+    navigate('/admin/rides?data=ongoing-rides');
+  };
+
+  const handleNavigationCompleteRide = () => {
+    navigate('/admin/rides?data=completed');
   };
 
   useEffect(() => {
@@ -169,7 +178,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> :  <Link style={{fontSize:33}} to={`/admin/rides/current-rides`}>{ongoingRidesCount}</Link>}
+                    {isSpinner ? <CustomSpinner /> :  <span style={{fontSize:33, cursor: "pointer"}} onClick={handleNavigation}>{ongoingRidesCount}</span>}
                   </h3>
                 </div>
               </Card>
@@ -300,7 +309,7 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> : <Link style={{fontSize:32}} to={`/admin/rides/completed`}>{completeRidesCount}</Link>}
+                    {isSpinner ? <CustomSpinner /> : <span style={{fontSize:33, cursor: "pointer"}} onClick={handleNavigationCompleteRide}>{completeRidesCount}</span>}
                   </h3>
                 </div>
               </Card>

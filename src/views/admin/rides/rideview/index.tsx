@@ -169,7 +169,7 @@ const RideView = () => {
     <>
       <Navbar flag={false} brandText="Ride details" />
       <Link
-        to="/admin/rides/:value"
+        to="/admin/rides"
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
       >
         <FaArrowLeft />

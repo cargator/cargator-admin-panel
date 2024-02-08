@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ColumnsTable from "./components/ColumnsTable";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import {
   getAllRidesApi,
   getCurrentRidesApi,
@@ -14,8 +14,10 @@ import { statusOptions } from "utils/constants";
 import Navbar from "components/navbar";
 
 const Rides = () => {
-  const { value } = useParams();
-  const displayValue = value === "completed" ? "completed" : value === "current-rides" ? 'current-rides' : 'all' ;
+  const location = useLocation();
+  const data = new URLSearchParams(location.search).get('data');
+  console.log("data",data)
+  const displayValue = data === "completed" ? "completed" : data === "ongoing-rides" ? 'current-rides' : 'all' ;
   const currentPage = useRef<number>();
   const [allRideData, setAllRideData] = useState([]);
   const [pageCount, setPageCount] = useState(1);
@@ -26,42 +28,6 @@ const Rides = () => {
   const firstRender = useRef(true);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
-
-  useEffect(() => {
-    if (rideStatus === 'completed') {
-      async function callApi() {
-        const  response = await getRidesByFilterApi({
-          page: 1,
-          limit: 10,
-          filter: rideStatus
-        });
-        if (!response) {
-          return;
-        }
-        setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-        setAllRideData(await convertToUsableRideArray(response?.data[0].data));
-        setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
-        setLoading(false);
-      }
-      callApi();
-    }
-    if(rideStatus === 'current-rides'){
-      async function callApi() {
-        const  response = await getCurrentRidesApi({
-          page: 1,
-          limit: 10,
-        });
-        if (!response) {
-          return;
-        }
-        setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-        setAllRideData(await convertToUsableRideArray(response?.data[0].data));
-        setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
-        setLoading(false);
-      }
-      callApi();
-    }
-  }, [rideStatus]);
 
   const setPageItemRange = (currPageNumber: number, maxItemRange: number) => {
     let startNumber = currPageNumber * limit - limit + 1;
@@ -253,7 +219,14 @@ const Rides = () => {
 
   useEffect(() => {
     currentPage.current = 1;
-    getAllRides();
+    if (rideStatus === 'completed') {
+       handleRideStatusSelect(rideStatus)
+    }
+    else if(rideStatus === 'current-rides'){
+      handleRideStatusSelect(rideStatus)
+    }else{
+      getAllRides();
+    }
   }, []);
 
   return (
