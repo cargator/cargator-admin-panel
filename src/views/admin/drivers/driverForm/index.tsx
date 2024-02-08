@@ -824,7 +824,7 @@ const DriverForm = () => {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
-                          className="mt-2 h-15 rounded-xl border bg-white/0 p-2 text-sm outline-none"
+                          className="mt-4 h-15 rounded-xl border bg-white/0 p-2 text-sm outline-none"
                         >
                           <label>
                             <div
@@ -907,8 +907,8 @@ const DriverForm = () => {
                                   <div
                                     style={{
                                       position: "relative",
-                                      width: "55px",
-                                      height: "55px",
+                                      width: "65px",
+                                      height: "65px",
                                       padding: "2px",
                                       cursor: "pointer",
                                       border: "2px solid #9CA3AF",
