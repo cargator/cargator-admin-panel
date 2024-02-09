@@ -20,6 +20,8 @@ import { toast } from "react-toastify";
 
 type RowObj = {
   vehicleType: string;
+  vehicleMake: string;
+  vehicleModel: string;
   action : string;
 };
 
@@ -30,6 +32,32 @@ function VehicleTypeList() {
   const [loading, setLoading] = useState(false)
   
   const columns = [
+    columnHelper.accessor("vehicleMake", {
+      id: "vehicleMake",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Vehicle Make
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("vehicleModel", {
+      id: "vehicleModel",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Vehicle Model
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
     columnHelper.accessor("vehicleType", {
       id: "vehicleType",
       header: () => (
@@ -155,7 +183,7 @@ function VehicleTypeList() {
         <Card extra="w-full mt-4 pb-10 p-4 h-full">
           <header className="relative flex items-center justify-between">
             <div className="text-xl font-bold text-navy-700 dark:text-white">
-              Vehicles Type
+              Vehicles Details
             </div>
             <div>
               <button
@@ -186,7 +214,7 @@ function VehicleTypeList() {
                             header.getContext()
                           )}
                           {header.column.getIsSorted() === "asc" ? (
-                            <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} color="black" />
+                            <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
                           ) : header.column.getIsSorted() === "desc" ? (
                             <FaCaretDown size={20} className="text-gray-600 font-bold" />
                           ) : (
