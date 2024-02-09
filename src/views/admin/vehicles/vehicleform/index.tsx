@@ -681,12 +681,12 @@ const VehicleForm: React.FC = () => {
                         options={vehicleType}
                         // defaultValue={vehicleType[0]}
                         onChange={(selectedOption) => {
-                          setVehicleTypes(selectedOption.value);
+                          setVehicleTypes(selectedOption.label);
                           values.vehicleType = selectedOption.label;
                           setFieldValue("vehicleType", selectedOption.label);
                         }}
                         value={vehicleType.filter(function (option: any) {
-                          return option.value == vehicleTypes;
+                          return  option.label == vehicleTypes;
                         })}
                         name="vehicleType"
                         id="vehicleType"
@@ -789,7 +789,7 @@ const VehicleForm: React.FC = () => {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
-                          className="mt-2 h-15 rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                          className="h-15 mt-2 rounded-xl border bg-white/0 p-3 text-sm outline-none"
                         >
                           <label>
                             <div
