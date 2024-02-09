@@ -22,6 +22,7 @@ import axios from "axios";
 type formvalues = {
   name: string;
   image: any;
+  fare: string;
 };
 
 type profImage = {
@@ -43,6 +44,7 @@ function General() {
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({
     name: "",
     image: {},
+    fare: "",
   });
   const [isProfileImage, setIsProfileImage] = useState(
     params.id ? false : true
@@ -52,20 +54,25 @@ function General() {
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
   const appSchema = Yup.object().shape({
-    name: Yup.string().min(1).required("AppName is required"),
+    name: Yup.string().min(1).required("App Name is required"),
     image: isProfileImage
-    ? Yup.mixed()
-        // .nullable()
-        .required("A file is required")
-        .test("fileSize", "Please upload file below 1 MB size", (value: any) => {
-          return value && value.size <= FILE_SIZE;
-        })
-        .test(
-          "fileFormat",
-          "Unsupported Format",
-          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-        )
-    : Yup.mixed(),
+      ? Yup.mixed()
+          // .nullable()
+          .required("A file is required")
+          .test(
+            "fileSize",
+            "Please upload file below 1 MB size",
+            (value: any) => {
+              return value && value.size <= FILE_SIZE;
+            }
+          )
+          .test(
+            "fileFormat",
+            "Unsupported Format",
+            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+          )
+      : Yup.mixed(),
+    fare: Yup.string().min(1).required("Fare is required"),
   });
 
   const successToast = (message: string) => {
@@ -118,7 +125,7 @@ function General() {
         { headers }
       );
       return response;
-    } catch (error:any) {
+    } catch (error: any) {
       errorToast(error.response.data.message);
       console.log(error);
     }
@@ -128,12 +135,12 @@ function General() {
     try {
       const response = await axios.put(presignedUrl, uploadPhoto);
       return response;
-    } catch (error:any) {
+    } catch (error: any) {
       errorToast(error.response.data.message);
     }
   }
 
-  const handleCreateApp= async (values: any) => {
+  const handleCreateApp = async (values: any) => {
     setIsLoading(true);
     try {
       if (params.id) {
@@ -211,8 +218,9 @@ function General() {
       // console.log("res  :>> ", res);
 
       setInitialFormValues({
-        name: res.data.name,
+        name: res?.data.name,
         image: {},
+        fare: res?.data.fare,
       });
       // setVehicleTypes(res.data.vehicleType);
 
@@ -240,194 +248,223 @@ function General() {
       {isLoading ? (
         <Loader />
       ) : (
-        <Card extra={"w-full mt-4 pb-10 p-4 h-full"}>
-          <header className="relative flex items-center justify-between p-10">
-            {/* {params.id ? (
-              <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Fare
-              </div>
-            ) : ( */}
+        <Card extra={"w-50 mt-4 pb-10 p-4 h-full"}>
+        <header className="relative flex items-center justify-between p-10">
+          {/* {params.id ? (
             <div className="text-xl font-bold text-navy-700 dark:text-white">
-              General
+              Edit Fare
             </div>
-            {/* )} */}
-          </header>
-          <div className="p-5">
-            <Formik
-              enableReinitialize={true}
-              initialValues={initialFormValues}
-              onSubmit={(values) => handleCreateApp(values)}
-              validationSchema={appSchema}
-            >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                setFieldValue,
-              }) => (
-                <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between gap-8">
-                    <div className="mb-3 ms-6 w-full">
-                      <label
-                        htmlFor="name"
-                        className="input-custom-label dark:text-white"
-                      >
-                        App Name
-                      </label>
-                      <input
-                        required
-                        style={{
-                          backgroundColor: "rgba(242, 242, 242, 0.5)",
-                        }}
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="name"
-                        type="text"
-                        id="name"
-                        placeholder="Enter app name here"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.name}
-                        disabled
-                      />
-                      <div className="error-input">
-                        {errors.name && touched.name ? errors.name : null}
-                      </div>
-                    </div>
-                    <div className="mb-3 me-6 w-full">
-                    <label
-                        htmlFor="image"
-                        className="input-custom-label dark:text-white"
-                      >
-                        App Image
-                      </label>
-                      <div className="mt-2">
-                        {imagePreview && (
-                          <>
-                            <div
-                              className="image-preview"
-                              style={{
-                                width: "55px",
-                                height: "55px",
-                                padding: "2px",
-                                border: "2px solid #9CA3AF",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              <img
-                                src={imagePreview}
-                                style={{
-                                  objectFit: "contain",
-                                  height: "100%",
-                                  width: "auto",
-                                  cursor: "pointer",
-                                  padding: "5px",
-                                }}
-                                alt="img"
-                                onClick={handleDivClickImg}
-                              />
-                              <a
-                                ref={anchorImageRef}
-                                href={imagePreview}
-                                download="your-image-file.png"
-                                style={{ display: "none" }}
-                              ></a>
-                            </div>
-                          </>
-                        )}
-                        <div
-                          style={{
-                            border: "2px solid #9CA3AF",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                          }}
-                          className="mt-2 h-12 rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        >
-                          <label>
-                            <div
-                              className="flex items-center justify-center"
-                              style={{ cursor: "pointer" }}
-                            >
-                              <div className="mb-3">
-                                <img
-                                  src={uploadCloud}
-                                  alt="Upload Cloud"
-                                  height="24px"
-                                  width="24px"
-                                  className="mr-1"
-                                />
-                              </div>
-                              <div className="mb-3">
-                                {!params.id
-                                  ? "Click here to upload your app image (file size below 1MB)"
-                                  : "Click here to update your app image(file size below 1MB)"}
-                              </div>
-                            </div>
-                            <input
-                              // required
-                              accept="image/*"
-                              style={{
-                                backgroundColor: "rgba(242, 242, 242, 0.5)",
-                                display: "none",
-                              }}
-                              className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                              name="image"
-                              type="file"
-                              id="image"
-                              onChange={(event) => {
-                                setFieldValue("image", event.target.files[0]);
-                                const file = event.target.files[0];
-                                setFinalProfileImage({
-                                  key: `app/appImage/${uuidv4()}.png`,
-                                  url: "",
-                                  file: file,
-                                });
-                                if (file) {
-                                  const reader = new FileReader();
-                                  reader.onload = (e) => {
-                                    setImagePreview(e.target.result);
-                                  };
-                                  reader.readAsDataURL(file);
-                                } else {
-                                  setImagePreview(null);
-                                }
-                                if (event.target.files[0]) {
-                                  setIsProfileImage(true);
-                                }
-                              }}
-                              onBlur={handleBlur}
-                            />
-                          </label>
-                        </div>
-                        <ErrorMessage
-                          name="image"
-                          component="div"
-                          className="error-input"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="button-save-cancel mt-3 flex justify-end">
-                    <Button
-                      className="cancel-button my-2 ms-1 sm:my-0"
-                      onClick={() => navigate("/admin/settings")}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="submit"
-                      className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
-                    >
-                      Save
-                    </Button>
-                  </div>
-                </form>
-              )}
-            </Formik>
+          ) : ( */}
+          <div className="text-xl font-bold text-navy-700 dark:text-white">
+            General
           </div>
-        </Card>
+          {/* )} */}
+        </header>
+        <div className="p-10 pb-5 pe-20 ps-20" style={{width:'50%'}}>
+          <Formik
+            enableReinitialize={true}
+            initialValues={initialFormValues}
+            onSubmit={(values) => handleCreateApp(values)}
+            validationSchema={appSchema}
+          >
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              setFieldValue,
+            }) => (
+              <form onSubmit={handleSubmit}>
+                <div className="flex flex-col justify-between gap-4 w-full">
+                  <div className="mb-3 w-full">
+                    <label
+                      htmlFor="image"
+                      className="input-custom-label dark:text-white"
+                    >
+                      App Image
+                    </label>
+                    <div className="mt-2">
+                      {imagePreview && (
+                        <>
+                          <div
+                            className="image-preview"
+                            style={{
+                              width: "55px",
+                              height: "55px",
+                              padding: "2px",
+                              border: "2px solid #9CA3AF",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            <img
+                              src={imagePreview}
+                              style={{
+                                objectFit: "contain",
+                                height: "100%",
+                                width: "auto",
+                                cursor: "pointer",
+                                padding: "5px",
+                              }}
+                              alt="img"
+                              onClick={handleDivClickImg}
+                            />
+                            <a
+                              ref={anchorImageRef}
+                              href={imagePreview}
+                              download="your-image-file.png"
+                              style={{ display: "none" }}
+                            ></a>
+                          </div>
+                        </>
+                      )}
+                      <div
+                        style={{
+                          border: "2px solid #9CA3AF",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                        className="mt-2 h-15 rounded-xl border bg-white/0 p-3 text-sm outline-none w-full"
+                      >
+                        <label>
+                          <div
+                            className="flex items-center justify-center gap-4"
+                            style={{ cursor: "pointer" }}
+                          >
+                            <div className="mb-3">
+                              <img
+                                src={uploadCloud}
+                                alt="Upload Cloud"
+                                height="24px"
+                                width="24px"
+                                className="mr-2"
+                              />
+                            </div>
+                            <div className="mb-2 mt-2 text-center">
+                              {!params.id
+                                ? "Click here to upload your app image"
+                                : "Click here to update your app image"}
+                                <br/>
+                                (file size below 1MB)
+                            </div>
+                          </div>
+                          <input
+                            // required
+                            accept="image/*"
+                            style={{
+                              backgroundColor: "rgba(242, 242, 242, 0.5)",
+                              display: "none",
+                            }}
+                            className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                            name="image"
+                            type="file"
+                            id="image"
+                            onChange={(event) => {
+                              setFieldValue("image", event.target.files[0]);
+                              const file = event.target.files[0];
+                              setFinalProfileImage({
+                                key: `app/appImage/${uuidv4()}.png`,
+                                url: "",
+                                file: file,
+                              });
+                              if (file) {
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                  setImagePreview(e.target.result);
+                                };
+                                reader.readAsDataURL(file);
+                              } else {
+                                setImagePreview(null);
+                              }
+                              if (event.target.files[0]) {
+                                setIsProfileImage(true);
+                              }
+                            }}
+                            onBlur={handleBlur}
+                          />
+                        </label>
+                      </div>
+                      <ErrorMessage
+                        name="image"
+                        component="div"
+                        className="error-input"
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-3 w-full">
+                    <label
+                      htmlFor="name"
+                      className="input-custom-label dark:text-white"
+                    >
+                      App Name
+                    </label>
+                    <input
+                      required
+                      style={{
+                        backgroundColor: "rgba(242, 242, 242, 0.5)",
+                      }}
+                      className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                      name="name"
+                      type="text"
+                      id="name"
+                      placeholder="Enter app name here"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values?.name}
+                      disabled
+                    />
+                    <div className="error-input">
+                      {errors.name && touched.name ? errors.name : null}
+                    </div>
+                  </div>
+                  <div className="mb-3 w-full">
+                    <label
+                      htmlFor="fare"
+                      className="input-custom-label dark:text-white"
+                    >
+                      Set Fare for per KM
+                    </label>
+                    <input
+                      required
+                      style={{
+                        backgroundColor: "rgba(242, 242, 242, 0.5)",
+                      }}
+                      className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                      name="fare"
+                      type="text"
+                      id="fare"
+                      placeholder="Enter fare here"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values?.fare}
+                      disabled
+                    />
+                    <div className="error-input">
+                      {errors.fare && touched.fare ? errors.fare : null}
+                    </div>
+                  </div>
+                </div>
+                <div className="button-save-cancel mt-3 flex justify-end">
+                  <Button
+                    className="cancel-button my-2 ms-1 sm:my-0"
+                    onClick={() => navigate("/admin/settings")}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
+                  >
+                    Save
+                  </Button>
+                </div>
+              </form>
+            )}
+          </Formik>
+        </div>
+      </Card>
+      
       )}
     </div>
   );
