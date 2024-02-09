@@ -69,24 +69,37 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
               </Link>
               {/* Conditionally render additional options if Settings is active */}
               {settingsActive && activeRoute(route.path) && (
-                <div className="ml-10 flex flex-col">
+                <div className="ml-14 flex flex-col">
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path + "/general"}
                   >
-                    General
+                    <div>
+                      <span>General</span>
+                      {/* {activeRoute(route.path + "/general") ? (
+                        <div className="absolute right-0 top-15 h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
+                      ) : null} */}
+                    </div>
                   </Link>
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path}
                   >
-                    Vehicle Type
+                    <div>
+                      <span>Vehicle Type</span>
+                      {/* {activeRoute(route.path) ? (
+                        <div className="absolute right-0 top-15 h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
+                      ) : null} */}
+                    </div>
                   </Link>
                   <Link
                     className="text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path + "/fare"}
                   >
-                    Fare
+                    <span>Fare</span>
+                    {/* {activeRoute(route.path + '/fare') ? (
+                      <div className="absolute right-0 top-15 h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
+                    ) : null} */}
                   </Link>
                 </div>
               )}

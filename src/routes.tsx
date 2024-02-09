@@ -73,7 +73,7 @@ const routes = [
     component: <Analytics />,
   },
   {
-    name: "Fare",
+    name: "General",
     layout: "/admin",
     path: "settings/general",
     component: <General/>,
