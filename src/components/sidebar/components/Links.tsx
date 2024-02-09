@@ -92,15 +92,15 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                       ) : null} */}
                     </div>
                   </Link>
-                  <Link
+                  {/* <Link
                     className="text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path + "/fare"}
                   >
-                    <span>Fare</span>
+                    <span>Fare</span> */}
                     {/* {activeRoute(route.path + '/fare') ? (
                       <div className="absolute right-0 top-15 h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
                     ) : null} */}
-                  </Link>
+                  {/* </Link> */}
                 </div>
               )}
             </>

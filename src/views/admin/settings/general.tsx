@@ -248,7 +248,7 @@ function General() {
       {isLoading ? (
         <Loader />
       ) : (
-        <Card extra={"w-50 mt-4 pb-10 p-4 h-full"}>
+        <Card extra={"w-50 mt-4 pb-10 h-full"}>
         <header className="relative flex items-center justify-between p-10">
           {/* {params.id ? (
             <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -260,7 +260,7 @@ function General() {
           </div>
           {/* )} */}
         </header>
-        <div className="p-10 pb-5 pe-20 ps-20" style={{width:'50%'}}>
+        <div className="pb-5 pe-20 ps-20" style={{width:'50%'}}>
           <Formik
             enableReinitialize={true}
             initialValues={initialFormValues}
