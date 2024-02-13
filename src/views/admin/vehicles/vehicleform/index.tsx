@@ -596,7 +596,9 @@ const VehicleForm: React.FC = () => {
                         onBlur={(event) => {
                           handleBlur(event);
                           // Copy the value of vehicleNumber to vehicleName
-                          setFieldValue("vehicleName", event.target.value);
+                          if(!params.id){
+                            setFieldValue("vehicleName", event.target.value);
+                          }
                         }}
                         value={values?.vehicleNumber}
                         aria-describedby="exampleFormControlInputHelpInline"
