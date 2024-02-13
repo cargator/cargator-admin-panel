@@ -124,7 +124,7 @@ const VehicleForm: React.FC = () => {
   // const [vehicleData, setVehicleData] = useState<Vehicle[]>([]);
   const [vehicleTypes, setVehicleTypes] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
-
+  
   const [imageFile, setImageFile] = useState(null);
   const anchorImageRef = useRef(null);
   const navigate = useNavigate();
@@ -507,6 +507,19 @@ const VehicleForm: React.FC = () => {
     setFinalDocArray(newArray);
   };
 
+  const handleClick = () => {
+    // Set the desired value to the input field
+    setInitialFormValues({
+      vehicleNumber: initialFormValues.vehicleNumber,
+      vehicleType: initialFormValues.vehicleType,
+      vehicleName: params.id ? initialFormValues.vehicleName : initialFormValues.vehicleNumber,
+      vehicleMake: initialFormValues.vehicleMake,
+      vehicleModel: initialFormValues.vehicleModel,
+      image: initialFormValues.image,
+      documents: initialFormValues.documents,
+    });
+  };
+
   React.useEffect(() => {
     console.log("object params.id :>> ", params.id);
     if (params.id) {
@@ -537,7 +550,7 @@ const VehicleForm: React.FC = () => {
               </div>
             )}
           </header>
-          <div className="p-10 pb-5 pe-20 ps-20">
+          <div className="p-10 pb-5 pe-20 ps-20" onClick={handleClick}>
             <Formik
               enableReinitialize={true}
               initialValues={initialFormValues}
@@ -555,7 +568,7 @@ const VehicleForm: React.FC = () => {
                 errors,
                 touched,
               }) => (
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} >
                   <Logger
                     display="hidden"
                     // setVehicleName={setVehicleName}
@@ -580,7 +593,11 @@ const VehicleForm: React.FC = () => {
                         // label="Vehicle Name"
                         placeholder="Vehicle Number"
                         onChange={handleChange}
-                        onBlur={handleBlur}
+                        onBlur={(event) => {
+                          handleBlur(event);
+                          // Copy the value of vehicleNumber to vehicleName
+                          setFieldValue("vehicleName", event.target.value);
+                        }}
                         value={values?.vehicleNumber}
                         aria-describedby="exampleFormControlInputHelpInline"
                       />
