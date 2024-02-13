@@ -11,17 +11,20 @@ import { createVehicleTypeApi, getVehicleTypeById, handleCreateVehicleTypeApi } 
 
 type formvalues = {
  vehicleType: string;
+ vehicleMake: string;
+ vehicleModel: string;
 };
 
 function VehicleType() {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<formvalues>({ vehicleType: ""});
+  const [initialFormValues, setInitialFormValues] = useState<formvalues>({ vehicleType: "" ,vehicleMake:"", vehicleModel:""});
   const navigate = useNavigate();
 
   const vehicleTypeSchema = Yup.object().shape({
     vehicleType: Yup.string().required("Vehicle type is required"),
-   
+    vehicleModel: Yup.string().required("Vehicle Model is required"),
+    vehicleMake: Yup.string().required("Vehicle Make is required"),
   });
 
   React.useEffect(() => {
@@ -39,6 +42,8 @@ function VehicleType() {
 
       setInitialFormValues({
         vehicleType: res.data.vehicleType,
+        vehicleMake: res.data.vehicleMake,
+        vehicleModel: res.data.vehicleModel,
       });
       setIsLoading(false);
     } catch (error: any) {
@@ -81,6 +86,8 @@ function VehicleType() {
       if (params.id) {
         const result: any = await handleCreateVehicleTypeApi(params.id, {
           vehicleType: values.vehicleType,
+          vehicleMake: values.vehicleMake,
+          vehicleModel: values.vehicleModel
         });
 
         if (result.message) {
@@ -94,6 +101,8 @@ function VehicleType() {
 
         const result: any = await createVehicleTypeApi({
           vehicleType: values.vehicleType,
+          vehicleMake: values.vehicleMake,
+          vehicleModel: values.vehicleModel
         });
 
         if (result.message) {
@@ -149,6 +158,62 @@ function VehicleType() {
                   <div className="flex justify-between"> 
                     <div className="mb-3 ms-6 w-full">
                       <label
+                        htmlFor="vehicleMake"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Make
+                      </label>
+                      <input
+                        required
+                        style={{
+                          backgroundColor: "rgba(242, 242, 242, 0.5)",
+                        }}
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        name="vehicleMake"
+                        type="text"
+                        id="vehicleMake"
+                        placeholder="Enter vehicle Make here"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.vehicleMake}
+                      />
+                      <div className="error-input">
+                        {errors.vehicleMake && touched.vehicleMake
+                          ? errors.vehicleMake
+                          : null}
+                      </div>
+                    </div>
+                    <div className="mb-3 ms-6 w-full">
+                      <label
+                        htmlFor="vehicleModel"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Model
+                      </label>
+                      <input
+                        required
+                        style={{
+                          backgroundColor: "rgba(242, 242, 242, 0.5)",
+                        }}
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        name="vehicleModel"
+                        type="text"
+                        id="vehicleModel"
+                        placeholder="Enter vehicle Model here"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.vehicleModel}
+                      />
+                      <div className="error-input">
+                        {errors.vehicleModel && touched.vehicleModel
+                          ? errors.vehicleModel
+                          : null}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between"> 
+                    <div className="mb-3 ms-6 w-full">
+                      <label
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
@@ -173,6 +238,8 @@ function VehicleType() {
                           ? errors.vehicleType
                           : null}
                       </div>
+                    </div>
+                    <div className="mb-3 ms-6 w-full">
                     </div>
                   </div>
 

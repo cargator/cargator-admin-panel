@@ -564,32 +564,7 @@ const VehicleForm: React.FC = () => {
                   />
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
-                      <label
-                        htmlFor="firstName"
-                        className="input-custom-label dark:text-white"
-                      >
-                        Vehicle Name
-                      </label>
-                      <input
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        required
-                        name="vehicleName"
-                        type="text"
-                        id="vehicleName"
-                        width="90%"
-                        // label="Vehicle Name"
-                        placeholder="Vehicle Name"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.vehicleName}
-                        aria-describedby="exampleFormControlInputHelpInline"
-                      />
-                      {errors.vehicleName && touched.vehicleName ? (
-                        <div className="error-input">{errors.vehicleName}</div>
-                      ) : null}
-                    </div>
-                    <div className="mb-3 ms-6 w-full">
-                      <label
+                    <label
                         htmlFor="vehicleNumber"
                         className="input-custom-label dark:text-white"
                       >
@@ -602,7 +577,7 @@ const VehicleForm: React.FC = () => {
                         type="text"
                         id="vehicleNumber"
                         width="90%"
-                        // label="Vehicle Number"
+                        // label="Vehicle Name"
                         placeholder="Vehicle Number"
                         onChange={handleChange}
                         onBlur={handleBlur}
@@ -610,8 +585,33 @@ const VehicleForm: React.FC = () => {
                         aria-describedby="exampleFormControlInputHelpInline"
                       />
                       {errors.vehicleNumber && touched.vehicleNumber ? (
+                        <div className="error-input">{errors.vehicleNumber}</div>
+                      ) : null}
+                    </div>
+                    <div className="mb-3 ms-6 w-full">
+                      <label
+                        htmlFor="firstName"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Nickname
+                      </label>
+                      <input
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        required
+                        name="vehicleName"
+                        type="text"
+                        id="vehicleName"
+                        width="90%"
+                        // label="Vehicle Number"
+                        placeholder="Vehicle Nickname"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.vehicleName}
+                        aria-describedby="exampleFormControlInputHelpInline"
+                      />
+                      {errors.vehicleName && touched.vehicleName ? (
                         <div className="error-input">
-                          {errors.vehicleNumber}
+                          {errors.vehicleName}
                         </div>
                       ) : null}
                     </div>
