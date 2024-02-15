@@ -326,9 +326,9 @@ function VehicleTypeList() {
                 <ModalContent>
                   <ModalHeader></ModalHeader>
                   {/* <ModalCloseButton /> */}
-                  <div className="mb-2 flex justify-center">
+                  {/* <div className="mb-2 flex justify-center">
                     <img src={deleteIcon} />
-                  </div>
+                  </div> */}
                   <ModalBody className="text-center">
                     Are you sure you want to Delete? <br />
                     {'"' + selectedItem.vehicleMake + '"'}
