@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
 import { GiRoad } from "react-icons/gi";
 import { Select } from "@chakra-ui/react";
@@ -11,7 +11,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
   // Chakra color mode
   let location = useLocation();
   const [settingsActive, setSettingsActive] = useState(false);
-
+  const navigate = useNavigate()
   const { routes } = props;
 
   // verifies if routeName is the one active (in browser input)
@@ -29,13 +29,20 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
         if (!route.secondary) {
           return (
             <>
-              <Link
+              <div
                 key={index}
-                to={route.layout + "/" + route.path}
-                onClick={() =>
-                  route.name === "Settings"
-                    ? setSettingsActive(!settingsActive)
-                    : setSettingsActive(false)
+                onClick={() =>{
+                  if(route.name === "Settings")
+                  {
+                    setSettingsActive(!settingsActive)
+                  }
+                  else {
+                    setSettingsActive(false)
+                    navigate(route.layout + "/" + route.path)
+                  }
+                 
+                  
+                }
                 }
               >
                 <div className="relative mb-3 flex hover:cursor-pointer">
@@ -66,13 +73,13 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     <div className="absolute right-0 top-px h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
                   ) : null}
                 </div>
-              </Link>
+              </div>
               {/* Conditionally render additional options if Settings is active */}
-              {settingsActive && activeRoute(route.path) && (
+              {settingsActive && route.name === "Settings" && (
                 <div className="ml-14 flex flex-col">
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
-                    to={route.layout + "/" + route.path + "/general"}
+                    to={route.layout + "/" + "settings" + "/general"}
                   >
                     <div>
                       <span>General</span>
