@@ -157,7 +157,9 @@ const DriverForm = () => {
       .min(10, "Mobile Number must be 10 digits only.")
       .max(10, "Mobile Number must be 10 digits only.")
       .required("Mobile number is Required"),
-    vehicleNumber: Yup.string()
+      vehicleNumber: Yup.string()
+      .min(10, "Vehicle Number must be 10 digits only.")
+      .max(10, "Vehicle Number must be 10 digits only.")
       .matches(
         /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
         "Vehicle Number must follow the pattern: XX99XX9999"
@@ -729,7 +731,7 @@ const DriverForm = () => {
                         htmlFor="vehicleName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Name
+                        Vehicle Nickname
                       </label>
                       <input
                         required
@@ -740,7 +742,7 @@ const DriverForm = () => {
                         name="vehicleName"
                         type="text"
                         id="vehicleName"
-                        placeholder="Enter vehicle name here"
+                        placeholder="Enter vehicle nickname here"
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={vehicleName}

@@ -150,7 +150,9 @@ const VehicleForm: React.FC = () => {
     vehicleName: Yup.string()
       .min(2, "Vehicle name must be atleast two characters.")
       .required("First name is required"),
-    vehicleNumber: Yup.string()
+      vehicleNumber: Yup.string()
+      .min(10, "Vehicle Number must be 10 digits only.")
+      .max(10, "Vehicle Number must be 10 digits only.")
       .matches(
         /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
         "Vehicle Number must follow the pattern: XX99XX9999"
