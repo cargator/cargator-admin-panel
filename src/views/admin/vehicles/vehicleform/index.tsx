@@ -28,9 +28,9 @@ import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
 
 const Logger = (props: any): JSX.Element => {
   const {
-    // setVehicleName,
-    // setVehicleType,
-    // allAvailableVehicles,
+    setVehicleMake,
+    setVehicleType,
+    allAvailableVehiclesTypes,
     setIsDocuments,
   } = props;
   const firstRender = useRef(true);
@@ -59,19 +59,20 @@ const Logger = (props: any): JSX.Element => {
   //   if (firstRender.current) {
   //     firstRender.current = false;
   //   } else {
-  //     if (formik.values?.vehicleNumber) {
-  //       allAvailableVehicles.map((data: any) => {
-  //         if (data.vehicleNumber === formik.values.vehicleNumber) {
+  //     if (formik.values?.vehicleModel) {
+  //       allAvailableVehiclesTypes.map((data: any) => {
+  //         if (data.vehicleModel === formik.values.vehicleModel) {
+  //           console.log("data.vehicleType",data.vehicleType)
+  //           formik.values.vehicleMake = data.vehicleMake;
   //           formik.values.vehicleType = data.vehicleType;
-  //           formik.values.vehicleName = data.vehicleName;
-  //           setVehicleName(data.vehicleName);
+  //           setVehicleMake(data.vehicleMake);
   //           setVehicleType(data.vehicleType);
   //         }
   //       });
   //     } else {
   //     }
   //   }
-  // }, [formik.values?.vehicleNumber]);
+  // }, [formik.values?.vehicleModel]);
   return null;
 };
 
@@ -99,12 +100,6 @@ type formvalues = {
   documents: any;
 };
 
-// type Vehicle = {
-//   vehicleName: string;
-//   vehicleNumber: string;
-//   vehicleType: string;
-// };
-
 const VehicleForm: React.FC = () => {
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({
     vehicleName: "",
@@ -115,16 +110,15 @@ const VehicleForm: React.FC = () => {
     image: {},
     documents: [],
   });
-
-  // const [paramData, setParamData] = useState<any>({});
-  // const [vehicleName, setVehicleName] = useState("");
-  // const [vehicleType, setVehicleType] = useState("");
-  // const [vehicleNumber, setVehicleNumber] = useState("");
-
-  // const [vehicleData, setVehicleData] = useState<Vehicle[]>([]);
-  const [vehicleTypes, setVehicleTypes] = useState<string>("");
+  const [paramData, setParamData] = useState<any>({});
+  const [options, setOptions] = useState([
+    {
+      value: "",
+      label: "",
+    },
+  ]);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [imageFile, setImageFile] = useState(null);
   const anchorImageRef = useRef(null);
   const navigate = useNavigate();
@@ -134,7 +128,10 @@ const VehicleForm: React.FC = () => {
   const [initialDocArray, setInitialDocArray] = useState<any>([]);
   const [finalProfileImage, setFinalProfileImage] = useState<profImage>();
   const [finalDocArray, setFinalDocArray] = useState<docState>([]);
-  const [vehicleType, setVehicleType] = useState([]);
+  const [allAvailableVehiclesTypes, setAllAvailableVehiclesTypes] = useState([]);
+  const [vehicleMake, setVehicleMake] = useState("");
+  const [vehicleType, setVehicleType] = useState("");
+  const [vehicleModel, setVehicleModel] = useState("");
   const [isdocuments, setIsDocuments] = useState(params.id ? false : true);
   const [isProfileImage, setIsProfileImage] = useState(
     params.id ? false : true
@@ -150,7 +147,7 @@ const VehicleForm: React.FC = () => {
     vehicleName: Yup.string()
       .min(2, "Vehicle name must be atleast two characters.")
       .required("First name is required"),
-      vehicleNumber: Yup.string()
+    vehicleNumber: Yup.string()
       .min(10, "Vehicle Number must be 10 digits only.")
       .max(10, "Vehicle Number must be 10 digits only.")
       .matches(
@@ -205,22 +202,6 @@ const VehicleForm: React.FC = () => {
           })
       : Yup.mixed(),
   });
-
-  const getDataVehicleType = async () => {
-    setIsLoading(true);
-    const res = await getVehicleTypeList();
-    setVehicleType(
-      res?.data?.map((vehicle: any) => ({
-        value: vehicle._id,
-        label: vehicle.vehicleType,
-      }))
-    );
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    getDataVehicleType();
-  }, []);
 
   const successToast = (message: string) => {
     // console.log("Inside successToast", message); // Add this line for debugging
@@ -406,19 +387,9 @@ const VehicleForm: React.FC = () => {
     try {
       const res: any = await getVehicleByIdApi(id);
       let docsURLandkeyarray = [];
+      console.log("res",res)
 
       console.log("res  :>> ", res);
-
-      setInitialFormValues({
-        vehicleNumber: res.data.vehicleNumber,
-        vehicleType: res.data.vehicleType,
-        vehicleName: res.data.vehicleName,
-        vehicleMake: res.data.vehicleMake,
-        vehicleModel: res.data.vehicleModel,
-        image: {},
-        documents: [],
-      });
-      setVehicleTypes(res.data.vehicleType);
 
       const key = res.data?.profileImageKey;
       if (key) {
@@ -454,14 +425,20 @@ const VehicleForm: React.FC = () => {
         }
       }
 
-      // console.log("params", res.data);
-      // console.log("setVehicleNumber", res.data.vehicleNumber)
-      // console.log("setVehicleTypes", res.data.vehicleType)
-      // console.log("setVehicleName", res.data.vehicleName)
-      // setParamData(res.data);
-      // setVehicleNumber(res.data.vehicleNumber);
-      // setVehicleName(res.data.vehicleName);
-      // setVehicleType(res.data.vehicleType);
+      setInitialFormValues({
+        vehicleNumber: res.data.vehicleNumber,
+        vehicleType: res.data.vehicleType,
+        vehicleName: res.data.vehicleName,
+        vehicleMake: res.data.vehicleMake,
+        vehicleModel: res.data.vehicleModel,
+        image: {},
+        documents: [],
+      });
+      setParamData(res.data);
+      setVehicleModel(res.data.vehicleModel);
+      setVehicleMake(res.data.vehicleMake);
+      setVehicleType(res.data.vehicleType);
+
       setIsLoading(false);
     } catch (error: any) {
       errorToast(error.response?.data?.message || "Something went wrong");
@@ -514,12 +491,35 @@ const VehicleForm: React.FC = () => {
     setInitialFormValues({
       vehicleNumber: initialFormValues.vehicleNumber,
       vehicleType: initialFormValues.vehicleType,
-      vehicleName: params.id ? initialFormValues.vehicleName : initialFormValues.vehicleNumber,
+      vehicleName: params.id
+        ? initialFormValues.vehicleName
+        : initialFormValues.vehicleNumber,
       vehicleMake: initialFormValues.vehicleMake,
       vehicleModel: initialFormValues.vehicleModel,
       image: initialFormValues.image,
       documents: initialFormValues.documents,
     });
+  };
+
+  const getVehicleTypes = async () => {
+    try {
+      const res = await getVehicleTypeList();
+      console.log("res",res.data);
+      if (!res) {
+        errorToast("Vehicles Types not available");
+      }
+      setOptions(
+        res.data.map((option: any) => {
+          return {
+            value: option.vehicleModel,
+            label: option.vehicleModel,
+          };
+        })
+      );
+      setAllAvailableVehiclesTypes(res.data);
+    } catch (error: any) {
+      errorToast(error.response.data.message);
+    }
   };
 
   React.useEffect(() => {
@@ -533,6 +533,10 @@ const VehicleForm: React.FC = () => {
     console.log("finalDocArray :>> ", finalDocArray);
     console.log("initialDocArray :>> ", initialDocArray);
   }, [finalDocArray, initialDocArray]);
+
+  React.useEffect(() => {
+    getVehicleTypes();
+  }, []);
 
   return (
     <>
@@ -570,16 +574,17 @@ const VehicleForm: React.FC = () => {
                 errors,
                 touched,
               }) => (
-                <form onSubmit={handleSubmit} >
+                <form onSubmit={handleSubmit}>
                   <Logger
                     display="hidden"
-                    // setVehicleName={setVehicleName}
-                    setVehicleType={setVehicleTypes}
+                    setVehicleMake={setVehicleMake}
+                    setVehicleType={setVehicleType}
+                    allAvailableVehiclesTypes={allAvailableVehiclesTypes}
                     setIsDocuments={setIsDocuments}
                   />
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
-                    <label
+                      <label
                         htmlFor="vehicleNumber"
                         className="input-custom-label dark:text-white"
                       >
@@ -598,7 +603,7 @@ const VehicleForm: React.FC = () => {
                         onBlur={(event) => {
                           handleBlur(event);
                           // Copy the value of vehicleNumber to vehicleName
-                          if(!params.id){
+                          if (!params.id) {
                             setFieldValue("vehicleName", event.target.value);
                           }
                         }}
@@ -606,7 +611,9 @@ const VehicleForm: React.FC = () => {
                         aria-describedby="exampleFormControlInputHelpInline"
                       />
                       {errors.vehicleNumber && touched.vehicleNumber ? (
-                        <div className="error-input">{errors.vehicleNumber}</div>
+                        <div className="error-input">
+                          {errors.vehicleNumber}
+                        </div>
                       ) : null}
                     </div>
                     <div className="mb-3 ms-6 w-full">
@@ -631,107 +638,39 @@ const VehicleForm: React.FC = () => {
                         aria-describedby="exampleFormControlInputHelpInline"
                       />
                       {errors.vehicleName && touched.vehicleName ? (
-                        <div className="error-input">
-                          {errors.vehicleName}
-                        </div>
+                        <div className="error-input">{errors.vehicleName}</div>
                       ) : null}
                     </div>
                   </div>
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
-                      <label
-                        htmlFor="firstName"
-                        className="input-custom-label dark:text-white"
-                      >
-                        Vehicle Make
-                      </label>
-                      <input
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        required
-                        name="vehicleMake"
-                        type="text"
-                        id="vehicleMake"
-                        width="90%"
-                        // label="Vehicle Name"
-                        placeholder="Vehicle Make"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.vehicleMake}
-                        aria-describedby="exampleFormControlInputHelpInline"
-                      />
-                      {errors.vehicleMake && touched.vehicleMake ? (
-                        <div className="error-input">{errors.vehicleMake}</div>
-                      ) : null}
-                    </div>
-                    <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
                         Vehicle Model
                       </label>
-                      <input
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        required
-                        name="vehicleModel"
-                        type="text"
-                        id="vehicleModel"
-                        width="90%"
-                        // label="Vehicle Number"
-                        placeholder="Vehicle Model"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.vehicleModel}
-                        aria-describedby="exampleFormControlInputHelpInline"
-                      />
-                      {errors.vehicleModel && touched.vehicleModel ? (
-                        <div className="error-input">{errors.vehicleModel}</div>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="flex justify-between">
-                    <div className="mb-3 me-6 w-full">
-                      <label
-                        htmlFor="vehicleType"
-                        className="input-custom-label dark:text-white"
-                      >
-                        Vehicle Type
-                      </label>
                       <Select
-                        // style={{ width: "80%" }}
-                        options={vehicleType}
-                        // defaultValue={vehicleType[0]}
-                        onChange={(selectedOption) => {
-                          setVehicleTypes(selectedOption.label);
-                          values.vehicleType = selectedOption.label;
-                          setFieldValue("vehicleType", selectedOption.label);
+                        options={options}
+                        name="vehicleModel"
+                        id="vehicleModel"
+                        onBlur={handleBlur}
+                        onChange={(e: any) => {
+                          console.log("e",e.value)
+                          setFieldValue("vehicleModel",e.value)
+                          if (e.value) {
+                            allAvailableVehiclesTypes.map((data: any) => {
+                              if (data.vehicleModel === e.value) {
+                                console.log("data.vehicleType",data.vehicleType)
+                                setFieldValue('vehicleMake',data.vehicleMake)
+                                setFieldValue('vehicleType',data.vehicleType)
+                              }
+                            });
+                          } 
                         }}
-                        value={vehicleType.filter(function (option: any) {
-                          return  option.label == vehicleTypes;
+                        value={options.filter(function (option: any) {
+                          return option.value == values.vehicleModel;
                         })}
-                        name="vehicleType"
-                        id="vehicleType"
-                        // className={
-                        //   vehicleType.value === ""
-                        //     ? "select-vehicle-type"
-                        //     : //       display: "block",
-                        //       //       paddingBottom: "10px",
-                        //       //       paddingTop: "10px",
-                        //       //       fontSize: "14px",
-                        //       //       fontWeight: "500",
-                        //       //       border: "1px solid #9CA3AF",
-                        //       //       borderRadius: "4px",
-                        //       //       color: "#9CA3AF",
-                        //       "unselect-vehicle-type"
-                        //   //       display: "block",
-                        //   //       paddingBottom: "10px",
-                        //   //       paddingTop: "10px",
-                        //   //       fontSize: "14px",
-                        //   //       fontWeight: "500",
-                        //   //       border: "1px solid #9CA3AF",
-                        //   //       borderRadius: "4px",
-                        //   //       color: "#000000",
-                        // }
                         styles={{
                           // Fixes the overlapping problem of the component
                           menu: (provided: any) => ({
@@ -760,6 +699,59 @@ const VehicleForm: React.FC = () => {
                         components={{
                           IndicatorSeparator: () => null,
                         }}
+                      />
+                      {errors.vehicleModel && touched.vehicleModel ? (
+                        <div className="error-input">{errors.vehicleModel}</div>
+                      ) : null}
+                    </div>
+                    <div className="mb-3 ms-6 w-full">
+                    <label
+                        htmlFor="firstName"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Make
+                      </label>
+                      <input
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        required
+                        name="vehicleMake"
+                        type="text"
+                        id="vehicleMake"
+                        width="90%"
+                        // label="Vehicle Name"
+                        placeholder="Vehicle Make"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.vehicleMake}
+                        disabled
+                      />
+                      {errors.vehicleMake && touched.vehicleMake ? (
+                        <div className="error-input">{errors.vehicleMake}</div>
+                      ) : null}
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div className="mb-3 me-6 w-full">
+                      <label
+                        htmlFor="vehicleType"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Vehicle Type
+                      </label>
+                       <input
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        required
+                        name="vehicleType"
+                        type="text"
+                        id="vehicleType"
+                        width="90%"
+                        // label="Vehicle Number"
+                        placeholder="Vehicle Type"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.vehicleType}
+                        // aria-describedby="exampleFormControlInputHelpInline"
+                        disabled
                       />
 
                       {errors.vehicleType && touched.vehicleType ? (
