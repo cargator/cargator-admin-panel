@@ -60,7 +60,7 @@ function ColumnsTableVehicles(props: {
       id: "vehicleName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Name
+          Vehicle Nickname
         </p>
       ),
       cell: (info: any) => (
