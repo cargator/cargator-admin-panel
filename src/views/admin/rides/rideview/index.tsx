@@ -226,7 +226,8 @@ const RideView = () => {
                   className={
                     ride?.status === "completed"
                       ? "completedClass"
-                      : ride?.status === "cancelled"
+                      : ride?.status === "cancelled" ||
+                        ride?.status === "Failed"
                       ? "cancelledClass"
                       : "ongoingClass"
                   }
@@ -268,6 +269,28 @@ const RideView = () => {
                   &#8377;{ride?.fare}
                 </span>
               </div>
+              {ride?.status === "Failed" && (
+                <div className="m-1 w-1/1 rounded-[4px] p-3 dark:bg-white">
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "#464E5F",
+                    }}
+                  >
+                    Reason :
+                  </span>
+                  <span
+                    style={{
+                      fontWeight: "200",
+                      color: "#212121",
+                      marginLeft: "10px"
+                    }}
+                  >
+                    Driver is not found
+                  </span>
+                </div>
+              )}
               <hr style={{ color: "#E1E2F1" }} />
               <div
                 className="pt-3"

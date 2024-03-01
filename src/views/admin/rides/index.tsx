@@ -16,7 +16,7 @@ import Navbar from "components/navbar";
 const Rides = () => {
   const location = useLocation();
   const data = new URLSearchParams(location.search).get('data');
-  console.log("data",data)
+  // console.log("data",data)
   const displayValue = data === "completed" ? "completed" : data === "ongoing-rides" ? 'current-rides' : 'all' ;
   const currentPage = useRef<number>();
   const [allRideData, setAllRideData] = useState([]);

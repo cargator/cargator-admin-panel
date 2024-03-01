@@ -145,7 +145,7 @@ function ColumnsTable(props: {
         <div className="flex items-center">
           {info.getValue() === "completed" ? (
             <img src={completedRide} height={25} width={25} alt="Completed" />
-          ) : info.getValue() === "cancelled" ? (
+          ) : info.getValue() === "cancelled" || info.getValue() === "Failed" ? (
             <img src={cancelRide} height={25} width={25} alt="Canceled" />
           ) : (
             <img
