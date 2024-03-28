@@ -1,0 +1,41 @@
+.leaflet-container{
+    height: 100vh;
+}
+
+.leaf-Container-spot{
+  height: 600px !important;
+}
+
+.sr-only {
+    display: none;
+  }
+
+.add-spot-button{
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding-bottom: 8px;
+    padding-top: 8px;
+    width: 100px;
+}
+
+.custom-marker {
+    position: relative;
+    width: 30px; /* Adjust width as needed */
+    height: 30px; /* Adjust height as needed */
+  }
+  
+  .icon-image {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .number-overlay {
+    position: absolute;
+    top: 28%;
+    left: 47%;
+    transform: translate(-50%, -50%);
+    color: #5F73E3; /* Change color as needed */
+    font-size: 12px; /* Adjust font size as needed */
+    font-weight: bold; /* Add font weight as needed */
+  }

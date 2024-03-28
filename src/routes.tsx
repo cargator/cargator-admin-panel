@@ -27,6 +27,8 @@ import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
 import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import General from "views/admin/settings/general";
+import Spots from "views/admin/spots";
+import SpotForm from "views/admin/spots/components/SpotForm";
 
 const routes = [
   {
@@ -35,6 +37,21 @@ const routes = [
     path: "default",
     icon: <MdHome className="h-6 w-6" />,
     component: <Dashboard />,
+  },
+  {
+    name: "Spots",
+    layout: "/admin",
+    path: "spots",
+    icon: <MdHome className="h-6 w-6" />,
+    component: <Spots />,
+  },
+  {
+    name: "Spot Form",
+    layout: "/admin",
+    path: "spot/spot-form",
+    // icon: <MdPerson className="h-6 w-6" />,
+    component: <SpotForm />,
+    secondary: true,
   },
   {
     name: "Drivers",

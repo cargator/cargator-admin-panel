@@ -226,3 +226,29 @@ export const createAppNameAndImageApi = (data) => {
 export const deleteObjectFromS3Api = (data) => {
   return customAxios.post("/delete-object-from-s3", data);
 };
+
+//spots
+
+export const createSpot = (data) => {
+  console.log("data",data)
+  return customAxios.post("/create-spot", data);
+};
+
+export const getSpotsList = (data) => {
+  console.log("getDataApi")
+  return customAxios.get(`/get-spot-list?page=${data.page}&limit=${data.limit}`);
+};
+
+export const getSpotsListVehicle = () => {
+  console.log("getDataApiVehiclespot")
+  return customAxios.get(`/get-spot-list-vehicle`);
+};
+
+export const deleteSpot = (id) => {
+  console.log("deleteSpotApi")
+  return customAxios.delete(`/delete-spot/${id}`);
+};
+
+export const getActiveSpots = () => {
+  return customAxios.get(`/get-active-spot`)
+}
