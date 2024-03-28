@@ -29,6 +29,7 @@ import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import General from "views/admin/settings/general";
 import Spots from "views/admin/spots";
 import SpotForm from "views/admin/spots/components/SpotForm";
+import { HiLocationMarker } from "react-icons/hi";
 
 const routes = [
   {
@@ -42,7 +43,7 @@ const routes = [
     name: "Spots",
     layout: "/admin",
     path: "spots",
-    icon: <MdHome className="h-6 w-6" />,
+    icon: <HiLocationMarker className="h-6 w-6" />,
     component: <Spots />,
   },
   {
