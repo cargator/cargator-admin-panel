@@ -65,7 +65,6 @@ const SpotForm = () => {
                 res.data
                     .filter(option => !option.spotName) // Filter out options with spotName present
                     .map(option => {
-                        console.log("dshd", option);
                         return {
                             value: option.vehicleNumber,
                             label: option.vehicleNumber,
@@ -133,11 +132,7 @@ const SpotForm = () => {
     async function _onSubmit() {
         const spotName = inputs.input1;
         try {
-            console.log("Location:", bounds);
-            console.log("spotName:", spotName);
-            console.log("vehicleNumber", vehicleNumber);
             const resp = await createSpot({ bounds, spotName, vehicleNumber });
-            console.log("resp", resp)
             setInputs({ input1: '', input2: '' })
             successToast("Spot added Successfully");
             setShowPopup(false)

@@ -177,14 +177,13 @@ const Spots = () => {
 
   const getData = async () => {
     try {
-      console.log("getDatagdbbxnfx")
       setLoading(true);
       const response = await getSpotsList({
         page: currentPage.current,
         limit: limit,
       });
 
-      console.log("res", response.data)
+      // console.log("res", response.data)
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
       setallSpotData(await convertToUsableDriverArray(response?.data[0].data));
       setPageItemRange(

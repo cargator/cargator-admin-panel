@@ -131,11 +131,10 @@ function ColumnsTable(props) {
 
     setPosition(centerPoint)
 
-    console.log("data111111", centerPoint);
   }
 
   useEffect(() => {
-    console.log("po", position)
+    // console.log("po", position)
   }, [position])
 
 
