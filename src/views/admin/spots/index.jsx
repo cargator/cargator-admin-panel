@@ -6,7 +6,7 @@ import {
 import ReactPaginate from "react-paginate";
 // import './map.css'
 import Loader from "components/loader/loader";
-// import Navbar from "components/navbar";
+import Navbar from "components/navbar";
 import ColumnsTable from "./components/ColumnTable";
 import { toast } from "react-toastify";
 import {
@@ -68,6 +68,32 @@ const Spots = () => {
       style: { borderRadius: "15px" },
     });
   };
+
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    // if (searchText.trim() == "") {
+    //   setNoData(true);
+    //   return;
+    // }
+    // currentPage.current = 1;
+    searchRideFunction();
+    setLoading(false);
+  };
+
+  const searchRideFunction = async () => {
+    // const response = await searchRides();
+    // if (!response) {
+    //   return;
+    // }
+    // setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+    // setAllRideData(await convertToUsableRideArray(response?.data[0].data));
+    // setPageItemRange(
+    //   currentPage.current,
+    //   response?.data[0].count[0]?.totalcount
+    // );
+    // setLoading(false);
+  };
+
 
   const setPageItemRange = (currPageNumber, maxItemRange) => {
     let startNumber = currPageNumber * limit - limit + 1;
@@ -221,14 +247,14 @@ const Spots = () => {
 
   return (
     <div>
-      {/* <Navbar
+      <Navbar
           flag={true}
           brandText="rides"
           handleSearch={(e) =>
             handleSearchSubmit(e)
           }
           setSearchText={setSearchText}
-        /> */}
+        />
       {loading ? (
         <Loader />
       ) : (
