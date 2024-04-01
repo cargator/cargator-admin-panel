@@ -61,7 +61,7 @@ const SpotForm = () => {
             if (!res) {
                 errorToast("Vehicles not available");
             }
-            console.log("respVehicle",res);
+            // console.log("respVehicle",res);
             setOptions(
                 res.data
                     .filter(option => !option.spotName) // Filter out options with spotName present
