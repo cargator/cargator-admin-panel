@@ -110,6 +110,11 @@ export const getAvailableVehiclesApi = () => {
   return customAxios.get("/allAvailableVehicles");
 };
 
+export const getAllVehiclesApi = () => {
+  return customAxios.get("/allAllVehicles");
+};
+
+
 export const handleCreateDriverApi = (id, data) => {
   return customAxios.patch(`/updateDriver/${id}`, data);
 };

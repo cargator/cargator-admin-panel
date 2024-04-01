@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from 'react';
 import LocationPin from '../../../../assets/svg/LocationPinAdd.svg'
 import './SpotForm.css'
-import { createSpot } from 'services/customAPI';
+import { createSpot, getAllVehiclesApi } from 'services/customAPI';
 import { getAvailableVehiclesApi } from 'services/customAPI';
 
 const icon = L.icon({
@@ -57,10 +57,11 @@ const SpotForm = () => {
 
     const getAvailableVehicles = async () => {
         try {
-            const res = await getAvailableVehiclesApi();
+            const res = await getAllVehiclesApi();
             if (!res) {
                 errorToast("Vehicles not available");
             }
+            console.log("respVehicle",res);
             setOptions(
                 res.data
                     .filter(option => !option.spotName) // Filter out options with spotName present
