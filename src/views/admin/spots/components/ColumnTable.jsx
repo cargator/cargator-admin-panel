@@ -181,25 +181,28 @@ function ColumnsTable(props) {
       </header>
 
       {/* Left side - Table data */}
-      <div className="col-span-5">
-        <table className="w-full">
+      <div className="col-span-6">
+        <table className="w-full border-collapse">
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="!border-px !border-gray-400">
-                {headerGroup.headers.map((header) => {
-                  return (
+            <tr className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start">
+              <th className="cursor-pointer px-4 py-2 text-left">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <span className="text-sm font-bold text-gray-600 dark:text-white">Sr. No</span>
+                </div>
+              </th>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <React.Fragment key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
                       onClick={header.column.getToggleSortingHandler()}
-                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
+                      className="cursor-pointer px-4 py-2 text-left"
                     >
-                      <div className="flex gap-4 text-xs text-gray-200 text-left">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
+                        <span>
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </span>
                         {
                           <>
                             {header.column.getIsSorted() === "asc" ? (
@@ -213,56 +216,42 @@ function ColumnsTable(props) {
                             )}
                           </>
                         }
-
                       </div>
                     </th>
-                  );
-                })}
-              </tr>
-            ))}
+                  ))}
+                </React.Fragment>
+              ))}
+            </tr>
           </thead>
-          {data.length == 0 ? (
-            <tbody>
+
+          <tbody>
+            {data.length === 0 ? (
               <tr>
-                <td colSpan={columns.length} style={{ textAlign: "center" }}>
-                  <h2 className="m-4" style={{ fontSize: "30px" }}>
-                    No Results!
-                  </h2>
+                <td colSpan={columns.length + 1} className="text-center py-4">
+                  <h2 className="text-xl text-gray-500">No Results!</h2>
                 </td>
               </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {table
-                .getRowModel()
-                .rows?.slice(0, 10)
-                .map((row) => {
-                  // console.log("object row :>> ", row);
-                  return (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
-                        return (
-                          <td
-                            key={cell.id}
-                            className="min-w-[135px] border-white/0 py-3 pr-4 text-start"
-                          >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-            </tbody>
-          )}
+            ) : (
+              <>
+                {table.getRowModel().rows?.slice(0, 10).map((row, index) => (
+                  <tr key={row.id}>
+                    <td className="px-4 py-2 text-left">{index + 1}</td>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-6 py-2 text-left">
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </>
+            )}
+          </tbody>
         </table>
+
       </div>
 
       {/* Right side - Map container */}
-      <div className="col-span-7 overflow-hidden">
+      <div className="col-span-6 overflow-hidden">
         <div className="w-full h-full">
           <MapContainer center={position} zoom={12} className="z-10 leaf-Container-spot">
             <TileLayer
