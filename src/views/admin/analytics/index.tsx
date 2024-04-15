@@ -74,7 +74,7 @@ export default function Analytics() {
           input: inputCode,
         };
         const res: any = await chatGptAPi(data);
-        // console.log("Res", res);
+        console.log("Res", res);
         if (!res) {
           console.log(" Data not found");
           setOutputCode(
@@ -481,7 +481,7 @@ export default function Analytics() {
                   }}
                 >
                   <Input
-                    // onSubmit={handleTranslate}
+                    onSubmit={handleTranslate}
                     backgroundColor="rgba(0, 0, 0, 0.0)"
                     value={inputCode}
                     minH="54px"
