@@ -7,50 +7,48 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
-import { createVehicleTypeApi, getVehicleTypeById, handleCreateVehicleTypeApi } from 'services/customAPI';
+import { createCountryCodeApi, getCountryCodesById, handleCreateCountryCodeApi,  } from 'services/customAPI';
 
 type formvalues = {
- vehicleType: string;
- vehicleMake: string;
- vehicleModel: string;
+  countryCode: string;
+  countryName: string;
 };
 
-function VehicleType() {
+function CountryCodeForm() {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<formvalues>({ vehicleType: "" ,vehicleMake:"", vehicleModel:""});
+  const [initialFormValues, setInitialFormValues] = useState<formvalues>({ countryCode: "" ,countryName:"",});
   const navigate = useNavigate();
 
-  const vehicleTypeSchema = Yup.object().shape({
-    vehicleType: Yup.string().required("Vehicle type is required"),
-    vehicleModel: Yup.string().required("Vehicle Model is required"),
-    vehicleMake: Yup.string().required("Vehicle Make is required"),
+  const CountryCodeSchema = Yup.object().shape({
+    countryCode: Yup.string().required("Country Code is required"),
+    countryName: Yup.string().required("Country Name is required"),
   });
 
-  React.useEffect(() => {
-    if (params.id) {
-      console.log("id",params.id)
-      getData(params.id);
-    }
-  }, [params]);
+  // React.useEffect(() => {
+  //   if (params.id) {
+  //     console.log("id--------------######3333333",params.id)
+  //     getData(params.id);
+  //   }
+  // }, [params]);
 
-  const getData = async (id: string) => {
-    console.log("get data called :>> ");
-    setIsLoading(true);
-    try {
-      const res = await getVehicleTypeById(id);
+  // // getting country code and Name for updation by id
+  // const getData = async (id: string) => {
+  //   console.log("get data called :>> ");
+  //   setIsLoading(true);
+  //   try {
+  //     const res = await getCountryCodesById(id);
 
-      setInitialFormValues({
-        vehicleType: res.data.vehicleType,
-        vehicleMake: res.data.vehicleMake,
-        vehicleModel: res.data.vehicleModel,
-      });
-      setIsLoading(false);
-    } catch (error: any) {
-      errorToast(error.response.data.message);
-      setIsLoading(false);
-    }
-  };
+  //     setInitialFormValues({
+  //       countryCode: res.data.countryCode,
+  //       countryName: res.data.countryName,
+  //     });
+  //     setIsLoading(false);
+  //   } catch (error: any) {
+  //     errorToast(error.response.data.message);
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -80,39 +78,37 @@ function VehicleType() {
     });
   };
 
-  const handleCreateVehicleType = async (values: any) => {
+  const handleCreateCountryCode = async (values: any) => {
     setIsLoading(true);
     try {
-      if (params.id) {
-        const result: any = await handleCreateVehicleTypeApi(params.id, {
-          vehicleType: values.vehicleType,
-          vehicleMake: values.vehicleMake,
-          vehicleModel: values.vehicleModel 
+      // if (params.id) {
+      //   const result: any = await handleCreateCountryCodeApi(params.id, {
+      //     countryCode: values.countryCode,
+      //     countryName: values.countryName,
+      //   });
+
+      //   if (result.message) {
+      //     successToast("vehicleType Updated Successfully");
+      //     navigate("/admin/settings/countrycode");
+      //     setIsLoading(false);
+      //   } else {
+      //     errorToast("Something went wrong");
+      //   }
+      // } else {
+
+        const result: any = await createCountryCodeApi({
+          countryCode: values.countryCode,
+          countryName: values.countryName,
         });
 
         if (result.message) {
-          successToast("vehicleType Updated Successfully");
-          navigate("/admin/settings");
+          successToast("Country Code Created Successfully");
+          navigate("/admin/settings/countrycode");
           setIsLoading(false);
         } else {
           errorToast("Something went wrong");
         }
-      } else {
-
-        const result: any = await createVehicleTypeApi({
-          vehicleType: values.vehicleType,
-          vehicleMake: values.vehicleMake,
-          vehicleModel: values.vehicleModel
-        });
-
-        if (result.message) {
-          successToast("Vehicle Type Created Successfully");
-          navigate("/admin/settings");
-          setIsLoading(false);
-        } else {
-          errorToast("Something went wrong");
-        }
-      }
+      // }
     } catch (error: any) {
       errorToast(error.response.data.message);
       console.log(error);
@@ -122,7 +118,7 @@ function VehicleType() {
 
   return (
     <>
-      <Navbar flag={false} brandText="vehicletypeform" />
+      <Navbar flag={false} brandText="CountryCodeForm" />
 
       {isLoading ? (
         <Loader />
@@ -131,11 +127,11 @@ function VehicleType() {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Vehicle Type
+                Edit CountryCode
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Vehicle Type
+                Add CountryCode
               </div>
             )}
           </header>
@@ -143,8 +139,8 @@ function VehicleType() {
             <Formik
               enableReinitialize={true}
               initialValues={initialFormValues}
-              onSubmit={(values) => handleCreateVehicleType(values)}
-              validationSchema={vehicleTypeSchema}
+              onSubmit={(values) => handleCreateCountryCode(values)}
+              validationSchema={CountryCodeSchema}
             >
               {({
                 handleChange,
@@ -158,10 +154,10 @@ function VehicleType() {
                   <div className="flex justify-between"> 
                     <div className="mb-3 ms-6 w-full">
                       <label
-                        htmlFor="vehicleMake"
+                        htmlFor="countryCode"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Make
+                        Country Code
                       </label>
                       <input
                         required
@@ -169,26 +165,26 @@ function VehicleType() {
                           backgroundColor: "rgba(242, 242, 242, 0.5)",
                         }}
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="vehicleMake"
+                        name="countryCode"
                         type="text"
-                        id="vehicleMake"
-                        placeholder="Enter vehicle Make here"
+                        id="countryCode"
+                        placeholder="Enter Country Code here"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values?.vehicleMake}
+                        value={values?.countryCode}
                       />
                       <div className="error-input">
-                        {errors.vehicleMake && touched.vehicleMake
-                          ? errors.vehicleMake
+                        {errors.countryCode && touched.countryCode
+                          ? errors.countryCode
                           : null}
                       </div>
                     </div>
                     <div className="mb-3 ms-6 w-full">
                       <label
-                        htmlFor="vehicleModel"
+                        htmlFor="countryName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Model
+                        Country Name
                       </label>
                       <input
                         required
@@ -196,57 +192,25 @@ function VehicleType() {
                           backgroundColor: "rgba(242, 242, 242, 0.5)",
                         }}
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="vehicleModel"
+                        name="countryName"
                         type="text"
-                        id="vehicleModel"
-                        placeholder="Enter vehicle Model here"
+                        id="countryName"
+                        placeholder="Enter Country Name here"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values?.vehicleModel}
+                        value={values?.countryName}
                       />
                       <div className="error-input">
-                        {errors.vehicleModel && touched.vehicleModel
-                          ? errors.vehicleModel
+                        {errors.countryName && touched.countryName
+                          ? errors.countryName
                           : null}
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-between"> 
-                    <div className="mb-3 ms-6 w-full">
-                      <label
-                        htmlFor="vehicleType"
-                        className="input-custom-label dark:text-white"
-                      >
-                        Vehicle Type
-                      </label>
-                      <input
-                        required
-                        style={{
-                          backgroundColor: "rgba(242, 242, 242, 0.5)",
-                        }}
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="vehicleType"
-                        type="text"
-                        id="vehicleType"
-                        placeholder="Enter vehicle type here"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.vehicleType}
-                      />
-                      <div className="error-input">
-                        {errors.vehicleType && touched.vehicleType
-                          ? errors.vehicleType
-                          : null}
-                      </div>
-                    </div>
-                    <div className="mb-3 ms-6 w-full">
-                    </div>
-                  </div>
-
                   <div className="button-save-cancel mt-3 flex justify-end">
                     <Button
                       className=" cancel-button my-2 ms-1 sm:my-0"
-                      onClick={() => navigate("/admin/settings")}
+                      onClick={() => navigate("/admin/settings/countrycode")}
                     >
                       Cancel
                     </Button>
@@ -267,4 +231,4 @@ function VehicleType() {
   )
 }
 
-export default VehicleType
+export default CountryCodeForm

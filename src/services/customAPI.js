@@ -226,3 +226,27 @@ export const createAppNameAndImageApi = (data) => {
 export const deleteObjectFromS3Api = (data) => {
   return customAxios.post("/delete-object-from-s3", data);
 };
+
+// country code APIs
+
+export const createCountryCodeApi = (data) =>{
+  return customAxios.post("/create-country-code", data)
+}
+
+export const handleCreateCountryCodeApi = (id,data) =>{
+  return customAxios.patch(`/update-country-code/${id}`, data)
+}
+
+
+export const getCountryCodes = () =>{
+  return customAxios.get("/get-country-code")
+}
+
+
+export const getCountryCodesById = (id) =>{
+  return customAxios.get(`/get-country-code/${id}`)
+}
+
+export const deleteCoutryCode = (id) => {
+  return customAxios.delete(`/delete-country-code/${id}`);
+};

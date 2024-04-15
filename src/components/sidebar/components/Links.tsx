@@ -25,7 +25,8 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
         route.layout === "/admin" ||
         route.layout === "/auth" ||
         route.layout === "/rtl"
-      ) {
+      ) 
+      {
         if (!route.secondary) {
           return (
             <>
@@ -90,13 +91,20 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                   </Link>
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
+                    to={route.layout + "/" + "settings" + "/countrycode"}
+                  >
+                    <div>
+                      <span>Country Code</span>
+                 
+                    </div>
+                  </Link>
+                  <Link
+                    className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path}
                   >
                     <div>
                       <span>Vehicle Details</span>
-                      {/* {activeRoute(route.path) ? (
-                        <div className="absolute right-0 top-15 h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
-                      ) : null} */}
+                 
                     </div>
                   </Link>
                   {/* <Link

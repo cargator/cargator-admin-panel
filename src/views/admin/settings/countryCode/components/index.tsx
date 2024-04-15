@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Card from "components/card";
-import deleteIcon from "../../../assets/svg/deleteIcon.svg";
-import ButtonEdit from "../../../assets/svg/ButtonEdit.svg";
+import deleteIcon from "../../../../../assets/svg/deleteIcon.svg";
+import ButtonEdit from "../../../../../assets/svg/ButtonEdit.svg";
 
 import {
   createColumnHelper,
@@ -14,7 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import Navbar from "components/navbar";
-import { deleteVehicleType, getVehicleTypeList } from "services/customAPI";
+import { deleteCoutryCode, getCountryCodes } from "services/customAPI";
 import Loader from "components/loader/loader";
 import { toast } from "react-toastify";
 import {
@@ -30,13 +30,12 @@ import {
 } from "@chakra-ui/react";
 
 type RowObj = {
-  vehicleType: string;
-  vehicleMake: string;
-  vehicleModel: string;
+  countryCode: string;
+  countryName: string;
   action: string;
 };
 
-function VehicleTypeList() {
+function CountryCode() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate();
@@ -48,11 +47,11 @@ function VehicleTypeList() {
   const parser = new DOMParser();
 
   const columns = [
-    columnHelper.accessor("vehicleMake", {
-      id: "vehicleMake",
+    columnHelper.accessor("countryCode", {
+      id: "countryCode",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Make
+          Country Code
         </p>
       ),
       cell: (info) => (
@@ -61,24 +60,11 @@ function VehicleTypeList() {
         </p>
       ),
     }),
-    columnHelper.accessor("vehicleModel", {
-      id: "vehicleModel",
+    columnHelper.accessor("countryName", {
+      id: "countryName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Model
-        </p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("vehicleType", {
-      id: "vehicleType",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Type
+          Country Name
         </p>
       ),
       cell: (info) => (
@@ -96,13 +82,13 @@ function VehicleTypeList() {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          <div className="cursor-pointer">
+          {/* <div className="cursor-pointer">
             <img
               src={ButtonEdit}
               style={{ marginRight: "8px" }}
               onClick={() => handleUpdate(info.row.original)}
             />
-          </div>
+          </div> */}
           <div className="cursor-pointer">
             <img
               src={deleteIcon}
@@ -155,10 +141,10 @@ function VehicleTypeList() {
     setLoading(true);
     onClose();
     try {
-      const result: any = await deleteVehicleType(info);
+      const result: any = await deleteCoutryCode(info);
       getData();
       if (result.message) {
-        successToast("VehicleType deleted successfully");
+        successToast("Country Code deleted successfully");
         setLoading(false);
       } else {
         setLoading(false);
@@ -176,10 +162,11 @@ function VehicleTypeList() {
     }
   };
 
-  const handleUpdate = (data: any) => {
-    const id = data._id;
-    navigate(`/admin/settings/vehicletypeform/${id}`);
-  };
+  // const handleUpdate = (data: any) => {
+  //   const id = data._id;
+  //   // console.log("id------------------------- ",id)
+  //   navigate(`/admin/settings/countrycode-form/${id}`);
+  // };
 
   const table = useReactTable({
     data,
@@ -196,9 +183,9 @@ function VehicleTypeList() {
   const getData = async () => {
     try {
       setLoading(true);
-      const res = await getVehicleTypeList();
-      console.log("vehicle--------data", res.data)
-      setData(res.data);
+      const res = await getCountryCodes();
+      console.log("----------------",res?.data)
+      setData(res?.data);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -220,15 +207,15 @@ function VehicleTypeList() {
           <Card extra="w-full mt-4 pb-10 p-4 h-full">
             <header className="relative flex items-center justify-between">
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Vehicles Details
+                Country Code
               </div>
               <div>
                 <button
                   className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
                   type="submit"
-                  onClick={() => navigate("/admin/settings/vehicletypeform")}
+                  onClick={() => navigate("/admin/settings/countrycode-form")}
                 >
-                  Add Vehicle Type
+                  Add Country Code
                 </button>
               </div>
             </header>
@@ -332,7 +319,7 @@ function VehicleTypeList() {
                   </div> */}
                   <ModalBody className="text-center">
                     Are you sure you want to Delete? <br />
-                    {'"' + selectedItem.vehicleMake + '"'}
+                    {'"' + selectedItem.countryCode + '"'}
                   </ModalBody>
                   <div className="mt-3 flex justify-center">
                     <Button
@@ -360,5 +347,6 @@ function VehicleTypeList() {
   );
 }
 
-export default VehicleTypeList;
+export default CountryCode;
 const columnHelper = createColumnHelper<RowObj>();
+

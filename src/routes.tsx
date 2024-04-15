@@ -27,6 +27,9 @@ import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
 import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import General from "views/admin/settings/general";
+import CountryCode from "views/admin/settings/countryCode/components";
+import CountryCodeForm from "views/admin/settings/countryCodeForm";
+// import CountryCodeForm from "views/admin/settings/countryCodeForm";
 
 const routes = [
   {
@@ -77,6 +80,14 @@ const routes = [
     layout: "/admin",
     path: "settings/general",
     component: <General/>,
+    secondary: true,
+  },
+  {
+    name: "Settings",
+    layout: "/admin",
+    path: "settings/countrycode",
+    component: <CountryCode/>,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
   {
@@ -156,6 +167,14 @@ const routes = [
     // icon: <MdPerson className="h-6 w-6" />,
     component: <RideView />,
     secondary: true,
+  },
+  {
+    name: "Country-Form",
+    layout: "/admin",
+    path: "settings/countrycode-form",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <CountryCodeForm/>,
+    secondary:true
   },
 ];
 export default routes;
