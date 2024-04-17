@@ -5,6 +5,7 @@ import DeleteIcon from "../../../../assets/imgesDriver/deleteIcon.svg";
 import block from "../../../../assets/svg/block.svg";
 import unblock from "../../../../assets/svg/unblock.svg";
 import "../riders.css";
+import { useTranslation } from 'react-i18next'
 
 import {
   createColumnHelper,
@@ -49,13 +50,13 @@ function ColumnsTableRiders(props: {
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate();
-
-  const columns = [
+  const { t } = useTranslation();
+   const columns = [
     columnHelper.accessor("name", {
       id: "name",
       header: () => (
         <p className="text-start text-sm font-bold text-gray-600 dark:text-white">
-          Rider Name
+          {t("Rider Name")}
         </p>
       ),
       cell: (info: any) => (
@@ -94,7 +95,7 @@ function ColumnsTableRiders(props: {
       id: "n=mobileNumber",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Mobile Number
+          {t("Mobile Number")}
         </p>
       ),
       cell: (info) => (
@@ -107,7 +108,7 @@ function ColumnsTableRiders(props: {
       id: "totalRidesCompleted",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Total Rides Completed
+          {t("Total Rides Completed")}
         </p>
       ),
       cell: (info) => (
@@ -120,7 +121,7 @@ function ColumnsTableRiders(props: {
       id: "status",
       header: () => (
         <p className="text-start text-sm font-bold text-gray-600 dark:text-white">
-          Actions
+          {t("Actions")}
         </p>
       ),
       cell: (info) => (
@@ -180,7 +181,7 @@ function ColumnsTableRiders(props: {
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Riders
+          {t("Riders")}
         </div>
       </header>
       <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">

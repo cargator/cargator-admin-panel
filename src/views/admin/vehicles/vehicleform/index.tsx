@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from 'react-i18next'
 import "../vehicles.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage, Form, Formik, useFormikContext } from "formik";
@@ -25,6 +26,7 @@ import { v4 as uuidv4 } from "uuid";
 import pdf from "../../../../assets/svg/pdf.svg";
 import cross from "../../../../assets/svg/cross.svg";
 import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
+import { t } from "i18next";
 
 const Logger = (props: any): JSX.Element => {
   const {
@@ -36,6 +38,7 @@ const Logger = (props: any): JSX.Element => {
   const firstRender = useRef(true);
   const formik = useFormikContext<any>();
   const params = useParams();
+  const { t } = useTranslation();
 
   React.useEffect(() => {
     if (firstRender.current) {
@@ -548,11 +551,11 @@ const VehicleForm: React.FC = () => {
           <header className="relative flex items-center justify-between ps-10">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Vehicle
+                {t("Edit Vehicle")}
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Vehicle
+                {t("Add Vehicle")}
               </div>
             )}
           </header>
@@ -588,7 +591,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="vehicleNumber"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Number
+                        {t("Vehicle Number")}
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -598,7 +601,7 @@ const VehicleForm: React.FC = () => {
                         id="vehicleNumber"
                         width="90%"
                         // label="Vehicle Name"
-                        placeholder="Vehicle Number"
+                        placeholder={t("Vehicle Number")}
                         onChange={handleChange}
                         onBlur={(event) => {
                           handleBlur(event);
@@ -621,7 +624,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Nickname
+                        {t("Vehicle Nickname")}
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -631,7 +634,7 @@ const VehicleForm: React.FC = () => {
                         id="vehicleName"
                         width="90%"
                         // label="Vehicle Number"
-                        placeholder="Vehicle Nickname"
+                        placeholder={t("Vehicle Nickname")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.vehicleName}
@@ -648,7 +651,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Model
+                        {t("Vehicle Modal")}
                       </label>
                       <Select
                         options={options}
@@ -709,7 +712,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Make
+                        {t("Vehicle Make")}
                       </label>
                       <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -719,7 +722,7 @@ const VehicleForm: React.FC = () => {
                         id="vehicleMake"
                         width="90%"
                         // label="Vehicle Name"
-                        placeholder="Vehicle Make"
+                        placeholder={t("Vehicle Make")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.vehicleMake}
@@ -736,7 +739,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Type
+                        {t("Vehicle Type")}
                       </label>
                        <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
@@ -746,7 +749,7 @@ const VehicleForm: React.FC = () => {
                         id="vehicleType"
                         width="90%"
                         // label="Vehicle Number"
-                        placeholder="Vehicle Type"
+                        placeholder={t("Vehicle Type")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.vehicleType}
@@ -820,10 +823,10 @@ const VehicleForm: React.FC = () => {
                               </div>
                               <div className="mb-1 mt-1 text-center">
                                 {!params.id
-                                  ? "Click here to upload your vehicle image"
-                                  : "Click here to change your vehicle image"}
+                                  ? t("Click here to upload your vehicle image")
+                                  : t("Click here to change your vehicle image")}
                                 <br />
-                                (file size below 1MB)
+                                {t("file size below")} 1MB
                               </div>
                             </div>
                             <input
@@ -971,10 +974,10 @@ const VehicleForm: React.FC = () => {
                             </div>
                             <div className="mb-1 mt-1 text-center">
                               {!params.id
-                                ? "Click here to upload your vehicle documents"
-                                : "Click here to change your vehicle documents"}
+                                ? t("Click here to upload your vehicle documents")
+                                : t("Click here to change your vehicle documents")}
                               <br />
-                              (file size below 1MB)
+                              {t("file size below")} 1MB
                             </div>
                           </div>
                           <input
@@ -1010,7 +1013,7 @@ const VehicleForm: React.FC = () => {
                       className=" cancel-button my-2 ms-1 sm:my-0"
                       onClick={() => navigate("/admin/vehicles")}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       color="dark"
@@ -1018,7 +1021,7 @@ const VehicleForm: React.FC = () => {
                       className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
                       onClick={() => handleSubmit}
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                   </div>
                 </form>

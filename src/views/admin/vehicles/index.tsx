@@ -2,6 +2,7 @@ import React from "react";
 import { useEffect, useRef, useState } from "react";
 import ColumnsTableVehicles from "./components/ColumnsTableVehicles";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next'
 import {
   deleteVehicleApi,
   getPaginatedVehicleDataApi,
@@ -41,6 +42,7 @@ const Vehicles: React.FC = () => {
   const [pageItemEndNumber, setPageItemEndNumber] = useState<number>(0);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
+  const { t } = useTranslation();
 
   // const extractSpecificValues = (item: any) => {
   //   return {
@@ -353,7 +355,7 @@ const Vehicles: React.FC = () => {
                     <img src={deleteIcon} />
                   </div>
                   <ModalBody className="text-center">
-                    Are you sure you want to Delete? <br />
+                    {t("Are you sure you want to Delete?")} <br />
                     {'"' + selectedItem.vehicleNumber + '"'}
                   </ModalBody>
                   <div className="mt-3 flex justify-center">
@@ -362,13 +364,13 @@ const Vehicles: React.FC = () => {
                       className="cancel-delete-modal-button mx-2"
                       onClick={onClose}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       className="delete-modal-button mx-2"
                       onClick={() => deleteHandle(selectedItem.action)}
                     >
-                      Delete
+                      {t("Delete")}
                     </Button>
                   </div>
                   <ModalFooter></ModalFooter>

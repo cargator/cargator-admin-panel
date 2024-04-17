@@ -1,4 +1,5 @@
 import React, { useEffect, useState, ReactNode } from "react";
+import { useTranslation } from 'react-i18next'
 import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
 import Select, { components, DropdownIndicatorProps } from "react-select";
@@ -50,6 +51,7 @@ function ColumnsTable(props: {
 }) {
   const { tableData, statusOptions, setRideStatus, rideStatus } = props;
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const columns = [
     columnHelper.accessor("platform", {

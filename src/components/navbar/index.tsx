@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Dropdown from "components/dropdown";
 import { FiAlignJustify } from "react-icons/fi";
 import { Link } from "react-router-dom";
@@ -8,6 +8,10 @@ import avatar from "assets/img/avatars/avatar4.png";
 import { useDispatch, useSelector } from "react-redux";
 import { setToken } from "redux/reducers/authReducer";
 import { setSideBarState } from "../../redux/reducers/sideBarReducer";
+import { useTranslation } from 'react-i18next'
+import i18n from "i18n";
+import languageIcon from '../../assets/svg/languageIcon.svg'
+import { useTransform } from "framer-motion";
 
 const Navbar = (props: {
   onOpenSidenav?: () => void;
@@ -21,10 +25,24 @@ const Navbar = (props: {
   const [darkmode, setDarkmode] = React.useState(
     document.body.classList.contains("dark")
   );
-const sidebarFlag = useSelector(
-  (store: any) => store.sideBarStateChange.sideBarState
-);
-const dispatch = useDispatch();
+  const sidebarFlag = useSelector(
+    (store: any) => store.sideBarStateChange.sideBarState
+  );
+  const dispatch = useDispatch();
+  const { t }  = useTranslation();
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedLanguage, setSelectedLanguage] = useState(i18n.language); // i18n.language contains the language assigned to lng in i18n.js file.
+
+  const toggleDropdown = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const chooseLanguage = (language: any) => {
+    i18n.changeLanguage(language);
+    setSelectedLanguage(language);
+    localStorage.setItem("lang", language);
+    setIsOpen(false); // Close the dropdown after selecting a language
+  };
 
   const handleLogout = () => {
     console.log(`handleLogout called`);
@@ -33,6 +51,22 @@ const dispatch = useDispatch();
 
   return (
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-end rounded-xl bg-white/10 p-2  dark:bg-[#0b14374d]">
+      {/* {Laguage selecter} */}
+      <div className="relative">
+        <button
+          className="flex items-center justify-center w-[40px] h-[40px] mr-5 bg-white"
+          style={{ backgroundImage: `url('${languageIcon}')`, backgroundSize: 'cover' }}
+          onClick={toggleDropdown}
+        >
+        </button>
+        {isOpen && (
+          <div className="absolute z-100 mt-3 w-[130px] bg-white border border-gray-300 rounded-xl shadow-md mr-[100px] mr-20">
+            <button className="block w-full px-4 py-2 text-left hover:bg-gray-100" onClick={() => chooseLanguage("en")}>English</button>
+            <button className="block w-full px-4 py-2 text-left hover:bg-gray-100" onClick={() => chooseLanguage("kn")}>Kannada</button>
+            <button className="block w-full px-4 py-2 text-left hover:bg-gray-100" onClick={() => chooseLanguage("hi")}>Hindi</button>
+          </div>
+        )}
+      </div>
       <form onSubmit={handleSearch}>
         <div
           className={
@@ -118,7 +152,7 @@ const dispatch = useDispatch();
                     href="/login"
                     className="mt-3 text-sm font-medium text-red-500 hover:text-red-500"
                   >
-                    Log Out
+                    {t("Log Out")}
                   </a>
                 </div>
               </div>

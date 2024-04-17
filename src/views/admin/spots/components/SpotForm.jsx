@@ -6,6 +6,7 @@ import '../map.css'
 import Select from "react-select";
 import { EditControl } from 'react-leaflet-draw'
 import { Navigate, useNavigate } from "react-router-dom";
+import { useTranslation } from 'react-i18next'
 import '../../../../../node_modules/leaflet/dist/leaflet.css'
 import '../../../../../node_modules/leaflet-draw/dist/leaflet.draw.css'
 import {
@@ -31,6 +32,7 @@ const icon = L.icon({
 
 const SpotForm = () => {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [inputs, setInputs] = useState({ input1: '', input2: '' });
     const [showPopup, setShowPopup] = useState(false);
     const [bounds, setBounds] = useState([]);
@@ -178,7 +180,7 @@ const SpotForm = () => {
         <div className="w-full pb-0 p-4 bg-white rounded-lg pt-0 pe-0 h-[100vh] mt-5 mb-5 grid grid-cols-12 gap-4">
             <header className="relative flex items-center justify-between col-span-12 mt-4">
                 <div className="text-xl font-bold text-navy-700 dark:text-white">
-                    Add Spots
+                    {t("Add Spots")}
                 </div>
                 <div>
                     {/* <button
@@ -232,18 +234,18 @@ const SpotForm = () => {
 
                     {showPopup && (
                         <div className="popup flex flex-col justify-between z-20 w-[25vw] absolute p-7 bg-white border rounded-2xl shadow">
-                            <label htmlFor="input1" className='text-center text-xl font-Poppins font-bold'>Enter Spot Name</label>
+                            <label htmlFor="input1" className='text-center text-xl font-Poppins font-bold'>{t("Enter Spot Name")}</label>
 
                             <input
                                 type="text"
                                 id="input1"
                                 className="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
-                                placeholder=" Enter spot name here"
+                                placeholder={t("Enter spot name here")}
                                 value={inputs.input1}
                                 onChange={e => setInputs({ ...inputs, input1: e.target.value })}
                             />
 
-                            {!isSpotNameFilled && <p className="text-red-500 text-sm mt-1">Please fill the spot name</p>}
+                            {!isSpotNameFilled && <p className="text-red-500 text-sm mt-1">{t("Please fill the spot name")}</p>}
 
                             {/* <input
                                 type="text"
@@ -266,7 +268,7 @@ const SpotForm = () => {
                                 value={options.filter(function (option) {
                                     return option.value == vehicleNumber;
                                 })}
-                                placeholder="Vehicle number"
+                                placeholder={t("Vehicle number")}
                                 styles={{
                                     // Fixes the overlapping problem of the component
                                     menu: (provided) => ({
@@ -296,12 +298,12 @@ const SpotForm = () => {
                                 }}
                             />
                             <div className="flex justify-center gap-2">
-                                <button className='rounded-xl w-[7vw] h-[8vh]' onClick={_onSubmit} disabled={!isSpotNameFilled}>Confirm</button>
+                                <button className='rounded-xl w-[7vw] h-[8vh]' onClick={_onSubmit} disabled={!isSpotNameFilled}>{t("Confirm")}</button>
                                 {/* <button className='rounded-xl w-[7vw] h-[8vh]' onClick={() => { _onSubmit() }}>Confirm</button> */}
                                 <button className='rounded-xl w-[7vw] h-[8vh]' onClick={() => {
                                     setShowPopup(false)
                                     removeLastMarker()
-                                }}>Cancel</button>
+                                }}>{t("Cancel")}</button>
                             </div>
                         </div>
                     )}

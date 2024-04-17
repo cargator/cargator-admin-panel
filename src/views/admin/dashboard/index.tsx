@@ -5,6 +5,7 @@ import RidesIcon from "../../../assets/svg/RidesIcon.svg";
 import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
 import VehiclesIcon from "../../../assets/svg/VehiclesIcon.svg";
 import { isEmpty as _isEmpty } from "lodash";
+import { useTranslation } from 'react-i18next'
 import {
   dashboardDataApi,
   onlineDriversApi,
@@ -36,6 +37,7 @@ const CustomSpinner: React.FC<LoaderProps> = ({ size = 40 }) => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [intervalState, setIntervalState] = useState();
   const [allOnlineDrivers, setAllOnlineDrivers] = useState([]);
   const [dashboardData, setDashboardData] = useState([]);
@@ -174,7 +176,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Ongoing Trips
+                      {t("Ongoing Trips")}
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
@@ -215,7 +217,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Drivers
+                      {t("Drivers")}
                     </h1>
                   </div>
 
@@ -232,7 +234,7 @@ const Dashboard = () => {
                           verticalAlign: "middle",
                         }}
                       >
-                        Total:
+                        {t("Total:")}
                       </h4>
                       <h4
                         className=""
@@ -256,7 +258,7 @@ const Dashboard = () => {
                           verticalAlign: "middle",
                         }}
                       >
-                        Online:
+                        {t("Online:")}
                       </h4>
                       <h4
                         className=""
@@ -305,7 +307,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Completed Trips
+                      {t("Completed Trips")}
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
@@ -322,7 +324,7 @@ const Dashboard = () => {
                   className="card-title mb-2"
                   style={{ fontSize: "25px" }}
                 >
-                  Active Drivers:
+                  {t("Active Drivers:")}
                 </h4>
               </div>
               <div className="d-none d-md-block">

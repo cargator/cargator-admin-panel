@@ -5,6 +5,7 @@ import DeleteIcon from "../../../../assets/imgesDriver/deleteIcon.svg";
 import completedRide from "../../../../assets/svg/completedRide.svg";
 import cancelRide from "../../../../assets/svg/cancelRide.svg";
 import "../vehicles.css";
+import { useTranslation } from 'react-i18next'
 import {
   createColumnHelper,
   flexRender,
@@ -48,6 +49,7 @@ function ColumnsTableVehicles(props: {
   // vehicleStatus: string;
   handleClickForDeleteModal: (data: any) => void;
 }) {
+  const { t } = useTranslation();
   const { tableData, handleClickForDeleteModal } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate(); // Create a history object
@@ -60,7 +62,7 @@ function ColumnsTableVehicles(props: {
       id: "vehicleName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Nickname
+          {t("Vehicle Nickname")}
         </p>
       ),
       cell: (info: any) => (
@@ -123,7 +125,7 @@ function ColumnsTableVehicles(props: {
       id: "vehicleNumber",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Number
+          {t("Vehicle Number")}
         </p>
       ),
       cell: (info) => (
@@ -136,7 +138,7 @@ function ColumnsTableVehicles(props: {
       id: "vehicleType",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Type
+          {t("Vehicle Type")}
         </p>
       ),
       cell: (info) => (
@@ -149,7 +151,7 @@ function ColumnsTableVehicles(props: {
       id: "vehicleStatus",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Status
+          {t("Status")}
         </p>
       ),
       cell: (info) => (
@@ -182,7 +184,7 @@ function ColumnsTableVehicles(props: {
       id: "action",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Actions
+          {t("Actions")}
         </p>
       ),
       cell: (info) => (
@@ -230,7 +232,7 @@ function ColumnsTableVehicles(props: {
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Vehicles
+          {t("Vehicles")}
         </div>
         <div>
            <Button
@@ -238,7 +240,7 @@ function ColumnsTableVehicles(props: {
             className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 dark:text-white"
             onClick={vehicleForm}
           >
-            Add Vehicle
+            {t("Add Vehicle")}
           </Button>
         </div>
       </header>

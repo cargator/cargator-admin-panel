@@ -5,6 +5,7 @@ import ButtonEdit from "../../../../assets/svg/ButtonEdit.svg";
 import block from "../../../../assets/svg/block.svg";
 import unblock from "../../../../assets/svg/unblock.svg";
 import "./ColumnsTable.css";
+import { useTranslation } from 'react-i18next'
 
 import {
   createColumnHelper,
@@ -51,13 +52,14 @@ function ColumnsTable(props: {
   const { tableData, handleClickForDeleteModal, handleToggleForStatusMOdal } =
     props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const { t } = useTranslation(); 
   const navigate = useNavigate();
   const columns = [
     columnHelper.accessor("fullName", {
       id: "fullName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Full Name
+          {t("Full Name")}
         </p>
       ),
       cell: (info: any) => (
@@ -120,7 +122,7 @@ function ColumnsTable(props: {
       id: "mobileNumber",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Mobile Number
+          {t("Mobile Number")}
         </p>
       ),
       cell: (info) => (
@@ -133,7 +135,7 @@ function ColumnsTable(props: {
       id: "vehicleNumber",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Number
+          {t("Vehicle Number")}
         </p>
       ),
       cell: (info) => (
@@ -146,7 +148,7 @@ function ColumnsTable(props: {
       id: "vehicleType",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Type
+          {t("Vehicle Type")}
         </p>
       ),
       cell: (info) => (
@@ -159,7 +161,7 @@ function ColumnsTable(props: {
       id: "status",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Status
+          {t("Status")}
         </p>
       ),
       cell: (info) => (
@@ -185,7 +187,7 @@ function ColumnsTable(props: {
       id: "action",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Action
+          {t("Action")}
         </p>
       ),
       cell: (info) => (
@@ -254,7 +256,7 @@ function ColumnsTable(props: {
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Drivers
+          {t("Drivers")}
         </div>
         <div>
           <button
@@ -262,7 +264,7 @@ function ColumnsTable(props: {
             type="submit"
             onClick={() => navigate("/admin/drivers/driverform")}
           >
-            Add Driver
+            {t("Add Driver")}
           </button>
         </div>
         {/* <CardMenu /> */}
@@ -311,7 +313,7 @@ function ColumnsTable(props: {
               <tr>
                 <td colSpan={columns.length} style={{ textAlign: "center" }}>
                   <h2 className="m-4" style={{ fontSize: "30px" }}>
-                    No Results!
+                    {t("No Results!")}
                   </h2>
                 </td>
               </tr>

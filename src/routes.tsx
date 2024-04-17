@@ -33,10 +33,9 @@ import { HiLocationMarker } from "react-icons/hi";
 import SpotForm from "views/admin/spots/components/SpotForm";
 import Spots from "views/admin/spots";
 // import CountryCodeForm from "views/admin/settings/countryCodeForm";
-
 const routes = [
   {
-    name: "Dashboard",
+    name: "Dashboards",
     layout: "/admin",
     path: "default",
     icon: <MdHome className="h-6 w-6" />,

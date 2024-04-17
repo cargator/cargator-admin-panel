@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useTranslation } from 'react-i18next'
 import {
   getSpotsList,
   deleteSpot
@@ -24,6 +25,7 @@ import {
 
 const Spots = () => {
   const currentPage = useRef();
+  const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [allSpotData, setallSpotData] = useState([]);
   const [pageCount, setPageCount] = useState(1);
@@ -328,8 +330,8 @@ const Spots = () => {
                       <img src={deleteIcon} />
                     </div> */}
                     <ModalBody className="text-center">
-                      Are you sure you want to Delete? <br />
-                      {'"' + selectedItem.spotName + '"'}
+                      {t("Are you sure you want to Delete?")} <br />
+                      {t(`${'"' + selectedItem.spotName + '"'}`)}
                     </ModalBody>
                     <div className="mt-3 flex justify-center">
                       <Button
@@ -337,13 +339,13 @@ const Spots = () => {
                         className="cancel-delete-modal-button mx-2"
                         onClick={onClose}
                       >
-                        Cancel
+                        {t("Cancel")}
                       </Button>
                       <Button
                         className="delete-modal-button mx-2"
                         onClick={() => { deleteHandle(selectedItem?.action) }}
                       >
-                        Delete
+                        {t("Delete")}
                       </Button>
                     </div>
                     <ModalFooter></ModalFooter>

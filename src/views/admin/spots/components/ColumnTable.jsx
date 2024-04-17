@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup, Rectangle, Map, FeatureGroup, C
 import L, { bounds } from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import 'leaflet-draw/dist/leaflet.draw.css'
+import { useTranslation } from 'react-i18next'
 import React, { useEffect, useState, ReactNode } from "react";
 import Card from "components/card";
 import { deleteSpot } from 'services/customAPI';
@@ -54,6 +55,7 @@ const ResetCenterView = (props) => {
 function ColumnsTable(props) {
   const { tableData, handleClickForDeleteModal } = props;
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [sorting, setSorting] = useState([]);
   const [loading, setLoading] = useState(false);
   const [position, setPosition] = useState([19.07, 72.87]);
@@ -77,7 +79,7 @@ function ColumnsTable(props) {
       id: "spotName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Spot Name
+          {t("Spot Name")}
         </p>
       ),
       cell: (info) => (
@@ -90,7 +92,7 @@ function ColumnsTable(props) {
       id: "vehicleNumber",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Number
+          {t("Vehicle Number")}
         </p>
       ),
       cell: (info) => (
@@ -103,7 +105,7 @@ function ColumnsTable(props) {
       id: "action",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Action
+          {t("Action")}
         </p>
       ),
       cell: (info) => (
@@ -167,7 +169,7 @@ function ColumnsTable(props) {
       {/* Header */}
       <header className="relative flex items-center justify-between col-span-12">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Spots
+          {t("Spots")}
         </div>
         <div>
           <button
@@ -175,7 +177,7 @@ function ColumnsTable(props) {
             type="submit"
             onClick={() => navigate("/admin/spot/spot-form")}
           >
-            Add Spots
+            {t("Add Spots")}
           </button>
         </div>
       </header>
@@ -187,7 +189,7 @@ function ColumnsTable(props) {
             <tr className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start">
               <th className="cursor-pointer px-4 py-2 text-left">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <span className="text-sm font-bold text-gray-600 dark:text-white">Sr. No</span>
+                  <span className="text-sm font-bold text-gray-600 dark:text-white">{t("Sr. No")}</span>
                 </div>
               </th>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -228,7 +230,7 @@ function ColumnsTable(props) {
             {data.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + 1} className="text-center py-4">
-                  <h2 className="text-xl text-gray-500">No Results!</h2>
+                  <h2 className="text-xl text-gray-500">{t("No Results!")}</h2>
                 </td>
               </tr>
             ) : (

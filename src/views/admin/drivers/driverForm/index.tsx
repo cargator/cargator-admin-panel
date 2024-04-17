@@ -5,6 +5,7 @@ import { Button } from "@chakra-ui/react";
 import "./driverform.css";
 import { ErrorMessage, Formik, useFormikContext } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from 'react-i18next'
 import * as Yup from "yup";
 import {
   createDriverApi,
@@ -22,6 +23,7 @@ import pdf from "../../../../assets/svg/pdf.svg";
 import cross from "../../../../assets/svg/cross.svg";
 import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
 import { toast } from "react-toastify";
+import { t } from "i18next";
 
 const Logger = (props: any): JSX.Element => {
   const {
@@ -33,7 +35,7 @@ const Logger = (props: any): JSX.Element => {
   const firstRender = useRef(true);
   const formik = useFormikContext<any>();
   const params = useParams();
-
+  const { t } = useTranslation(); 
   React.useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
@@ -558,11 +560,11 @@ const DriverForm = () => {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Driver
+                {t("Edit Driver")}
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Driver
+                {t("Add Driver")}
               </div>
             )}
           </header>
@@ -597,7 +599,7 @@ const DriverForm = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        Name
+                        {t("Name")}
                       </label>
                       <input
                         required
@@ -605,7 +607,7 @@ const DriverForm = () => {
                         name="firstName"
                         type="text"
                         id="firstName"
-                        placeholder="Enter your name here"
+                        placeholder={t("Enter your name here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.firstName}
@@ -650,7 +652,7 @@ const DriverForm = () => {
                         htmlFor="mobileNumber"
                         className="input-custom-label dark:text-white"
                       >
-                        Mobile Number
+                       {t("Mobile Number")}
                       </label>
                       <input
                         required
@@ -658,7 +660,7 @@ const DriverForm = () => {
                         name="mobileNumber"
                         type="number"
                         id="mobileNumber"
-                        placeholder="Enter mobile number here"
+                        placeholder={t("Enter mobile number here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.mobileNumber}
@@ -674,7 +676,7 @@ const DriverForm = () => {
                         htmlFor="vehicleNumber"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Number
+                        {t("Vehicle Number")}
                       </label>
                       <Select
                         options={options}
@@ -731,7 +733,7 @@ const DriverForm = () => {
                         htmlFor="vehicleName"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Nickname
+                        {t("Vehicle Nickname")}
                       </label>
                       <input
                         required
@@ -742,7 +744,7 @@ const DriverForm = () => {
                         name="vehicleName"
                         type="text"
                         id="vehicleName"
-                        placeholder="Enter vehicle nickname here"
+                        placeholder={t("Enter vehicle nickname here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={vehicleName}
@@ -759,7 +761,7 @@ const DriverForm = () => {
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Type
+                        {t("Vehicle Type")}
                       </label>
                       <input
                         required
@@ -770,7 +772,7 @@ const DriverForm = () => {
                         name="vehicleType"
                         type="text"
                         id="vehicleType"
-                        placeholder="Enter vehicle type here"
+                        placeholder={t("Enter vehicle type here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={vehicleType}
@@ -846,10 +848,10 @@ const DriverForm = () => {
                                 className="mb-1 mt-1 text-center"
                               >
                                 {!params.id
-                                  ? "Click here to upload driver profile image"
-                                  : "Click here to change driver profile image"}
+                                  ? t("Click here to upload driver profile image")
+                                  : t("Click here to change driver profile image")}
                                 <br />
-                                (file size below 1MB)
+                                {t("file size below")} 1MB
                               </div>
                             </div>
                             <input
@@ -999,10 +1001,10 @@ const DriverForm = () => {
                               className="mb-1 mt-1 text-center"
                             >
                               {!params.id
-                                ? "Click here to upload driver documents"
-                                : "Click here to change driver documents"}
+                                ? t("Click here to upload driver documents")
+                                : t("Click here to change driver documents")}
                               <br />
-                              (file size below 1MB)
+                              {t("file size below")} 1MB
                             </div>
                           </div>
                           <input
@@ -1038,13 +1040,13 @@ const DriverForm = () => {
                       className=" cancel-button my-2 ms-1 sm:my-0"
                       onClick={() => navigate("/admin/drivers")}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       type="submit"
                       className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                   </div>
                 </form>

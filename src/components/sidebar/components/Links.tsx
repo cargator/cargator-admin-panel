@@ -5,14 +5,17 @@ import DashIcon from "components/icons/DashIcon";
 import { GiRoad } from "react-icons/gi";
 import { Select } from "@chakra-ui/react";
 import VehicleType from "views/admin/settings/vehicleType/vehicleType";
+import { useTranslation } from 'react-i18next'
 // chakra imports
 
 export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
   // Chakra color mode
+  const { t } = useTranslation();
   let location = useLocation();
   const [settingsActive, setSettingsActive] = useState(false);
   const navigate = useNavigate()
   const { routes } = props;
+  
 
   // verifies if routeName is the one active (in browser input)
   const activeRoute = (routeName: string) => {
@@ -67,7 +70,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                           : "font-medium text-gray-600"
                       }`}
                     >
-                      {route.name}
+                      {t(`${route.name}`)}
                     </p>
                   </li>
                   {activeRoute(route.path) ? (
@@ -83,7 +86,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     to={route.layout + "/" + "settings" + "/general"}
                   >
                     <div>
-                      <span>General</span>
+                      <span>{t("General")}</span>
                       {/* {activeRoute(route.path + "/general") ? (
                         <div className="absolute right-0 top-15 h-9 w-1 rounded-lg bg-brand-500 dark:bg-brand-400" />
                       ) : null} */}
@@ -94,7 +97,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     to={route.layout + "/" + "settings" + "/countrycode"}
                   >
                     <div>
-                      <span>Country Code</span>
+                      <span>{t("Country Code")}</span>
                  
                     </div>
                   </Link>
@@ -103,7 +106,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     to={route.layout + "/" + route.path}
                   >
                     <div>
-                      <span>Vehicle Details</span>
+                      <span>{t("Vehicle Details")}</span>
                  
                     </div>
                   </Link>
