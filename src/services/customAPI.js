@@ -232,6 +232,20 @@ export const deleteObjectFromS3Api = (data) => {
   return customAxios.post("/delete-object-from-s3", data);
 };
 
+// Application flow for driver
+ 
+export const createAppFlowAPI = (data) => {
+  return customAxios.post("/create-app-flow", data);
+}
+
+export const getFlow = () => {
+  return customAxios.get("/get-app-flow");
+}
+
+export const updateAppFlowAPI = (id, data) => {
+  return customAxios.patch(`/update-app-flow/${id}`, data);
+};
+
 //spots
 
 export const createSpot = (data) => {
