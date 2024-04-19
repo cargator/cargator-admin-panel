@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useTranslation } from 'react-i18next'
 import Card from "components/card";
 import deleteIcon from "../../../../../assets/svg/deleteIcon.svg";
 import ButtonEdit from "../../../../../assets/svg/ButtonEdit.svg";
@@ -36,6 +37,8 @@ type RowObj = {
 };
 
 function CountryCode() {
+  // translaion function
+  const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate();
@@ -51,7 +54,7 @@ function CountryCode() {
       id: "countryCode",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Country Code
+          {t("Country Code")}
         </p>
       ),
       cell: (info) => (
@@ -64,7 +67,7 @@ function CountryCode() {
       id: "countryName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Country Name
+          {t("Country Name")}
         </p>
       ),
       cell: (info) => (
@@ -77,7 +80,7 @@ function CountryCode() {
       id: "action",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Action
+          {t("Action")}
         </p>
       ),
       cell: (info) => (
@@ -207,7 +210,7 @@ function CountryCode() {
           <Card extra="w-full mt-4 pb-10 p-4 h-full">
             <header className="relative flex items-center justify-between">
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Country Code
+                {t("Country Code")}
               </div>
               <div>
                 <button
@@ -215,7 +218,7 @@ function CountryCode() {
                   type="submit"
                   onClick={() => navigate("/admin/settings/countrycode-form")}
                 >
-                  Add Country Code
+                  {t("Add Country Code")}
                 </button>
               </div>
             </header>
@@ -272,7 +275,7 @@ function CountryCode() {
                         style={{ textAlign: "center" }}
                       >
                         <h2 className="m-4" style={{ fontSize: "30px" }}>
-                          No Results!
+                          {t("No Results!")}
                         </h2>
                       </td>
                     </tr>
@@ -318,7 +321,7 @@ function CountryCode() {
                     <img src={deleteIcon} />
                   </div> */}
                   <ModalBody className="text-center">
-                    Are you sure you want to Delete? <br />
+                    {t("Are you sure you want to Delete?")} <br />
                     {'"' + selectedItem.countryCode + '"'}
                   </ModalBody>
                   <div className="mt-3 flex justify-center">
@@ -327,13 +330,13 @@ function CountryCode() {
                       className="cancel-delete-modal-button mx-2"
                       onClick={onClose}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       className="delete-modal-button mx-2"
                       onClick={() => deleteHandle(selectedItem?._id)}
                     >
-                      Delete
+                      {t("Delete")}
                     </Button>
                   </div>
                   <ModalFooter></ModalFooter>

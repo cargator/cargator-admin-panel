@@ -11,6 +11,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from 'react-i18next'
 import { MdAutoAwesome, MdPerson } from "react-icons/md";
 import oneDay from "../../../assets/svg/24hrs.svg";
 import oneWeek from "../../../assets/svg/week.svg";
@@ -27,6 +28,10 @@ export type questionAnsArray = {
 };
 
 export default function Analytics() {
+  
+  // translation function
+  const { t } = useTranslation();
+
   // Input States
   const [inputOnSubmit, setInputOnSubmit] = useState<string>("");
   const [inputCode, setInputCode] = useState<string>("");
@@ -148,7 +153,7 @@ export default function Analytics() {
             paddingTop: "15px",
           }}
         >
-          Analytics
+          {t("Analytics")}
         </div>
         <Flex
           mx="auto"
@@ -186,7 +191,7 @@ export default function Analytics() {
             >
               <img src={oneDay} width="25px" height="25px" />
             </Flex>
-            24 HRS
+            24 {t("HRS")}
           </Flex>
           <Flex
             cursor={"pointer"}
@@ -216,7 +221,7 @@ export default function Analytics() {
             >
               <img src={oneWeek} width="25px" height="25px" />
             </Flex>
-            LAST WEEK
+            {t("LAST WEEK")}
           </Flex>
           <Flex
             cursor={"pointer"}
@@ -246,7 +251,7 @@ export default function Analytics() {
             >
               <img src={oneWeek} width="25px" height="25px" />
             </Flex>
-            LAST MONTH
+            {t("LAST MONTH")}
           </Flex>
         </Flex>
         {/* main box */}
@@ -494,7 +499,7 @@ export default function Analytics() {
                     fontSize="sm"
                     fontWeight="500"
                     _placeholder={placeholderColor}
-                    placeholder="Type your message here..."
+                    placeholder={t("Type your message here...")}
                     onChange={handleChange}
                     style={{ outline: "none" }}
                     autoFocus
@@ -524,7 +529,7 @@ export default function Analytics() {
                       onClick={handleTranslate}
                       //   isLoading={loading ? true : false}
                     >
-                      Submit
+                      {t("Submit")}
                       <img
                         src={submit}
                         alt="Submit"

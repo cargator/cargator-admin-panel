@@ -3,6 +3,7 @@ import Card from "../../../../components/card";
 import Navbar from 'components/navbar'
 import { Formik } from 'formik';
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
@@ -15,14 +16,16 @@ type formvalues = {
 };
 
 function CountryCodeForm() {
+  // translation function
+  const { t } = useTranslation();
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({ countryCode: "" ,countryName:"",});
   const navigate = useNavigate();
 
   const CountryCodeSchema = Yup.object().shape({
-    countryCode: Yup.string().required("Country Code is required"),
-    countryName: Yup.string().required("Country Name is required"),
+    countryCode: Yup.string().required(t("Country Code is required")),
+    countryName: Yup.string().required(t("Country Name is required")),
   });
 
   // React.useEffect(() => {
@@ -127,11 +130,11 @@ function CountryCodeForm() {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit CountryCode
+                {t("Edit CountryCode")}
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add CountryCode
+                {t("Add CountryCode")}
               </div>
             )}
           </header>
@@ -157,7 +160,7 @@ function CountryCodeForm() {
                         htmlFor="countryCode"
                         className="input-custom-label dark:text-white"
                       >
-                        Country Code
+                        {t("Country Code")}
                       </label>
                       <input
                         required
@@ -168,7 +171,7 @@ function CountryCodeForm() {
                         name="countryCode"
                         type="text"
                         id="countryCode"
-                        placeholder="Enter Country Code here"
+                        placeholder={t("Enter Country Code here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.countryCode}
@@ -184,7 +187,7 @@ function CountryCodeForm() {
                         htmlFor="countryName"
                         className="input-custom-label dark:text-white"
                       >
-                        Country Name
+                        {t("Country Name")}
                       </label>
                       <input
                         required
@@ -195,7 +198,7 @@ function CountryCodeForm() {
                         name="countryName"
                         type="text"
                         id="countryName"
-                        placeholder="Enter Country Name here"
+                        placeholder={t("Enter Country Name here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.countryName}
@@ -212,13 +215,13 @@ function CountryCodeForm() {
                       className=" cancel-button my-2 ms-1 sm:my-0"
                       onClick={() => navigate("/admin/settings/countrycode")}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       type="submit"
                       className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                   </div>
                 </form>

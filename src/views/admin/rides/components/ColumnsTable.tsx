@@ -58,7 +58,7 @@ function ColumnsTable(props: {
       id: "logo",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Source
+          {t("Source")}
         </p>
       ),
       cell: (info: any) => (
@@ -71,7 +71,7 @@ function ColumnsTable(props: {
       id: "bookingDate",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Booking Date
+          {t("Booking Date")}
         </p>
       ),
       cell: (info: any) => (
@@ -84,7 +84,7 @@ function ColumnsTable(props: {
       id: "bookingTime",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Booking Time
+          {t("Booking Time")}
         </p>
       ),
       cell: (info) => (
@@ -97,7 +97,7 @@ function ColumnsTable(props: {
       id: "riderMobileNum",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Rider Mobile No.
+          {t("Rider Mobile No.")}
         </p>
       ),
       cell: (info) => (
@@ -110,7 +110,7 @@ function ColumnsTable(props: {
       id: "DriverMobileNum",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Driver Mobile No.
+          {t("Driver Mobile No.")}
         </p>
       ),
       cell: (info) => (
@@ -122,7 +122,7 @@ function ColumnsTable(props: {
     columnHelper.accessor("fare", {
       id: "fare",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">Fare</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">{t("Fare")}</p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -134,7 +134,7 @@ function ColumnsTable(props: {
       id: "status",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Status
+          {t("Status")}
         </p>
       ),
       cell: (info) => (
@@ -171,7 +171,7 @@ function ColumnsTable(props: {
       id: "origin",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Origin
+          {t("Origin")}
         </p>
       ),
       cell: (info) => (
@@ -184,7 +184,7 @@ function ColumnsTable(props: {
       id: "destination",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Destination
+          {t("Destination")}
         </p>
       ),
       cell: (info) => (
@@ -196,7 +196,7 @@ function ColumnsTable(props: {
     columnHelper.accessor("view", {
       id: "view",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">View</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">{t("View")}</p>
       ),
       cell: (info) => (
         // <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -249,21 +249,28 @@ function ColumnsTable(props: {
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Rides
+          {t("Rides")}
         </div>
         <div style={{ width: "200px" }}>
           <Select
             isSearchable={false}
             // className="w-400"
             className="custom-select"
-            options={statusOptions}
+            // options={statusOptions}
+            options={statusOptions.map(option => ({ // Map over statusOptions to translate labels
+              ...option,
+              label: t(`${option.label}`), // Translate label
+              // value: t(`${option.label}`), // Translate value 
+            }))}
             onChange={(e: any) => {
               setRideStatus(e.value);
             }}
             value={statusOptions.filter(function (option: any) {
               return option.value === rideStatus;
             })}
+            // value={statusOptions.find(option => option.value === rideStatus)} // Use find instead of filter
             name="rideStatus"
+            // defaultValue={{ label: defaultLabel, value: rideStatus }} // Set the translated default value
             styles={{
               // Fixes the overlapping problem of the component
               menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
@@ -338,7 +345,7 @@ function ColumnsTable(props: {
               <tr>
                 <td colSpan={columns.length} style={{ textAlign: "center" }}>
                   <h2 className="m-4" style={{ fontSize: "30px" }}>
-                    No Results!
+                    {t("No Results!")}
                   </h2>
                 </td>
               </tr>

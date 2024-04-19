@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Card from "components/card";
 import deleteIcon from "../../../assets/svg/deleteIcon.svg";
 import ButtonEdit from "../../../assets/svg/ButtonEdit.svg";
+import { useTranslation } from 'react-i18next'
 
 import {
   createColumnHelper,
@@ -37,6 +38,8 @@ type RowObj = {
 };
 
 function VehicleTypeList() {
+  // translation function
+  const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate();
@@ -52,7 +55,7 @@ function VehicleTypeList() {
       id: "vehicleMake",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Make
+          {t("Vehicle Make")}
         </p>
       ),
       cell: (info) => (
@@ -65,7 +68,7 @@ function VehicleTypeList() {
       id: "vehicleModel",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Model
+          {t("Vehicle Model")}
         </p>
       ),
       cell: (info) => (
@@ -78,7 +81,7 @@ function VehicleTypeList() {
       id: "vehicleType",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Vehicle Type
+          {t("Vehicle Type")}
         </p>
       ),
       cell: (info) => (
@@ -91,7 +94,7 @@ function VehicleTypeList() {
       id: "action",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          Action
+          {t("Action")}
         </p>
       ),
       cell: (info) => (
@@ -220,7 +223,7 @@ function VehicleTypeList() {
           <Card extra="w-full mt-4 pb-10 p-4 h-full">
             <header className="relative flex items-center justify-between">
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Vehicles Details
+                {t("Vehicles Details")}
               </div>
               <div>
                 <button
@@ -228,7 +231,7 @@ function VehicleTypeList() {
                   type="submit"
                   onClick={() => navigate("/admin/settings/vehicletypeform")}
                 >
-                  Add Vehicle Type
+                  {t("Add Vehicle Type")}
                 </button>
               </div>
             </header>
@@ -285,7 +288,7 @@ function VehicleTypeList() {
                         style={{ textAlign: "center" }}
                       >
                         <h2 className="m-4" style={{ fontSize: "30px" }}>
-                          No Results!
+                          {t("No Results!")}
                         </h2>
                       </td>
                     </tr>
@@ -331,7 +334,7 @@ function VehicleTypeList() {
                     <img src={deleteIcon} />
                   </div> */}
                   <ModalBody className="text-center">
-                    Are you sure you want to Delete? <br />
+                    {t("Are you sure you want to Delete?")} <br />
                     {'"' + selectedItem.vehicleMake + '"'}
                   </ModalBody>
                   <div className="mt-3 flex justify-center">
@@ -340,13 +343,13 @@ function VehicleTypeList() {
                       className="cancel-delete-modal-button mx-2"
                       onClick={onClose}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       className="delete-modal-button mx-2"
                       onClick={() => deleteHandle(selectedItem?._id)}
                     >
-                      Delete
+                      {t("Delete")}
                     </Button>
                   </div>
                   <ModalFooter></ModalFooter>

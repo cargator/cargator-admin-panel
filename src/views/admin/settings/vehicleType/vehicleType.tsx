@@ -3,6 +3,7 @@ import Card from "../../../../components/card";
 import Navbar from 'components/navbar'
 import { Formik } from 'formik';
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
@@ -16,15 +17,17 @@ type formvalues = {
 };
 
 function VehicleType() {
+  // translation function
+  const { t } = useTranslation();
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({ vehicleType: "" ,vehicleMake:"", vehicleModel:""});
   const navigate = useNavigate();
 
   const vehicleTypeSchema = Yup.object().shape({
-    vehicleType: Yup.string().required("Vehicle type is required"),
-    vehicleModel: Yup.string().required("Vehicle Model is required"),
-    vehicleMake: Yup.string().required("Vehicle Make is required"),
+    vehicleType: Yup.string().required(t("Vehicle type is required")),
+    vehicleModel: Yup.string().required(t("Vehicle Model is required")),
+    vehicleMake: Yup.string().required(t("Vehicle Make is required")),
   });
 
   React.useEffect(() => {
@@ -131,11 +134,11 @@ function VehicleType() {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Vehicle Type
+                {t("Edit Vehicle Type")}
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Vehicle Type
+                {t("Add Vehicle Type")}
               </div>
             )}
           </header>
@@ -161,7 +164,7 @@ function VehicleType() {
                         htmlFor="vehicleMake"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Make
+                        {t("Vehicle Make")}
                       </label>
                       <input
                         required
@@ -172,7 +175,7 @@ function VehicleType() {
                         name="vehicleMake"
                         type="text"
                         id="vehicleMake"
-                        placeholder="Enter vehicle Make here"
+                        placeholder={t("Enter vehicle Make here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.vehicleMake}
@@ -188,7 +191,7 @@ function VehicleType() {
                         htmlFor="vehicleModel"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Model
+                        {t("Vehicle Model")}
                       </label>
                       <input
                         required
@@ -199,7 +202,7 @@ function VehicleType() {
                         name="vehicleModel"
                         type="text"
                         id="vehicleModel"
-                        placeholder="Enter vehicle Model here"
+                        placeholder={t("Enter vehicle Model here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.vehicleModel}
@@ -217,7 +220,7 @@ function VehicleType() {
                         htmlFor="vehicleType"
                         className="input-custom-label dark:text-white"
                       >
-                        Vehicle Type
+                        {t("Vehicle Type")}
                       </label>
                       <input
                         required
@@ -228,7 +231,7 @@ function VehicleType() {
                         name="vehicleType"
                         type="text"
                         id="vehicleType"
-                        placeholder="Enter vehicle type here"
+                        placeholder={t("Enter vehicle type here")}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values?.vehicleType}
@@ -248,13 +251,13 @@ function VehicleType() {
                       className=" cancel-button my-2 ms-1 sm:my-0"
                       onClick={() => navigate("/admin/settings")}
                     >
-                      Cancel
+                      {t("Cancel")}
                     </Button>
                     <Button
                       type="submit"
                       className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
                     >
-                      Save
+                      {t("Save")}
                     </Button>
                   </div>
                 </form>

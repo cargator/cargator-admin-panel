@@ -149,16 +149,16 @@ const DriverForm = () => {
 
   const driverSchema = Yup.object().shape({
     firstName: Yup.string()
-      .min(2, "First name must be atleast two characters.")
-      .required("Name is required"),
+      .min(2, t("First name must be atleast two characters."))
+      .required(t("Name is required")),
     // lastName: Yup.string()
     //   .min(2, "Last name must be atleast two characters.")
     //   .required("Last name is required"),
     mobileNumber: Yup.string()
-      .matches(/^[0-9]+$/, "Invalid mobile number.")
-      .min(10, "Mobile Number must be 10 digits only.")
-      .max(10, "Mobile Number must be 10 digits only.")
-      .required("Mobile number is Required"),
+      .matches(/^[0-9]+$/, t("Invalid mobile number."))
+      .min(10, t("Mobile Number must be 10 digits only."))
+      .max(10, t("Mobile Number must be 10 digits only."))
+      .required(t("Mobile number is Required")),
       vehicleNumber: Yup.string()
       .min(10, "Vehicle Number must be 10 digits only.")
       .max(10, "Vehicle Number must be 10 digits only.")
@@ -166,30 +166,30 @@ const DriverForm = () => {
         /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
         "Vehicle Number must follow the pattern: XX99XX9999"
       )
-      .required("Vehicle number is required"),
-    vehicleType: Yup.string().required("Vehicle type is required"),
-    vehicleName: Yup.string().required("Vehicle name is required"),
+      .required(t("Vehicle number is required")),
+    vehicleType: Yup.string().required(t("Vehicle type is required")),
+    vehicleName: Yup.string().required(t("Vehicle name is required")),  
     image: isProfileImage
       ? Yup.mixed()
           // .nullable()
-          .required("A file is required")
+          .required(t("A file is required"))
           .test(
             "fileSize",
-            "Please upload file below 1 MB size",
+            t("Please upload file below 1 MB size"),
             (value: any) => {
               return value && value.size <= FILE_SIZE;
             }
           )
           .test(
             "fileFormat",
-            "Unsupported Format",
+            t("Unsupported Format"),
             (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
           )
       : Yup.mixed(),
     documents: isdocuments
       ? Yup.mixed()
-          .required("A file is required")
-          .test("fileSizeDoc", "File too large", (value: any) => {
+          .required(t("A file is required"))
+          .test("fileSizeDoc", t("File too large"), (value: any) => {
             let add = 0;
             let i = value?.length - 1;
             while (i >= 0) {
@@ -198,7 +198,7 @@ const DriverForm = () => {
             }
             return value && add <= FILE_SIZE_DOC;
           })
-          .test("fileFormat", "Unsupported Format", (value: any) => {
+          .test("fileFormat", t("Unsupported Format"), (value: any) => {
             let i = value?.length - 1;
             while (i >= 0) {
               if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
@@ -406,11 +406,11 @@ const DriverForm = () => {
         });
 
         if (result.message) {
-          successToast("Driver Created Successfully");
+          successToast(t("Driver Created Successfully"));
           navigate("/admin/drivers");
           setIsLoading(false);
         } else {
-          errorToast("Something went wrong");
+          errorToast(t("Something went wrong"));
         }
       }
     } catch (error: any) {

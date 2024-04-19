@@ -1,5 +1,6 @@
 import Navbar from "components/navbar";
 import React, { useRef, useState } from "react";
+import { useTranslation } from 'react-i18next'
 import Card from "components/card";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
@@ -32,6 +33,7 @@ type profImage = {
 };
 
 function General() {
+  const { t } = useTranslation();
   const params = useParams();
   const navigate = useNavigate();
   const [check, setCheck] = useState(false);
@@ -256,7 +258,7 @@ function General() {
             </div>
           ) : ( */}
           <div className="text-xl font-bold text-navy-700 dark:text-white">
-            General
+            {t("General")}
           </div>
           {/* )} */}
         </header>
@@ -283,7 +285,7 @@ function General() {
                       htmlFor="image"
                       className="input-custom-label dark:text-white"
                     >
-                      App Image
+                      {t("App Image")}
                     </label>
                     <div className="mt-2">
                       {imagePreview && (
@@ -343,10 +345,10 @@ function General() {
                             </div>
                             <div className="mb-2 mt-2 text-center">
                               {!params.id
-                                ? "Click here to upload your app image"
-                                : "Click here to update your app image"}
+                                ? t("Click here to upload your app image")
+                                : t("Click here to update your app image")}
                                 <br/>
-                                (file size below 1MB)
+                                {t("file size below")} 1MB
                             </div>
                           </div>
                           <input
@@ -397,7 +399,7 @@ function General() {
                       htmlFor="name"
                       className="input-custom-label dark:text-white"
                     >
-                      App Name
+                      {t("App Name")}
                     </label>
                     <input
                       required
@@ -408,7 +410,7 @@ function General() {
                       name="name"
                       type="text"
                       id="name"
-                      placeholder="Enter app name here"
+                      placeholder={t("Enter app name here")}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values?.name}
@@ -423,7 +425,7 @@ function General() {
                       htmlFor="fare"
                       className="input-custom-label dark:text-white"
                     >
-                      Set Fare for per KM
+                      {t("Set Fare for per KM")}
                     </label>
                     <input
                       required
@@ -434,7 +436,7 @@ function General() {
                       name="fare"
                       type="text"
                       id="fare"
-                      placeholder="Enter fare here"
+                      placeholder={t("Enter fare here")}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values?.fare}
@@ -450,13 +452,13 @@ function General() {
                     className="cancel-button my-2 ms-1 sm:my-0"
                     onClick={() => navigate("/admin/settings")}
                   >
-                    Cancel
+                    {t("Cancel")}
                   </Button>
                   <Button
                     type="submit"
                     className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
                   >
-                    Save
+                    {t("Save")}
                   </Button>
                 </div>
               </form>

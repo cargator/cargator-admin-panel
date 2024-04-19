@@ -1,6 +1,6 @@
 export const statusOptions = [
   { value: "all", label: "All Rides" },
-  { value: "current-rides", label: "Ongoing Rides" },
+  { value: "current-rides", label: ("Ongoing Rides") },
   { value: "completed", label: "Completed Rides" },
   { value: "cancelled", label: "Cancelled Rides" },
 ];
