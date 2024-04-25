@@ -59,7 +59,7 @@ function General() {
   const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedFlowOption(event.target.value);
     console.log("[][][][][][]]", event.target.value)
-    createApplicationFlow(event.target.value);
+    // createApplicationFlow(event.target.value);
   };
 
   const FILE_SIZE = 1024 * 1024;
@@ -145,15 +145,18 @@ function General() {
 
 
   // APi to create Apllication flow for Driver
-  const createApplicationFlow = async (appflow: any) => {
+  const createApplicationFlow = async () => {
     setIsLoading(true);
     try {
       if (AppFlowId) {
-        const res = await updateAppFlowAPI(AppFlowId, { appflow })
+        const data = {selectedFlowOption};
+        console.log("qwaszdxfcgvhbjnkm",data,AppFlowId)
+        const res = await updateAppFlowAPI(AppFlowId, data)
         console.log("respone:>>>>", res)
         setIsLoading(false);
       } else {
-        const res = await createAppFlowAPI({ appflow })
+        const data = {selectedFlowOption};
+        const res = await createAppFlowAPI(data)
         console.log("respone :>>>>", res)
         setIsLoading(false);
       }
@@ -514,15 +517,15 @@ function General() {
               )}
             </Formik>
           </div>
-          <div className="w-full">
+          <div className="ml-20 ">
             <label
               htmlFor="flow"
-              className="input-custom-label dark:text-white mb-20 ml-20"
+              className="input-custom-label dark:text-white"
             >
               Choose Appliation Flow
             </label>
-            <div className="flex items-center ml-20 ">
-            <label htmlFor="default" className="mr-10">
+            <div className="justify-between gap-2  w-full">
+            <label htmlFor="default" className="mr-8">
                 <input
                   type="radio"
                   id="default"
@@ -533,7 +536,7 @@ function General() {
                 />
                 Default
               </label>
-              <label htmlFor="custom" className="mr-2 ">
+              <label htmlFor="custom" className="mr-8">
                 <input
                   type="radio"
                   id="custom"
@@ -544,6 +547,7 @@ function General() {
                 />
                 Custom
               </label>
+              <button onClick={()=>createApplicationFlow()} className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0">Save Flow</button>
             </div>
           </div>
         </Card>

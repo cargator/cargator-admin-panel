@@ -243,6 +243,7 @@ export const getFlow = () => {
 }
 
 export const updateAppFlowAPI = (id, data) => {
+  console.log("123456789098765432", id, data)
   return customAxios.patch(`/update-app-flow/${id}`, data);
 };
 
