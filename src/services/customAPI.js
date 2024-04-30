@@ -295,3 +295,30 @@ export const getCountryCodesById = (id) =>{
 export const deleteCoutryCode = (id) => {
   return customAxios.delete(`/delete-country-code/${id}`);
 };
+
+// Flows -----------------
+export const createBreakPointApi = (data) => {
+  console.log("api called : " ,data)
+  return customAxios.post("/create-break-points", data)
+};
+
+export const getBreakingPoints = (data) => {
+  console.log("getBreakingPoints--------------called")
+  return customAxios.get(`/get-breaking-points?page=${data.page}&limit=${data.limit}`);
+};
+
+export const updateBreakPointApi = (id, data) => {
+  console.log("updateBreakPointApi called",id,data)
+  return customAxios.patch(`/update-break-points/${id}`, data);
+};
+
+export const getBreakPointById = (id) => {
+  console.log("getBreakPointById called",id)
+  return customAxios.get(`/get-break-point-id/${id}`)
+}
+
+export const deleteBreakPoints = (id) => {
+  // console.log("deleteBreakPoints")
+  return customAxios.delete(`/delete-breakingPoints/${id}`);
+};
+

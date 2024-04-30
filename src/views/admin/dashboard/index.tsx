@@ -174,7 +174,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Ongoing Trips
+                      Ongoing
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
@@ -215,7 +215,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Drivers
+                      Operators
                     </h1>
                   </div>
 
@@ -305,7 +305,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      Completed Trips
+                      Completed
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
@@ -322,7 +322,7 @@ const Dashboard = () => {
                   className="card-title mb-2"
                   style={{ fontSize: "25px" }}
                 >
-                  Active Drivers:
+                  Active Operators:
                 </h4>
               </div>
               <div className="d-none d-md-block">

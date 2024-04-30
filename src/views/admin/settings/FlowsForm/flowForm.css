@@ -1,0 +1,50 @@
+.save-button {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border-radius: 5px;
+}
+
+.save-button:hover {
+  background-color: #118f5e;
+  color: #ffffff;
+  padding-bottom: 8px;
+}
+
+.cancel-button {
+  background-color: #ffffff;
+  color: #9ca3af;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  border: 1px solid #9ca3af;
+  margin-right: 6px;
+  border-radius: 5px;
+}
+
+.cancel-button:hover {
+  background-color: #9ca3af;
+  color: #ffffff;
+  border: 1px solid #9ca3af;
+}
+
+.error-input {
+  /* visibility: hidden; */
+  font-size: 12px;
+  margin-top: 6px;
+  color: red;
+  font-weight: 400;
+  margin-bottom: 12px;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0; /* Optional: You can also adjust the margin to remove any remaining space */
+}
