@@ -166,9 +166,10 @@ const DriverForm = () => {
         /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
         "Vehicle Number must follow the pattern: XX99XX9999"
       )
-      .required(t("Vehicle number is required")),
-    vehicleType: Yup.string().required(t("Vehicle type is required")),
-    vehicleName: Yup.string().required(t("Vehicle name is required")),  
+      // .required(t("Vehicle number is required"))
+      ,
+    // vehicleType: Yup.string().required(t("Vehicle type is required")),
+    // vehicleName: Yup.string().required(t("Vehicle name is required")),  
     image: isProfileImage
       ? Yup.mixed()
           // .nullable()
