@@ -232,6 +232,21 @@ export const deleteObjectFromS3Api = (data) => {
   return customAxios.post("/delete-object-from-s3", data);
 };
 
+// Application flow for driver
+ 
+export const createAppFlowAPI = (data) => {
+  return customAxios.post("/create-app-flow", data);
+}
+
+export const getFlow = () => {
+  return customAxios.get("/get-app-flow");
+}
+
+export const updateAppFlowAPI = (id, data) => {
+  console.log("123456789098765432", id, data)
+  return customAxios.patch(`/update-app-flow/${id}`, data);
+};
+
 //spots
 
 export const createSpot = (data) => {
@@ -280,3 +295,30 @@ export const getCountryCodesById = (id) =>{
 export const deleteCoutryCode = (id) => {
   return customAxios.delete(`/delete-country-code/${id}`);
 };
+
+// Flows -----------------
+export const createBreakPointApi = (data) => {
+  console.log("api called : " ,data)
+  return customAxios.post("/create-break-points", data)
+};
+
+export const getBreakingPoints = (data) => {
+  console.log("getBreakingPoints--------------called")
+  return customAxios.get(`/get-breaking-points?page=${data.page}&limit=${data.limit}`);
+};
+
+export const updateBreakPointApi = (id, data) => {
+  console.log("updateBreakPointApi called",id,data)
+  return customAxios.patch(`/update-break-points/${id}`, data);
+};
+
+export const getBreakPointById = (id) => {
+  console.log("getBreakPointById called",id)
+  return customAxios.get(`/get-break-point-id/${id}`)
+}
+
+export const deleteBreakPoints = (id) => {
+  // console.log("deleteBreakPoints")
+  return customAxios.delete(`/delete-breakingPoints/${id}`);
+};
+

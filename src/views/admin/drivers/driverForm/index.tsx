@@ -280,8 +280,9 @@ const DriverForm = () => {
   }
 
   async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
+    console.log("-----------",presignedUrl   , uploadPhoto)
     const response = await axios.put(presignedUrl, uploadPhoto);
-    // console.log("pushProfilePhotoToS3  :>> ", response);
+    console.log("pushProfilePhotoToS3  :>> ", response);
     return response;
   }
 
@@ -305,6 +306,8 @@ const DriverForm = () => {
                 data.url,
                 finalProfileImage.file
               );
+
+              console.log("------------- " ,res.data)
             }
             if (initialProfileImage) {
               const response = deleteObjectFromS3Api({
@@ -328,7 +331,7 @@ const DriverForm = () => {
             if (data.url) {
               res1 = await pushProfilePhotoToS3(data.url, ele.file);
               if (res1.status === 200) {
-                console.log("uploaded correcly ");
+                console.log("uploaded correctly ");
               }
             }
           }
@@ -560,11 +563,11 @@ const DriverForm = () => {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                {t("Edit Driver")}
+                Edit Operators
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                {t("Add Driver")}
+                Add Operators
               </div>
             )}
           </header>

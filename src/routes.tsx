@@ -6,6 +6,8 @@ import DriverForm from "views/admin/drivers/driverForm";
 import RideView from "views/admin/rides/rideview";
 import Vehicles from "views/admin/vehicles";
 import { GiMountainRoad, GiSteeringWheel } from "react-icons/gi";
+import Flows from 'views/admin/settings/Flow'
+import FlowsForm from "views/admin/settings/FlowsForm";
 // import RTLDefault from "views/rtl/default";
 
 // Auth Imports
@@ -57,7 +59,7 @@ const routes = [
     secondary: true,
   },
   {
-    name: "Drivers",
+    name: "Operators",
     layout: "/admin",
     path: "drivers",
     icon: <GiSteeringWheel className="h-6 w-6" />,
@@ -114,6 +116,14 @@ const routes = [
     icon: <IoSettingsOutline className="h-6 w-6" />,
     component: <VehicleTypeList />,
     // secondary: true,
+  },
+  {
+    name: "Settings",
+    layout: "/admin",
+    path: "settings/flows",
+    component: <Flows/>,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
+    secondary: true,
   },
   {
     name: "Fare",
@@ -191,6 +201,22 @@ const routes = [
     path: "settings/countrycode-form",
     icon: <MdPerson className="h-6 w-6" />,
     component: <CountryCodeForm/>,
+    secondary:true
+  },
+  {
+    name: "Flows-Form",
+    layout: "/admin",
+    path: "settings/flow-form",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <FlowsForm/>,
+    secondary:true
+  },
+  {
+    name: "Flows-Form ID",
+    layout: "/admin",
+    path: "settings/flow-form/:id",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <FlowsForm/>,
     secondary:true
   },
 ];
