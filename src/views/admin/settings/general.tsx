@@ -10,11 +10,14 @@ import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
 import {
   addFare,
+  createAppFlowAPI,
   createAppNameAndImageApi,
   deleteObjectFromS3Api,
   getAppNameAndImage,
+  getFlow,
   getS3SignUrlApi,
   handleCreateAppNameAndImageApi,
+  updateAppFlowAPI,
 } from "services/customAPI";
 import Loader from "components/loader/loader";
 import uploadCloud from "../../../assets/svg/upload-cloud.svg";
@@ -52,6 +55,15 @@ function General() {
     params.id ? false : true
   );
 
+  const [selectedFlowOption, setSelectedFlowOption] = useState("default");
+  const [AppFlowId, setAppFLowId] = useState();
+
+  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedFlowOption(event.target.value);
+    console.log("[][][][][][]]", event.target.value)
+    // createApplicationFlow(event.target.value);
+  };
+
   const FILE_SIZE = 1024 * 1024;
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -59,20 +71,20 @@ function General() {
     name: Yup.string().min(1).required("App Name is required"),
     image: isProfileImage
       ? Yup.mixed()
-          // .nullable()
-          .required("A file is required")
-          .test(
-            "fileSize",
-            "Please upload file below 1 MB size",
-            (value: any) => {
-              return value && value.size <= FILE_SIZE;
-            }
-          )
-          .test(
-            "fileFormat",
-            "Unsupported Format",
-            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-          )
+        // .nullable()
+        .required("A file is required")
+        .test(
+          "fileSize",
+          "Please upload file below 1 MB size",
+          (value: any) => {
+            return value && value.size <= FILE_SIZE;
+          }
+        )
+        .test(
+          "fileFormat",
+          "Unsupported Format",
+          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+        )
       : Yup.mixed(),
     fare: Yup.string().min(1).required("Fare is required"),
   });
@@ -113,7 +125,49 @@ function General() {
 
   React.useEffect(() => {
     getData();
+    getApplicationFlow();
   }, []);
+
+  // APi to get Apllication flow for Driver
+  const getApplicationFlow = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getFlow()
+      setAppFLowId(res.data[0]._id)
+      setSelectedFlowOption(res.data[0].applicationFLow)
+      console.log("respones:>>>>", res.data[0]._id)
+      setIsLoading(false);
+
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  }
+
+
+
+  // APi to create Apllication flow for Driver
+  const createApplicationFlow = async () => {
+    setIsLoading(true);
+    try {
+      if (AppFlowId) {
+        const data = {selectedFlowOption};
+        console.log("qwaszdxfcgvhbjnkm",data,AppFlowId)
+        const res = await updateAppFlowAPI(AppFlowId, data)
+        console.log("respone:>>>>", res)
+        setIsLoading(false);
+      } else {
+        const data = {selectedFlowOption};
+        const res = await createAppFlowAPI(data)
+        console.log("respone :>>>>", res)
+        setIsLoading(false);
+      }
+
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  }
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {
     try {
@@ -217,7 +271,7 @@ function General() {
     try {
       const res: any = await getAppNameAndImage();
 
-      // console.log("res  :>> ", res);
+      console.log("res  :>> ", res);
 
       setInitialFormValues({
         name: res?.data.name,
@@ -237,7 +291,7 @@ function General() {
           setImagePreview(data.url);
         }
       }
-      
+
       setIsLoading(false);
     } catch (error: any) {
       errorToast(error.response?.data?.message || "Something went wrong");
@@ -251,8 +305,8 @@ function General() {
         <Loader />
       ) : (
         <Card extra={"w-50 mt-4 pb-10 h-full"}>
-        <header className="relative flex items-center justify-between p-10">
-          {/* {params.id ? (
+          <header className="relative flex items-center justify-between p-10">
+            {/* {params.id ? (
             <div className="text-xl font-bold text-navy-700 dark:text-white">
               Edit Fare
             </div>
@@ -329,19 +383,39 @@ function General() {
                         }}
                         className="mt-2 h-15 rounded-xl border bg-white/0 p-3 text-sm outline-none w-full"
                       >
-                        <label>
-                          <div
-                            className="flex items-center justify-center gap-4"
-                            style={{ cursor: "pointer" }}
-                          >
-                            <div className="mb-3">
+                        App Image
+                      </label>
+                      <div className="mt-2">
+                        {imagePreview && (
+                          <>
+                            <div
+                              className="image-preview"
+                              style={{
+                                width: "55px",
+                                height: "55px",
+                                padding: "2px",
+                                border: "2px solid #9CA3AF",
+                                borderRadius: "4px",
+                              }}
+                            >
                               <img
-                                src={uploadCloud}
-                                alt="Upload Cloud"
-                                height="24px"
-                                width="24px"
-                                className="mr-2"
+                                src={imagePreview}
+                                style={{
+                                  objectFit: "contain",
+                                  height: "100%",
+                                  width: "auto",
+                                  cursor: "pointer",
+                                  padding: "5px",
+                                }}
+                                alt="img"
+                                onClick={handleDivClickImg}
                               />
+                              <a
+                                ref={anchorImageRef}
+                                href={imagePreview}
+                                download="your-image-file.png"
+                                style={{ display: "none" }}
+                              ></a>
                             </div>
                             <div className="mb-2 mt-2 text-center">
                               {!params.id
@@ -350,123 +424,155 @@ function General() {
                                 <br/>
                                 {t("file size below")} 1MB
                             </div>
-                          </div>
-                          <input
-                            // required
-                            accept="image/*"
-                            style={{
-                              backgroundColor: "rgba(242, 242, 242, 0.5)",
-                              display: "none",
-                            }}
-                            className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                            name="image"
-                            type="file"
-                            id="image"
-                            onChange={(event) => {
-                              setFieldValue("image", event.target.files[0]);
-                              const file = event.target.files[0];
-                              setFinalProfileImage({
-                                key: `app/appImage/${uuidv4()}.png`,
-                                url: "",
-                                file: file,
-                              });
-                              if (file) {
-                                const reader = new FileReader();
-                                reader.onload = (e) => {
-                                  setImagePreview(e.target.result);
-                                };
-                                reader.readAsDataURL(file);
-                              } else {
-                                setImagePreview(null);
-                              }
-                              if (event.target.files[0]) {
-                                setIsProfileImage(true);
-                              }
-                            }}
-                            onBlur={handleBlur}
-                          />
-                        </label>
+                            <input
+                              // required
+                              accept="image/*"
+                              style={{
+                                backgroundColor: "rgba(242, 242, 242, 0.5)",
+                                display: "none",
+                              }}
+                              className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                              name="image"
+                              type="file"
+                              id="image"
+                              onChange={(event) => {
+                                setFieldValue("image", event.target.files[0]);
+                                const file = event.target.files[0];
+                                setFinalProfileImage({
+                                  key: `app/appImage/${uuidv4()}.png`,
+                                  url: "",
+                                  file: file,
+                                });
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = (e) => {
+                                    setImagePreview(e.target.result);
+                                  };
+                                  reader.readAsDataURL(file);
+                                } else {
+                                  setImagePreview(null);
+                                }
+                                if (event.target.files[0]) {
+                                  setIsProfileImage(true);
+                                }
+                              }}
+                              onBlur={handleBlur}
+                            />
+                          </label>
+                        </div>
+                        <ErrorMessage
+                          name="image"
+                          component="div"
+                          className="error-input"
+                        />
                       </div>
-                      <ErrorMessage
-                        name="image"
-                        component="div"
-                        className="error-input"
+                    </div>
+                    <div className="mb-3 w-full">
+                      <label
+                        htmlFor="name"
+                        className="input-custom-label dark:text-white"
+                      >
+                        App Name
+                      </label>
+                      <input
+                        required
+                        style={{
+                          backgroundColor: "rgba(242, 242, 242, 0.5)",
+                        }}
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        name="name"
+                        type="text"
+                        id="name"
+                        placeholder="Enter app name here"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.name}
+
                       />
+                      <div className="error-input">
+                        {errors.name && touched.name ? errors.name : null}
+                      </div>
+                    </div>
+                    <div className="mb-3 w-full">
+                      <label
+                        htmlFor="fare"
+                        className="input-custom-label dark:text-white"
+                      >
+                        Set Fare for per KM
+                      </label>
+                      <input
+                        required
+                        style={{
+                          backgroundColor: "rgba(242, 242, 242, 0.5)",
+                        }}
+                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                        name="fare"
+                        type="text"
+                        id="fare"
+                        placeholder="Enter fare here"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values?.fare}
+
+                      />
+                      <div className="error-input">
+                        {errors.fare && touched.fare ? errors.fare : null}
+                      </div>
                     </div>
                   </div>
-                  <div className="mb-3 w-full">
-                    <label
-                      htmlFor="name"
-                      className="input-custom-label dark:text-white"
+                  <div className="button-save-cancel mt-3 flex justify-end">
+                    <Button
+                      className="cancel-button my-2 ms-1 sm:my-0"
+                      onClick={() => navigate("/admin/settings")}
                     >
-                      {t("App Name")}
-                    </label>
-                    <input
-                      required
-                      style={{
-                        backgroundColor: "rgba(242, 242, 242, 0.5)",
-                      }}
-                      className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                      name="name"
-                      type="text"
-                      id="name"
-                      placeholder={t("Enter app name here")}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values?.name}
-                      disabled
-                    />
-                    <div className="error-input">
-                      {errors.name && touched.name ? errors.name : null}
-                    </div>
-                  </div>
-                  <div className="mb-3 w-full">
-                    <label
-                      htmlFor="fare"
-                      className="input-custom-label dark:text-white"
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
                     >
-                      {t("Set Fare for per KM")}
-                    </label>
-                    <input
-                      required
-                      style={{
-                        backgroundColor: "rgba(242, 242, 242, 0.5)",
-                      }}
-                      className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                      name="fare"
-                      type="text"
-                      id="fare"
-                      placeholder={t("Enter fare here")}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values?.fare}
-                      disabled
-                    />
-                    <div className="error-input">
-                      {errors.fare && touched.fare ? errors.fare : null}
-                    </div>
+                      Save
+                    </Button>
                   </div>
-                </div>
-                <div className="button-save-cancel mt-3 flex justify-end">
-                  <Button
-                    className="cancel-button my-2 ms-1 sm:my-0"
-                    onClick={() => navigate("/admin/settings")}
-                  >
-                    {t("Cancel")}
-                  </Button>
-                  <Button
-                    type="submit"
-                    className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
-                  >
-                    {t("Save")}
-                  </Button>
-                </div>
-              </form>
-            )}
-          </Formik>
-        </div>
-      </Card>
-      
+                </form>
+              )}
+            </Formik>
+          </div>
+          <div className="ml-20 ">
+            <label
+              htmlFor="flow"
+              className="input-custom-label dark:text-white"
+            >
+              Choose Appliation Flow
+            </label>
+            <div className="justify-between gap-2  w-full">
+            <label htmlFor="default" className="mr-8">
+                <input
+                  type="radio"
+                  id="default"
+                  name="option"
+                  value="default"
+                  checked={selectedFlowOption === "default"}
+                  onChange={handleOptionChange}
+                />
+                Default
+              </label>
+              <label htmlFor="custom" className="mr-8">
+                <input
+                  type="radio"
+                  id="custom"
+                  name="option"
+                  value="custom"
+                  checked={selectedFlowOption === "custom"}
+                  onChange={handleOptionChange}
+                />
+                Custom
+              </label>
+              <button onClick={()=>createApplicationFlow()} className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0">Save Flow</button>
+            </div>
+          </div>
+        </Card>
+
       )}
     </div>
   );
