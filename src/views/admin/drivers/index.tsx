@@ -299,7 +299,7 @@ const Drivers = () => {
     setLoading(true);
     setModalState(true);
     setSelectedItem(data);
-    //   setVisibleModal(true);
+    // setVisibleModal(true);
     onOpen();
     setLoading(false);
   };

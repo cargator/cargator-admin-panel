@@ -223,12 +223,12 @@ function ColumnsTable(props: {
               }
             />
           </div>
-          <div className="cursor-pointer">
+          {/* <div className="cursor-pointer">
             <img
               src={deleteIcon}
               onClick={() => handleClickForDeleteModal(info.row.original)}
             />
-          </div>
+          </div> */}
         </div>
       ),
     }),

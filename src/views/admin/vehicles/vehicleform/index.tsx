@@ -651,7 +651,7 @@ const VehicleForm: React.FC = () => {
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
-                        {t("Vehicle Modal")}
+                        {t("Vehicle Model")}
                       </label>
                       <Select
                         options={options}

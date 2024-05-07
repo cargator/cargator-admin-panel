@@ -524,8 +524,8 @@ function General() {
             >
               Choose Appliation Flow
             </label>
-            <div className="justify-between gap-2  w-full">
-            <label htmlFor="default" className="mr-8">
+            <div className="justify-between gap-5  w-full">
+            <label htmlFor="default" className="mr-8 ">
                 <input
                   type="radio"
                   id="default"
@@ -534,7 +534,7 @@ function General() {
                   checked={selectedFlowOption === "default"}
                   onChange={handleOptionChange}
                 />
-                Default
+                <label className="ml-2">Default</label>
               </label>
               <label htmlFor="custom" className="mr-8">
                 <input
@@ -545,7 +545,7 @@ function General() {
                   checked={selectedFlowOption === "custom"}
                   onChange={handleOptionChange}
                 />
-                Custom
+                <label className="ml-2">Custom</label>
               </label>
               <button onClick={()=>createApplicationFlow()} className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0">Save Flow</button>
             </div>
