@@ -217,7 +217,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      {t("Drivers")}
+                      {t("Operators")}
                     </h1>
                   </div>
 
