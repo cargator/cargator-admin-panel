@@ -522,7 +522,7 @@ function General() {
               htmlFor="flow"
               className="input-custom-label dark:text-white"
             >
-              Choose Appliation Flow
+              Choose Application Flow
             </label>
             <div className="justify-between gap-5  w-full">
             <label htmlFor="default" className="mr-8 ">
