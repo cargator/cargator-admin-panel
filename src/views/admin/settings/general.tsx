@@ -53,15 +53,6 @@ function General() {
     params.id ? false : true
   );
 
-  const [selectedFlowOption, setSelectedFlowOption] = useState("default");
-  const [AppFlowId, setAppFLowId] = useState();
-
-  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedFlowOption(event.target.value);
-    console.log("[][][][][][]]", event.target.value)
-    // createApplicationFlow(event.target.value);
-  };
-
   const FILE_SIZE = 1024 * 1024;
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
@@ -123,49 +114,8 @@ function General() {
 
   React.useEffect(() => {
     getData();
-    getApplicationFlow();
   }, []);
 
-  // APi to get Apllication flow for Driver
-  const getApplicationFlow = async () => {
-    setIsLoading(true);
-    try {
-      const res = await getFlow()
-      setAppFLowId(res.data[0]._id)
-      setSelectedFlowOption(res.data[0].applicationFLow)
-      console.log("respones:>>>>", res.data[0]._id)
-      setIsLoading(false);
-
-    } catch (error: any) {
-      errorToast(error.response?.data?.message || "Something went wrong");
-      setIsLoading(false);
-    }
-  }
-
-
-
-  // APi to create Apllication flow for Driver
-  const createApplicationFlow = async () => {
-    setIsLoading(true);
-    try {
-      if (AppFlowId) {
-        const data = {selectedFlowOption};
-        console.log("qwaszdxfcgvhbjnkm",data,AppFlowId)
-        const res = await updateAppFlowAPI(AppFlowId, data)
-        console.log("respone:>>>>", res)
-        setIsLoading(false);
-      } else {
-        const data = {selectedFlowOption};
-        const res = await createAppFlowAPI(data)
-        console.log("respone :>>>>", res)
-        setIsLoading(false);
-      }
-
-    } catch (error: any) {
-      errorToast(error.response?.data?.message || "Something went wrong");
-      setIsLoading(false);
-    }
-  }
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {
     try {
@@ -516,39 +466,6 @@ function General() {
                 </form>
               )}
             </Formik>
-          </div>
-          <div className="ml-20 ">
-            <label
-              htmlFor="flow"
-              className="input-custom-label dark:text-white"
-            >
-              Choose Application Flow
-            </label>
-            <div className="justify-between gap-5  w-full">
-            <label htmlFor="default" className="mr-8 ">
-                <input
-                  type="radio"
-                  id="default"
-                  name="option"
-                  value="default"
-                  checked={selectedFlowOption === "default"}
-                  onChange={handleOptionChange}
-                />
-                <label className="ml-2">Default</label>
-              </label>
-              <label htmlFor="custom" className="mr-8">
-                <input
-                  type="radio"
-                  id="custom"
-                  name="option"
-                  value="custom"
-                  checked={selectedFlowOption === "custom"}
-                  onChange={handleOptionChange}
-                />
-                <label className="ml-2">Custom</label>
-              </label>
-              <button onClick={()=>createApplicationFlow()} className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0">Save Flow</button>
-            </div>
           </div>
         </Card>
 

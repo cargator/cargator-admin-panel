@@ -17,46 +17,126 @@ import {
 import { Navigate, useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import Navbar from "components/navbar";
+import { toast } from "react-toastify";
 import Loader from "components/loader/loader";
+import { createAppFlowAPI, getFlow, updateAppFlowAPI } from "services/customAPI";
 
 
 
 function ColumnsTable(props) {
-  const { tableData, handleClickForDeleteModal, handleToggleForStatusMOdal,handleUpdate } =
+  const { tableData, handleClickForDeleteModal, handleToggleForStatusMOdal, handleUpdate } =
     props;
   // console.log("tableData from index.js", tableData)
   const [sorting, setSorting] = React.useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [selectedFlowOption, setSelectedFlowOption] = useState("default");
+  const [isLoading, setIsLoading] = useState(false);
+  const [AppFlowId, setAppFLowId] = useState();
+
+  const handleOptionChange = (event) => {
+    setSelectedFlowOption(event.target.value);
+    console.log("[][][][][][]]", event.target.value)
+    // createApplicationFlow(event.target.value);
+  };
+
+  const successToast = (message) => {
+    toast.success(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const errorToast = (message) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  // APi to get Apllication flow for Driver
+  const getApplicationFlow = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getFlow()
+      setAppFLowId(res.data[0]._id)
+      setSelectedFlowOption(res.data[0].applicationFLow)
+      console.log("respones:>>>>", res.data[0]._id)
+      setIsLoading(false);
+
+    } catch (error) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  }
+
+
+
+  // APi to create Apllication flow for Driver
+  const createApplicationFlow = async () => {
+    setIsLoading(true);
+    try {
+      if (AppFlowId) {
+        const data = { selectedFlowOption };
+        console.log("qwaszdxfcgvhbjnkm", data, AppFlowId)
+        const res = await updateAppFlowAPI(AppFlowId, data)
+        console.log("respone:>>>>", res)
+        setIsLoading(false);
+      } else {
+        const data = { selectedFlowOption };
+        const res = await createAppFlowAPI(data)
+        console.log("respone :>>>>", res)
+        setIsLoading(false);
+      }
+
+    } catch (error) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  }
 
 
   const columns = [
-   columnHelper.accessor("breakingPointName", {
-          id: "breakingPointName",
-          header: () => (
-            <p className="text-sm font-bold text-gray-600 dark:text-white">
-              Flow Name
-            </p>
-          ),
-          cell: (info) => (
-            <p className="text-sm font-bold text-navy-700 dark:text-white ">
-              {info.getValue()}
-            </p>
-          ),
-        }),
-        columnHelper.accessor("sqeuenceNo", {
-          id: " sqeuenceNo",
-          header: () => (
-            <p className="text-sm font-bold text-gray-600 dark:text-white">
-              Sequence No.
-            </p>
-          ),
-          cell: (info) => (
-            <p className="text-sm font-bold text-navy-700 dark:text-white">
-              {info.getValue()}
-            </p>
-          ),
-        }),
+    columnHelper.accessor("breakingPointName", {
+      id: "breakingPointName",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Flow Name
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white ">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("sqeuenceNo", {
+      id: " sqeuenceNo",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          Sequence No.
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
 
     columnHelper.accessor("action", {
       id: "action",
@@ -66,23 +146,23 @@ function ColumnsTable(props) {
         </p>
       ),
       cell: (info) => {
-        console.log("info",info.row.original.action.id)
-        return(
-        <div className="flex items-center">
-          <div className="cursor-pointer">
-            <img
-              src={ButtonEdit}
-              style={{ marginRight: "8px" }}
-              onClick={() => handleUpdate(info.row.original.action.id)}
-            />
-          </div>
-          <div className="cursor-pointer">
-            <img
-              src={deleteIcon}
-              onClick={() => handleClickForDeleteModal(info.row.original)}
-            />
-          </div>
-        </div>)
+        console.log("info", info.row.original.action.id)
+        return (
+          <div className="flex items-center">
+            <div className="cursor-pointer">
+              <img
+                src={ButtonEdit}
+                style={{ marginRight: "8px" }}
+                onClick={() => handleUpdate(info.row.original.action.id)}
+              />
+            </div>
+            <div className="cursor-pointer">
+              <img
+                src={deleteIcon}
+                onClick={() => handleClickForDeleteModal(info.row.original)}
+              />
+            </div>
+          </div>)
       },
     }),
   ]; // eslint-disable-next-line
@@ -100,115 +180,153 @@ function ColumnsTable(props) {
   });
 
   useEffect(() => {
+    getApplicationFlow()
     setData([...tableData]);
   }, [tableData]);
 
   // useEffect(() => { }, []);
 
   return (
-<>
-<Navbar flag={false} brandText="Settings" />
-{loading ? (
-  <Loader />
-) : (
-  <>
-    <Card extra="w-full mt-4 pb-10 p-4 h-full">
-      <header className="relative flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
-          Add Flows
-        </div>
-        <div>
-          <button
-            className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
-            type="submit"
-            onClick={() => navigate("/admin/settings/flow-form")}
-          >
-            Add Flows
-          </button>
-        </div>
-      </header>
+    <>
+      <Navbar flag={false} brandText="Settings" />
+      {loading ? (
+        <Loader />
+      ) : (
+        <>
+          <Card extra="w-full mt-4 pb-10 p-4 h-full">
+            {isLoading ? ( 
+            <Loader /> ):
+            (
+            <div className="mb-5">
+              <label
+                htmlFor="flow"
+                className="input-custom-label dark:text-white"
+              >
+                Choose Application Flow
+              </label>
+              <div className="justify-between gap-5  w-full">
+                <label htmlFor="default" className="mr-8 ">
+                  <input
+                    type="radio"
+                    id="default"
+                    name="option"
+                    value="default"
+                    checked={selectedFlowOption === "default"}
+                    onChange={handleOptionChange}
+                  />
+                  <label className="ml-2">Default</label>
+                </label>
+                <label htmlFor="custom" className="mr-8">
+                  <input
+                    type="radio"
+                    id="custom"
+                    name="option"
+                    value="custom"
+                    checked={selectedFlowOption === "custom"}
+                    onChange={handleOptionChange}
+                  />
+                  <label className="ml-2">Custom</label>
+                </label>
+                <button onClick={() => createApplicationFlow()} className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0">Save Flow</button>
+              </div>
+            </div>
+            )}
+            <header className="relative flex items-center justify-between">
+              <div className="text-xl font-bold text-navy-700 dark:text-white">
+                Add Flows
+              </div>
+              <div>
+                <button
+                  className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
+                  type="submit"
+                  onClick={() => navigate("/admin/settings/flow-form")}
+                >
+                  Add Flows
+                </button>
+              </div>
+            </header>
 
-      <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">
-        <table className="w-full">
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id} className="!border-px !border-gray-400">
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <th
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
-                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
-                    >
-                      <div className="flex gap-4 text-xs text-gray-200 text-left">
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                        {
-                          <>
-                            {header.column.getIsSorted() === "asc" ? (
-                              <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
-                            ) : header.column.getIsSorted() === "desc" ? (
-                              <FaCaretDown size={20} className="text-gray-600 font-bold" />
-                            ) : (
-                              <div className="flex mr-[-6]">
-                                <FaCaretDown size={20} className="text-gray-600 font-bold" />
-                              </div>
-                            )}
-                          </>
-                        }
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
-          </thead>
-          {tableData.length == 0 ? (
-            <tbody>
-              <tr>
-                <td colSpan={columns.length} style={{ textAlign: "center" }}>
-                  <h2 className="m-4" style={{ fontSize: "30px" }}>
-                    No Results!
-                  </h2>
-                </td>
-              </tr>
-            </tbody>
-          ) : (
-            <tbody>
-              {table
-                .getRowModel()
-                .rows?.slice(0, 10)
-                .map((row) => {
-                  // console.log("object row :>> ", row);
-                  return (
-                    <tr key={row.id}>
-                      {row.getVisibleCells().map((cell) => {
+            <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">
+              <table className="w-full">
+                <thead>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id} className="!border-px !border-gray-400">
+                      {headerGroup.headers.map((header) => {
                         return (
-                          <td
-                            key={cell.id}
-                            className="min-w-[135px] border-white/0 py-3 pr-4 text-start"
+                          <th
+                            key={header.id}
+                            colSpan={header.colSpan}
+                            onClick={header.column.getToggleSortingHandler()}
+                            className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                           >
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </td>
+                            <div className="flex gap-4 text-xs text-gray-200 text-left">
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {
+                                <>
+                                  {header.column.getIsSorted() === "asc" ? (
+                                    <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
+                                  ) : header.column.getIsSorted() === "desc" ? (
+                                    <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                                  ) : (
+                                    <div className="flex mr-[-6]">
+                                      <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                                    </div>
+                                  )}
+                                </>
+                              }
+                            </div>
+                          </th>
                         );
                       })}
                     </tr>
-                  );
-                })}
-            </tbody>
-          )}
-        </table>
-      </div>
-    </Card>
-  </>
-)}
-</>
+                  ))}
+                </thead>
+                {tableData.length == 0 ? (
+                  <tbody>
+                    <tr>
+                      <td colSpan={columns.length} style={{ textAlign: "center" }}>
+                        <h2 className="m-4" style={{ fontSize: "30px" }}>
+                          No Results!
+                        </h2>
+                      </td>
+                    </tr>
+                  </tbody>
+                ) : (
+                  <tbody>
+                    {table
+                      .getRowModel()
+                      .rows?.slice(0, 10)
+                      .map((row) => {
+                        // console.log("object row :>> ", row);
+                        return (
+                          <tr key={row.id}>
+                            {row.getVisibleCells().map((cell) => {
+                              return (
+                                <td
+                                  key={cell.id}
+                                  className="min-w-[135px] border-white/0 py-3 pr-4 text-start"
+                                >
+                                  {flexRender(
+                                    cell.column.columnDef.cell,
+                                    cell.getContext()
+                                  )}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                )}
+              </table>
+            </div>
+          </Card>
+        </>
+      )}
+    </>
   );
 }
 
