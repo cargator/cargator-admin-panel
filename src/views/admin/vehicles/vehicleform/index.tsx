@@ -135,9 +135,9 @@ const VehicleForm: React.FC = () => {
   const [vehicleMake, setVehicleMake] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleModel, setVehicleModel] = useState("");
-  const [isdocuments, setIsDocuments] = useState(params.id ? false : true);
+  const [isdocuments, setIsDocuments] = useState(params.id ? false : false);
   const [isProfileImage, setIsProfileImage] = useState(
-    params.id ? false : true
+    params.id ? false : false
   );
   const anchorRefs = useRef(Array(finalDocArray.length).fill(null));
 
@@ -161,48 +161,48 @@ const VehicleForm: React.FC = () => {
     vehicleType: Yup.string().required("Vehicle type is required"),
     image: isProfileImage
       ? Yup.mixed()
-          // .nullable()
-          .required("A file is required")
-          .test(
-            "fileSize",
-            "Please upload file below 1 MB size",
-            (value: any) => {
-              return value && value.size <= FILE_SIZE;
-            }
-          )
-          .test(
-            "fileFormat",
-            "Unsupported Format",
-            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-          )
+        // .nullable()
+        .required("A file is required")
+        .test(
+          "fileSize",
+          "Please upload file below 1 MB size",
+          (value: any) => {
+            return value && value.size <= FILE_SIZE;
+          }
+        )
+        .test(
+          "fileFormat",
+          "Unsupported Format",
+          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+        )
       : Yup.mixed(),
     documents: isdocuments
       ? Yup.mixed()
-          .required("A file is required")
-          .test("fileSizeDoc", "File too large", (value: any) => {
-            let add = 0;
-            let i = value?.length - 1;
-            while (i >= 0) {
-              add = add + value[i]?.size;
-              i--;
-            }
-            return value && add <= FILE_SIZE_DOC;
-          })
-          .test("fileFormat", "Unsupported Format", (value: any) => {
-            let i = value?.length - 1;
-            while (i >= 0) {
-              if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
-                if (i === 0) {
-                  return (
-                    value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
-                  );
-                }
-              } else {
-                return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+        .required("A file is required")
+        .test("fileSizeDoc", "File too large", (value: any) => {
+          let add = 0;
+          let i = value?.length - 1;
+          while (i >= 0) {
+            add = add + value[i]?.size;
+            i--;
+          }
+          return value && add <= FILE_SIZE_DOC;
+        })
+        .test("fileFormat", "Unsupported Format", (value: any) => {
+          let i = value?.length - 1;
+          while (i >= 0) {
+            if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
+              if (i === 0) {
+                return (
+                  value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
+                );
               }
-              i--;
+            } else {
+              return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
             }
-          })
+            i--;
+          }
+        })
       : Yup.mixed(),
   });
 
@@ -335,27 +335,36 @@ const VehicleForm: React.FC = () => {
         let res, res1;
         let docsKey: any = [];
         {
-          const key = finalProfileImage.key;
+          // if(!_isEmpty(values.image)){
+          const key = finalProfileImage?.key;
+          console.log("finalProfileImage?.key", finalProfileImage?.key)
           const contentType = "image/*";
           const type = "put";
-          const data: any = await getS3SignUrl(key, contentType, type);
+          if (key !== undefined) {
+            const data: any = await getS3SignUrl(key, contentType, type);
 
-          if (data.url) {
-            res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
+            if (data?.url) {
+              res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
+            }
           }
-        }
 
+          // }
+        }
+        console.log("ertyuiuytrtyuiytyuiytyuyt")
         {
           finalDocArray.forEach(async (ele) => {
-            const key = ele.key;
+            const key = ele?.key;
             docsKey.push(key);
             const contentType = "application/pdf";
             const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
+            if(key !== undefined){
+              const data: any = await getS3SignUrl(key, contentType, type);
 
-            if (data.url) {
-              res1 = await pushProfilePhotoToS3(data.url, ele.file);
+              if (data?.url) {
+                res1 = await pushProfilePhotoToS3(data.url, ele.file);
+              }
             }
+           
           });
         }
 
@@ -365,7 +374,7 @@ const VehicleForm: React.FC = () => {
           vehicleType: values.vehicleType,
           vehicleMake: values.vehicleMake,
           vehicleModel: values.vehicleModel,
-          profileImageKey: finalProfileImage.key,
+          profileImageKey: finalProfileImage?.key,
           documentsKey: docsKey,
         });
         console.log("result :>> ", result);
@@ -390,7 +399,7 @@ const VehicleForm: React.FC = () => {
     try {
       const res: any = await getVehicleByIdApi(id);
       let docsURLandkeyarray = [];
-      console.log("res",res)
+      console.log("res", res)
 
       console.log("res  :>> ", res);
 
@@ -507,7 +516,7 @@ const VehicleForm: React.FC = () => {
   const getVehicleTypes = async () => {
     try {
       const res = await getVehicleTypeList();
-      console.log("res",res.data);
+      console.log("res", res.data);
       if (!res) {
         errorToast("Vehicles Types not available");
       }
@@ -659,17 +668,17 @@ const VehicleForm: React.FC = () => {
                         id="vehicleModel"
                         onBlur={handleBlur}
                         onChange={(e: any) => {
-                          console.log("e",e.value)
-                          setFieldValue("vehicleModel",e.value)
+                          console.log("e", e.value)
+                          setFieldValue("vehicleModel", e.value)
                           if (e.value) {
                             allAvailableVehiclesTypes.map((data: any) => {
                               if (data.vehicleModel === e.value) {
-                                console.log("data.vehicleType",data.vehicleType)
-                                setFieldValue('vehicleMake',data.vehicleMake)
-                                setFieldValue('vehicleType',data.vehicleType)
+                                console.log("data.vehicleType", data.vehicleType)
+                                setFieldValue('vehicleMake', data.vehicleMake)
+                                setFieldValue('vehicleType', data.vehicleType)
                               }
                             });
-                          } 
+                          }
                         }}
                         value={options.filter(function (option: any) {
                           return option.value == values.vehicleModel;
@@ -708,7 +717,7 @@ const VehicleForm: React.FC = () => {
                       ) : null}
                     </div>
                     <div className="mb-3 ms-6 w-full">
-                    <label
+                      <label
                         htmlFor="firstName"
                         className="input-custom-label dark:text-white"
                       >
@@ -741,7 +750,7 @@ const VehicleForm: React.FC = () => {
                       >
                         {t("Vehicle Type")}
                       </label>
-                       <input
+                      <input
                         className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
                         required
                         name="vehicleType"

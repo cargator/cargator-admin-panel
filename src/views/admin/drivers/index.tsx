@@ -465,8 +465,8 @@ const Drivers = () => {
                           }
                         >
                           {selectedItem.action.driverStatus == "active"
-                            ? "Block"
-                            : "Unblock"}
+                            ? "Unassign"
+                            : "Assign"}
                         </Button>
                       )}
                     </div>
