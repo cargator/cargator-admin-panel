@@ -139,6 +139,7 @@ const VehicleForm: React.FC = () => {
   const [isProfileImage, setIsProfileImage] = useState(
     params.id ? false : false
   );
+  const [isImageFile, setIsImageFile] = useState<boolean>(false)
   const anchorRefs = useRef(Array(finalDocArray.length).fill(null));
 
   const FILE_SIZE = 1024 * 1024;
@@ -259,19 +260,21 @@ const VehicleForm: React.FC = () => {
     try {
       if (params.id) {
         let res, res1;
-        if (finalProfileImage.url === "") {
+        if (finalProfileImage?.url === "") {
           // console.log("image key to upload :>> ", finalProfileImage.url);
           {
-            const key = finalProfileImage.key;
+            const key = finalProfileImage?.key;
             console.log("image key to upload :>> ", key);
             const contentType = "image/*";
             const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
-            if (data.url) {
-              res = await pushProfilePhotoToS3(
-                data.url,
-                finalProfileImage.file
-              );
+            if(key !== undefined){
+              const data: any = await getS3SignUrl(key, contentType, type);
+              if (data.url) {
+                res = await pushProfilePhotoToS3(
+                  data?.url,
+                  finalProfileImage?.file
+                );
+              }
             }
             if (initialProfileImage) {
               const response = deleteObjectFromS3Api({
@@ -283,35 +286,38 @@ const VehicleForm: React.FC = () => {
 
         let docKey: any = [];
         finalDocArray.forEach(async (ele) => {
-          docKey.push(ele.key);
+          docKey.push(ele?.key);
           if (ele?.file) {
-            console.log("docs key to upload :>> ", ele.key);
-            const key = ele.key;
-            console.log("docs key to upload :>> ", key);
+            // console.log("docs key to upload :>> ", ele?.key);
+            const key = ele?.key;
+            // console.log("docs key to upload :>> ", key);
             const contentType = "application/pdf";
             const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
+            if (key !== undefined) {
+              const data: any = await getS3SignUrl(key, contentType, type);
 
             if (data.url) {
-              res1 = await pushProfilePhotoToS3(data.url, ele.file);
+              res1 = await pushProfilePhotoToS3(data?.url, ele.file);
               if (res1.status === 200) {
                 console.log("uploaded correctly ");
               }
             }
+            }
+            
           }
         });
 
         for (const item of initialDocArray) {
           if (!finalDocArray.includes(item)) {
-            console.log("docs key to delete :>> ", item);
+            // console.log("docs key to delete :>> ", item);
             const res = deleteObjectFromS3Api({
               key: item.key,
             });
           }
         }
 
-        console.log("docs key db:>> ", docKey);
-        console.log("image key db:>> ", finalProfileImage.key);
+        // console.log("docs key db:>> ", docKey);
+        // console.log("image key db:>> ", finalProfileImage?.key);
 
         const result: any = await handleCreateVehicleApi(params.id, {
           vehicleNumber: values.vehicleNumber,
@@ -319,10 +325,10 @@ const VehicleForm: React.FC = () => {
           vehicleType: values.vehicleType,
           vehicleMake: values.vehicleMake,
           vehicleModel: values.vehicleModel,
-          profileImageKey: finalProfileImage.key,
+          profileImageKey: finalProfileImage?.key,
           documentsKey: docKey,
         });
-        console.log("result :>> ", result);
+        // console.log("result :>> ", result);
 
         if (result.message) {
           successToast("Vehicle Updated Successfully");
@@ -335,9 +341,7 @@ const VehicleForm: React.FC = () => {
         let res, res1;
         let docsKey: any = [];
         {
-          // if(!_isEmpty(values.image)){
           const key = finalProfileImage?.key;
-          console.log("finalProfileImage?.key", finalProfileImage?.key)
           const contentType = "image/*";
           const type = "put";
           if (key !== undefined) {
@@ -347,10 +351,7 @@ const VehicleForm: React.FC = () => {
               res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
             }
           }
-
-          // }
         }
-        console.log("ertyuiuytrtyuiytyuiytyuyt")
         {
           finalDocArray.forEach(async (ele) => {
             const key = ele?.key;
@@ -377,7 +378,7 @@ const VehicleForm: React.FC = () => {
           profileImageKey: finalProfileImage?.key,
           documentsKey: docsKey,
         });
-        console.log("result :>> ", result);
+        // console.log("result :>> ", result);
         if (result.message) {
           successToast("Vehicle Created Successfully");
           navigate("/admin/vehicles");
@@ -399,7 +400,6 @@ const VehicleForm: React.FC = () => {
     try {
       const res: any = await getVehicleByIdApi(id);
       let docsURLandkeyarray = [];
-      console.log("res", res)
 
       console.log("res  :>> ", res);
 
@@ -858,6 +858,7 @@ const VehicleForm: React.FC = () => {
                                   file: file,
                                 });
                                 if (file) {
+                                  setIsImageFile(true);
                                   const reader = new FileReader();
                                   reader.onload = (e) => {
                                     setImagePreview(e.target.result);

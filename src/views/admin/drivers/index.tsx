@@ -426,8 +426,8 @@ const Drivers = () => {
                     ) : (
                       <ModalBody className="text-center">
                         {selectedItem.action.driverStatus == "active"
-                          ? "Are you sure you want to Block ?"
-                          : "Are you sure you want to Unblock ?"}
+                          ? "Are you sure you want to Unassign ?"
+                          : "Are you sure you want to Assign ?"}
                         <br />
                         {'"' + selectedItem.fullName.name + '"'}
                       </ModalBody>
