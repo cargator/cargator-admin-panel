@@ -59,7 +59,7 @@ const routes = [
     secondary: true,
   },
   {
-    name: "Operators",
+    name: "Drivers",
     layout: "/admin",
     path: "drivers",
     icon: <GiSteeringWheel className="h-6 w-6" />,

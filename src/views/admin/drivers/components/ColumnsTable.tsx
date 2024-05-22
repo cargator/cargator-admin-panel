@@ -192,7 +192,7 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          {info.getValue()?.driverStatus === "active" ? (
+          {/* {info.getValue()?.driverStatus === "active" ? (
             <div className="cursor-pointer">
               <img
                 style={{ marginRight: "8px", marginLeft: "5px" }}
@@ -212,7 +212,7 @@ function ColumnsTable(props: {
                 }}
               />
             </div>
-          )}
+          )} */}
 
           <div className="cursor-pointer">
             <img
@@ -256,7 +256,7 @@ function ColumnsTable(props: {
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          {t("Operators")}
+          {t("Drivers")}
         </div>
         <div>
           <button
@@ -264,7 +264,7 @@ function ColumnsTable(props: {
             type="submit"
             onClick={() => navigate("/admin/drivers/driverform")}
           >
-            {t("Add Operator")}
+            {t("Add Driver")}
           </button>
         </div>
         {/* <CardMenu /> */}
