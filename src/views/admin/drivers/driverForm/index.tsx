@@ -579,11 +579,11 @@ const DriverForm = () => {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Operators
+                Edit Drivers
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Operators
+                Add Drivers
               </div>
             )}
           </header>

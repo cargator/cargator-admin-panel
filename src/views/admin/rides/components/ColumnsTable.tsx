@@ -110,7 +110,7 @@ function ColumnsTable(props: {
       id: "DriverMobileNum",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Operator Mobile No.")}
+          {t("Driver Mobile No.")}
         </p>
       ),
       cell: (info) => (
