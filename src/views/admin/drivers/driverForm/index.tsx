@@ -35,7 +35,7 @@ const Logger = (props: any): JSX.Element => {
   const firstRender = useRef(true);
   const formik = useFormikContext<any>();
   const params = useParams();
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
   React.useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
@@ -58,7 +58,13 @@ const Logger = (props: any): JSX.Element => {
     if (firstRender.current) {
       firstRender.current = false;
     } else {
-      if (formik.values?.vehicleNumber) {
+      if (formik.values?.vehicleNumber === "none") {
+        formik.values.vehicleType = "none";
+        formik.values.vehicleName = "none";
+        setVehicleName("None");
+        setVehicleType("None");
+        
+      } else {
         allAvailableVehicles.map((data: any) => {
           if (data.vehicleNumber === formik.values.vehicleNumber) {
             formik.values.vehicleType = data.vehicleType;
@@ -67,7 +73,6 @@ const Logger = (props: any): JSX.Element => {
             setVehicleType(data.vehicleType);
           }
         });
-      } else {
       }
     }
   }, [formik.values?.vehicleNumber]);
@@ -136,9 +141,9 @@ const DriverForm = () => {
   const [initialDocArray, setInitialDocArray] = useState<any>([]);
   const [finalProfileImage, setFinalProfileImage] = useState<profImage>();
   const [finalDocArray, setFinalDocArray] = useState<docState>([]);
-  const [isdocuments, setIsDocuments] = useState(params.id ? false : true);
+  const [isdocuments, setIsDocuments] = useState(params.id ? false : false);
   const [isProfileImage, setIsProfileImage] = useState(
-    params.id ? false : true
+    params.id ? false : false
   );
   const anchorRefs = useRef(Array(finalDocArray.length).fill(null));
 
@@ -159,61 +164,61 @@ const DriverForm = () => {
       .min(10, t("Mobile Number must be 10 digits only."))
       .max(10, t("Mobile Number must be 10 digits only."))
       .required(t("Mobile number is Required")),
-      vehicleNumber: Yup.string()
-      .min(10, "Vehicle Number must be 10 digits only.")
-      .max(10, "Vehicle Number must be 10 digits only.")
-      .matches(
-        /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
-        "Vehicle Number must follow the pattern: XX99XX9999"
-      )
-      // .required(t("Vehicle number is required"))
-      ,
+    // vehicleNumber: Yup.string()
+    // .min(10, "Vehicle Number must be 10 digits only.")
+    // .max(10, "Vehicle Number must be 10 digits only.")
+    // .matches(
+    //   /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
+    //   "Vehicle Number must follow the pattern: XX99XX9999"
+    // )
+    // // .required(t("Vehicle number is required"))
+    // ,
     // vehicleType: Yup.string().required(t("Vehicle type is required")),
     // vehicleName: Yup.string().required(t("Vehicle name is required")),  
     image: isProfileImage
       ? Yup.mixed()
-          // .nullable()
-          .required(t("A file is required"))
-          .test(
-            "fileSize",
-            t("Please upload file below 1 MB size"),
-            (value: any) => {
-              return value && value.size <= FILE_SIZE;
-            }
-          )
-          .test(
-            "fileFormat",
-            t("Unsupported Format"),
-            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-          )
+        // .nullable()
+        .required(t("A file is required"))
+        .test(
+          "fileSize",
+          t("Please upload file below 1 MB size"),
+          (value: any) => {
+            return value && value.size <= FILE_SIZE;
+          }
+        )
+        .test(
+          "fileFormat",
+          t("Unsupported Format"),
+          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+        )
       : Yup.mixed(),
     documents: isdocuments
       ? Yup.mixed()
-          .required(t("A file is required"))
-          .test("fileSizeDoc", t("File too large"), (value: any) => {
-            let add = 0;
-            let i = value?.length - 1;
-            while (i >= 0) {
-              add = add + value[i]?.size;
-              i--;
-            }
-            return value && add <= FILE_SIZE_DOC;
-          })
-          .test("fileFormat", t("Unsupported Format"), (value: any) => {
-            let i = value?.length - 1;
-            while (i >= 0) {
-              if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
-                if (i === 0) {
-                  return (
-                    value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
-                  );
-                }
-              } else {
-                return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+        .required(t("A file is required"))
+        .test("fileSizeDoc", t("File too large"), (value: any) => {
+          let add = 0;
+          let i = value?.length - 1;
+          while (i >= 0) {
+            add = add + value[i]?.size;
+            i--;
+          }
+          return value && add <= FILE_SIZE_DOC;
+        })
+        .test("fileFormat", t("Unsupported Format"), (value: any) => {
+          let i = value?.length - 1;
+          while (i >= 0) {
+            if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
+              if (i === 0) {
+                return (
+                  value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
+                );
               }
-              i--;
+            } else {
+              return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
             }
-          })
+            i--;
+          }
+        })
       : Yup.mixed(),
     // .nullable()
   });
@@ -249,6 +254,7 @@ const DriverForm = () => {
 
   const getAvailableVehicles = async () => {
     try {
+      console.log("hhhooooooooooooooooooooooooooooooo")
       const res = await getAvailableVehiclesApi();
       if (!res) {
         errorToast("Vehicles not available");
@@ -281,7 +287,7 @@ const DriverForm = () => {
   }
 
   async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
-    console.log("-----------",presignedUrl   , uploadPhoto)
+    console.log("-----------", presignedUrl, uploadPhoto)
     const response = await axios.put(presignedUrl, uploadPhoto);
     console.log("pushProfilePhotoToS3  :>> ", response);
     return response;
@@ -294,22 +300,23 @@ const DriverForm = () => {
     try {
       if (params.id) {
         let res, res1;
-        if (finalProfileImage.url === "") {
-          // console.log("image key to upload :>> ", finalProfileImage.url);
+        if (finalProfileImage?.url === "") {
+          console.log("image key to upload :>> ", finalProfileImage?.url);
           {
-            const key = finalProfileImage.key;
+            const key = finalProfileImage?.key;
             console.log("image key to upload :>> ", key);
             const contentType = "image/*";
             const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
-            if (data.url) {
-              res = await pushProfilePhotoToS3(
-                data.url,
-                finalProfileImage.file
-              );
-
-              console.log("------------- " ,res.data)
+            if(key !== undefined){
+              const data: any = await getS3SignUrl(key, contentType, type);
+              if (data.url) {
+                res = await pushProfilePhotoToS3(
+                  data.url,
+                  finalProfileImage.file
+                );
+              }
             }
+           
             if (initialProfileImage) {
               const response = deleteObjectFromS3Api({
                 key: initialProfileImage?.key,
@@ -320,19 +327,21 @@ const DriverForm = () => {
 
         let docKey: any = [];
         finalDocArray.forEach(async (ele) => {
-          docKey.push(ele.key);
+          docKey.push(ele?.key);
           if (ele?.file) {
-            console.log("docs key to upload :>> ", ele.key);
-            const key = ele.key;
+            console.log("docs key to upload :>> ", ele?.key);
+            const key = ele?.key;
             console.log("docs key to upload :>> ", key);
             const contentType = "application/pdf";
             const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
+            if(key !== undefined){
+              const data: any = await getS3SignUrl(key, contentType, type);
 
-            if (data.url) {
-              res1 = await pushProfilePhotoToS3(data.url, ele.file);
-              if (res1.status === 200) {
-                console.log("uploaded correctly ");
+              if (data?.url) {
+                res1 = await pushProfilePhotoToS3(data?.url, ele?.file);
+                if (res1.status === 200) {
+                  console.log("uploaded correctly ");
+                }
               }
             }
           }
@@ -348,7 +357,7 @@ const DriverForm = () => {
         }
 
         console.log("docs key db:>> ", docKey);
-        console.log("image key db:>> ", finalProfileImage.key);
+        console.log("image key db:>> ", finalProfileImage?.key);
 
         const result: any = await handleCreateDriverApi(params.id, {
           firstName: values.firstName,
@@ -357,7 +366,7 @@ const DriverForm = () => {
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
           vehicleType: values.vehicleType,
-          profileImageKey: finalProfileImage.key,
+          profileImageKey: finalProfileImage?.key,
           documentsKey: docKey,
         });
 
@@ -372,27 +381,33 @@ const DriverForm = () => {
         let res, res1;
         let docsKey: any = [];
         {
-          const key = finalProfileImage.key;
+          const key = finalProfileImage?.key;
           const contentType = "image/png";
           const type = "put";
-          const data: any = await getS3SignUrl(key, contentType, type);
+          if(key !== undefined){
+            const data: any = await getS3SignUrl(key, contentType, type);
 
-          if (data.url) {
-            res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
+            if (data.url) {
+              res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
+            }
           }
+        
         }
 
         {
           finalDocArray.forEach(async (ele) => {
-            const key = ele.key;
+            const key = ele?.key;
             docsKey.push(key);
             const contentType = "application/pdf";
             const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
+            if(key !== undefined){
+              const data: any = await getS3SignUrl(key, contentType, type);
 
-            if (data.url) {
-              res1 = await pushProfilePhotoToS3(data.url, ele.file);
+              if (data.url) {
+                res1 = await pushProfilePhotoToS3(data.url, ele.file);
+              }
             }
+           
           });
         }
 
@@ -405,7 +420,7 @@ const DriverForm = () => {
           vehicleMake: values.vehicleMake,
           vehicleModel: values.vehicleModel,
           vehicleType: values.vehicleType,
-          profileImageKey: finalProfileImage.key,
+          profileImageKey: finalProfileImage?.key,
           documentsKey: docsKey,
         });
 
@@ -656,7 +671,7 @@ const DriverForm = () => {
                         htmlFor="mobileNumber"
                         className="input-custom-label dark:text-white"
                       >
-                       {t("Mobile Number")}
+                        {t("Mobile Number")}
                       </label>
                       <input
                         required
@@ -683,7 +698,7 @@ const DriverForm = () => {
                         {t("Vehicle Number")}
                       </label>
                       <Select
-                        options={options}
+                        options={[{ value: "none", label: "None" }, ...options]}
                         id="vehicleNumber"
                         name="vehicleNumber"
                         onBlur={handleBlur}
@@ -691,9 +706,7 @@ const DriverForm = () => {
                           setVehicleNumber(e.value);
                           values.vehicleNumber = e.value;
                         }}
-                        value={options.filter(function (option: any) {
-                          return option.value == vehicleNumber;
-                        })}
+                        value={options.find((option: any) => option.value === vehicleNumber) || { value: "none", label: "None" }}
                         styles={{
                           // Fixes the overlapping problem of the component
                           menu: (provided: any) => ({

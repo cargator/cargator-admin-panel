@@ -300,7 +300,7 @@ const RideView = () => {
                   paddingBottom: "8px",
                 }}
               >
-                Operators
+                Drivers
               </div>
               <div className="grid grid-cols-8 gap-2 pb-3">
                 <div className="col-span-2">

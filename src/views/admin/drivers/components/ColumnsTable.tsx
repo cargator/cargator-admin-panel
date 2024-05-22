@@ -192,7 +192,7 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          {info.getValue()?.driverStatus === "active" ? (
+          {/* {info.getValue()?.driverStatus === "active" ? (
             <div className="cursor-pointer">
               <img
                 style={{ marginRight: "8px", marginLeft: "5px" }}
@@ -212,7 +212,7 @@ function ColumnsTable(props: {
                 }}
               />
             </div>
-          )}
+          )} */}
 
           <div className="cursor-pointer">
             <img
