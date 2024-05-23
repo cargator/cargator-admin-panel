@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../components/card";
 import Select from "react-select";
 import { Button } from "@chakra-ui/react";
@@ -63,7 +63,7 @@ const Logger = (props: any): JSX.Element => {
         formik.values.vehicleName = "none";
         setVehicleName("None");
         setVehicleType("None");
-        
+
       } else {
         allAvailableVehicles.map((data: any) => {
           if (data.vehicleNumber === formik.values.vehicleNumber) {
@@ -125,12 +125,7 @@ const DriverForm = () => {
     documents: [],
   });
   const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
-  const [options, setOptions] = useState([
-    {
-      value: "",
-      label: "",
-    },
-  ]);
+  const [options, setOptions] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const anchorImageRef = useRef(null);
 
@@ -252,10 +247,14 @@ const DriverForm = () => {
     });
   };
 
+  function modifyVehicleNumber(vehicleNumber:string){
+    return `${vehicleNumber?.substring(0, 2) || ''} ${vehicleNumber?.substring(2, 4) || ''} ${vehicleNumber?.substring(4, 6) || ''} ${vehicleNumber?.substring(6, 10) || ''}`
+  }
+
   const getAvailableVehicles = async () => {
     try {
-      console.log("hhhooooooooooooooooooooooooooooooo")
       const res = await getAvailableVehiclesApi();
+      console.log("res", res.data)
       if (!res) {
         errorToast("Vehicles not available");
       }
@@ -263,7 +262,7 @@ const DriverForm = () => {
         res.data.map((option: any) => {
           return {
             value: option.vehicleNumber,
-            label: option.vehicleNumber,
+            label: modifyVehicleNumber(option.vehicleNumber),
           };
         })
       );
@@ -272,6 +271,10 @@ const DriverForm = () => {
       errorToast(error.response.data.message);
     }
   };
+
+  useEffect(() => {
+    console.log({ options })
+  }, [options])
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {
     const headers = { "Content-Type": "application/json" };
@@ -307,7 +310,7 @@ const DriverForm = () => {
             console.log("image key to upload :>> ", key);
             const contentType = "image/*";
             const type = "put";
-            if(key !== undefined){
+            if (key !== undefined) {
               const data: any = await getS3SignUrl(key, contentType, type);
               if (data.url) {
                 res = await pushProfilePhotoToS3(
@@ -316,7 +319,7 @@ const DriverForm = () => {
                 );
               }
             }
-           
+
             if (initialProfileImage) {
               const response = deleteObjectFromS3Api({
                 key: initialProfileImage?.key,
@@ -334,7 +337,7 @@ const DriverForm = () => {
             console.log("docs key to upload :>> ", key);
             const contentType = "application/pdf";
             const type = "put";
-            if(key !== undefined){
+            if (key !== undefined) {
               const data: any = await getS3SignUrl(key, contentType, type);
 
               if (data?.url) {
@@ -384,14 +387,14 @@ const DriverForm = () => {
           const key = finalProfileImage?.key;
           const contentType = "image/png";
           const type = "put";
-          if(key !== undefined){
+          if (key !== undefined) {
             const data: any = await getS3SignUrl(key, contentType, type);
 
             if (data.url) {
               res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
             }
           }
-        
+
         }
 
         {
@@ -400,14 +403,14 @@ const DriverForm = () => {
             docsKey.push(key);
             const contentType = "application/pdf";
             const type = "put";
-            if(key !== undefined){
+            if (key !== undefined) {
               const data: any = await getS3SignUrl(key, contentType, type);
 
               if (data.url) {
                 res1 = await pushProfilePhotoToS3(data.url, ele.file);
               }
             }
-           
+
           });
         }
 
@@ -545,14 +548,19 @@ const DriverForm = () => {
     setFinalDocArray(newArray);
   };
 
+
+
   React.useEffect(() => {
     if (options && paramData?.vehicleNumber) {
       if (options[options.length - 1]?.value !== paramData.vehicleNumber) {
-        options.push({
+        // options.push({
+        //   value: paramData?.vehicleNumber,
+        //   label: paramData?.vehicleNumber,
+        // });
+        setOptions([...options, {
           value: paramData?.vehicleNumber,
-          label: paramData?.vehicleNumber,
-        });
-        setOptions(options);
+          label: modifyVehicleNumber(paramData.vehicleNumber),
+        }]);
         allAvailableVehicles.push(paramData);
       }
     }
@@ -566,7 +574,7 @@ const DriverForm = () => {
 
   React.useEffect(() => {
     getAvailableVehicles();
-  }, []);
+  }, [vehicleType]);
 
   return (
     <>
