@@ -247,20 +247,22 @@ const DriverForm = () => {
     });
   };
 
+  function modifyVehicleNumber(vehicleNumber:string){
+    return `${vehicleNumber?.substring(0, 2) || ''} ${vehicleNumber?.substring(2, 4) || ''} ${vehicleNumber?.substring(4, 6) || ''} ${vehicleNumber?.substring(6, 10) || ''}`
+  }
+
   const getAvailableVehicles = async () => {
     try {
-      console.log("hhhooooooooooooooooooooooooooooooo")
       const res = await getAvailableVehiclesApi();
       console.log("res", res.data)
       if (!res) {
         errorToast("Vehicles not available");
       }
-      debugger
       setOptions(
         res.data.map((option: any) => {
           return {
             value: option.vehicleNumber,
-            label: option.vehicleNumber,
+            label: modifyVehicleNumber(option.vehicleNumber),
           };
         })
       );
@@ -546,6 +548,8 @@ const DriverForm = () => {
     setFinalDocArray(newArray);
   };
 
+
+
   React.useEffect(() => {
     if (options && paramData?.vehicleNumber) {
       if (options[options.length - 1]?.value !== paramData.vehicleNumber) {
@@ -555,7 +559,7 @@ const DriverForm = () => {
         // });
         setOptions([...options, {
           value: paramData?.vehicleNumber,
-          label: paramData?.vehicleNumber,
+          label: modifyVehicleNumber(paramData.vehicleNumber),
         }]);
         allAvailableVehicles.push(paramData);
       }

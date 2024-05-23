@@ -51,6 +51,7 @@ function ColumnsTable(props: {
 }) {
   const { tableData, handleClickForDeleteModal, handleToggleForStatusMOdal } =
     props;
+    console.log("31425674938274838", tableData)
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const { t } = useTranslation(); 
   const navigate = useNavigate();
@@ -140,7 +141,7 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
+          {info.getValue() === "   " ? "NA" : info.getValue()}
         </p>
       ),
     }),
@@ -153,7 +154,7 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
+          {info.getValue() === "" ? "NA" : info.getValue()}
         </p>
       ),
     }),

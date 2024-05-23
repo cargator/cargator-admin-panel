@@ -176,7 +176,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      {t("Ongoing Trips")}
+                      {t("Ongoing")}
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
@@ -307,7 +307,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      {t("Completed Trips")}
+                      {t("Completed")}
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
