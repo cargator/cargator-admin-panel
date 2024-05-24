@@ -63,7 +63,6 @@ const Logger = (props: any): JSX.Element => {
         formik.values.vehicleName = "none";
         setVehicleName("None");
         setVehicleType("None");
-
       } else {
         allAvailableVehicles.map((data: any) => {
           if (data.vehicleNumber === formik.values.vehicleNumber) {
@@ -486,7 +485,7 @@ const DriverForm = () => {
       setInitialFormValues({
         firstName: res.data.firstName,
         lastName: res.data.lastName,
-        mobileNumber: res.data.mobileNumber,
+        mobileNumber: res.data.mobileNumber.slice(2,12),
         vehicleNumber: res.data.vehicleNumber,
         vehicleType: res.data.vehicleType,
         vehicleName: res.data.vehicleName,
