@@ -486,7 +486,7 @@ const DriverForm = () => {
       setInitialFormValues({
         firstName: res.data.firstName,
         lastName: res.data.lastName,
-        mobileNumber: res.data.mobileNumber,
+        mobileNumber: res.data.mobileNumber.slice(2,12),
         vehicleNumber: res.data.vehicleNumber,
         vehicleType: res.data.vehicleType,
         vehicleName: res.data.vehicleName,
