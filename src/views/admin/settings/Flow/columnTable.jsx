@@ -227,6 +227,17 @@ function ColumnsTable(props) {
                   />
                   <label className="ml-2">Custom</label>
                 </label>
+                <label htmlFor="custom" className="mr-8">
+                  <input
+                    type="radio"
+                    id="petPuja"
+                    name="option"
+                    value="petPuja"
+                    checked={selectedFlowOption === "petPuja"}
+                    onChange={handleOptionChange}
+                  />
+                  <label className="ml-2">PetPuja</label>
+                </label>
                 <button onClick={() => createApplicationFlow()} className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0">Save Flow</button>
               </div>
             </div>
