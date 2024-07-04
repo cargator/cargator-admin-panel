@@ -35,6 +35,7 @@ import CountryCodeForm from "views/admin/settings/countryCodeForm";
 import { HiLocationMarker } from "react-icons/hi";
 import SpotForm from "views/admin/spots/components/SpotForm";
 import Spots from "views/admin/spots";
+import Support from "views/admin/settings/support";
 // import CountryCodeForm from "views/admin/settings/countryCodeForm";
 const routes = [
   {
@@ -107,6 +108,13 @@ const routes = [
     layout: "/admin",
     path: "settings/privacyPolicy",
     component: <PrivacyPolicy/>,
+    secondary: true,
+  },
+  {
+    name: "support",
+    layout: "/admin",
+    path: "settings/support",
+    component: <Support/>,
     secondary: true,
   },
   {
