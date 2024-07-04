@@ -119,6 +119,14 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                  
                     </div>
                   </Link>
+                  <Link
+                    className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
+                    to={route.layout + "/" + "settings" + "/privacyPolicy"}
+                  >
+                    <div>
+                      <span>{t("Privacy Policy")}</span>
+                    </div>
+                  </Link>
                   {/* <Link
                     className="text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={route.layout + "/" + route.path + "/fare"}

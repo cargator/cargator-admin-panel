@@ -29,6 +29,7 @@ import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
 import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import General from "views/admin/settings/general";
+import PrivacyPolicy from "views/admin/settings/privacyPolicy";
 import CountryCode from "views/admin/settings/countryCode/components";
 import CountryCodeForm from "views/admin/settings/countryCodeForm";
 import { HiLocationMarker } from "react-icons/hi";
@@ -99,6 +100,13 @@ const routes = [
     layout: "/admin",
     path: "settings/general",
     component: <General/>,
+    secondary: true,
+  },
+  {
+    name: "privacyPolicy",
+    layout: "/admin",
+    path: "settings/privacyPolicy",
+    component: <PrivacyPolicy/>,
     secondary: true,
   },
   {
