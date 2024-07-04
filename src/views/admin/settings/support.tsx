@@ -30,7 +30,7 @@ function Support() {
                     style={{ color: "blue" }}
                     to={"mailto:beep@cargator.org"}
                   >
-                    beep@sukam-express.org
+                    beep@cargator.org
                   </Link>{" "}
                   with the subject line "Account Deletion Request." In your
                   email, kindly provide the following information:
@@ -66,7 +66,7 @@ function Support() {
             <h2 className="font-bold">Contact Us:</h2>
             <p>
               <Link style={{ color: "blue" }} to={"mailto:beep@cargator.org"}>
-                beep@sukam-express.org
+                beep@cargator.org
               </Link>
             </p>
           </li><br/>
