@@ -11,7 +11,7 @@ function PrivacyPolicy() {
         <li>
           <h2 className="font-bold">Introduction</h2>
           <p>
-            Welcome to CarGator-Delta, a mobile application committed to
+            Welcome to Sukam-Express, a mobile application committed to
             prioritizing user privacy. This Privacy Policy outlines how we
             handle your personal information when you use our services.{" "}
           </p>
@@ -22,7 +22,7 @@ function PrivacyPolicy() {
             <li>
               <h2 className="font-bold">Personal Information</h2>
               <p>
-                When using CarGator-Delta, we may collect specific personal
+                When using Sukam-Express, we may collect specific personal
                 information, including but not limited to: Device information
                 (e.g., device type, operating system)Log data (e.g., access
                 times, IP addresses)Account information
@@ -31,8 +31,7 @@ function PrivacyPolicy() {
             <li>
               <h2 className="font-bold">Usage of Location Data</h2>
               <p>
-                While we do not actively collect user location data, CarGator
-                Delta may request access to your device's location for the sole
+                While we do not actively collect user location data, Sukam-Express may request access to your device's location for the sole
                 purpose of providing you with location-based services. You have
                 the option to deny this access.
               </p>
@@ -70,7 +69,7 @@ function PrivacyPolicy() {
         <li>
           <h2 className="font-bold">Third-Party Services</h2>
           <p>
-            CarGator-Delta may use third-party services that collect, monitor,
+            Sukam-Express may use third-party services that collect, monitor,
             and analyze information. These services have their own privacy
             policies addressing how they use such information.
           </p>
@@ -78,7 +77,7 @@ function PrivacyPolicy() {
         <li>
           <h2 className="font-bold">Consent</h2>
           <p>
-            By using CarGtor-Delta, you consent to the terms outlined in this
+            By using Sukam-Express, you consent to the terms outlined in this
             Privacy Policy.
           </p>
         </li>
