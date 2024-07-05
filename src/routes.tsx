@@ -19,13 +19,14 @@ import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import DriverForm from "views/admin/drivers/driverForm";
 import RideView from "views/admin/rides/rideview";
 import VehicleForm from "views/admin/vehicles/vehicleform";
-import { MdHome, MdBarChart, MdFastfood, MdOutlineShoppingCart, MdPerson, GiSteeringWheel } from "react-icons/md";
+import { MdHome, MdBarChart, MdFastfood, MdOutlineShoppingCart, MdPerson, MdTwoWheeler } from "react-icons/md";
 import { HiLocationMarker } from "react-icons/hi";
 import { BsChatLeftText } from "react-icons/bs";
 import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
 import Riders from "views/admin/riders";
 import Rides from "views/admin/rides";
 import Drivers from "views/admin/drivers";
+import Orders from "views/admin/orders";
 
 export interface RoutesType {
   name: string;
@@ -63,7 +64,7 @@ const authenticatedRoutes: RoutesType[] = [
     name: "Drivers",
     layout: "/admin",
     path: "drivers",
-    icon: <GiSteeringWheel className="h-6 w-6" />,
+    icon: <MdTwoWheeler className="h-6 w-6" />,
     component: <Drivers />,
     // secondary: true,
   },
@@ -81,13 +82,6 @@ const authenticatedRoutes: RoutesType[] = [
     path: "vehicles",
     component: <Vehicles />,
   },
-  // {
-  //   name: "Rides",
-  //   layout: "/admin",
-  //   icon: <GiMountainRoad className="h-6 w-6" />,
-  //   path: "rides",
-  //   component: <Rides />,
-  // },
   {
     name: "Analytics",
     layout: "/admin",
@@ -101,6 +95,13 @@ const authenticatedRoutes: RoutesType[] = [
     path: "settings/general",
     component: <General/>,
     secondary: true,
+  },
+  {
+    name: "Orders",
+    layout: "/admin",
+    path: "order",
+    icon: <MdFastfood className="h-6 w-6" />,
+    component: <Orders />,
   },
   {
     name: "privacyPolicy",
