@@ -11,3 +11,10 @@ export const vehicleType = [
   { value: 'Sedan', label: 'Sedan' },
   { value: 'SUV', label: 'SUV' },
 ]
+
+export const orderStatusOptions = [
+  { value: "all", label: "All Orders" },
+  { value: "current-order", label: ("Ongoing Order") },
+  { value: "completed", label: "Completed Order" },
+  { value: "cancelled", label: "Cancelled Order" },
+];

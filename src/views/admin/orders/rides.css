@@ -1,0 +1,45 @@
+.pagination {
+  display: flex;
+  box-sizing: border-box;
+  color: #7e8299;
+  box-shadow: none;
+  gap: 0.6rem;
+  padding: 1rem;
+  margin: 0rem, 0rem, 1rem, 1rem;
+}
+
+.previous-page-btn,
+.next-page-btn {
+  background: #ffffff;
+  border-radius: 25%;
+  cursor: pointer;
+}
+
+.page-link {
+  padding: 5px 10px 5px 10px;
+  height: 25px;
+  width: 25px;
+}
+
+.break {
+  color: #7e8299;
+  letter-spacing: 0.1rem;
+}
+
+.page-item.active a {
+  background-color: #5eadff;
+  padding: 5px 10px 5px 10px;
+  border-radius: 25%;
+  color: #ffffff;
+}
+
+.page-item {
+  margin-left: 5px;
+  align-self: center;
+  cursor: pointer;
+}
+
+.custom-select {
+  border-radius: 4px;
+  font-weight: 500;
+}

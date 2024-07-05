@@ -18,8 +18,6 @@ import {
 import Loader from "components/loader/loader";
 import Card from "components/card";
 import { Button } from "@chakra-ui/react";
-import { vehicleType } from "utils/constants";
-import { type } from "os";
 import Navbar from "components/navbar";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
@@ -57,25 +55,6 @@ const Logger = (props: any): JSX.Element => {
       console.log("documents values in logger :>> ", formik.values?.documents);
     }
   }, [formik.values?.documents]);
-
-  // React.useEffect(() => {
-  //   if (firstRender.current) {
-  //     firstRender.current = false;
-  //   } else {
-  //     if (formik.values?.vehicleModel) {
-  //       allAvailableVehiclesTypes.map((data: any) => {
-  //         if (data.vehicleModel === formik.values.vehicleModel) {
-  //           console.log("data.vehicleType",data.vehicleType)
-  //           formik.values.vehicleMake = data.vehicleMake;
-  //           formik.values.vehicleType = data.vehicleType;
-  //           setVehicleMake(data.vehicleMake);
-  //           setVehicleType(data.vehicleType);
-  //         }
-  //       });
-  //     } else {
-  //     }
-  //   }
-  // }, [formik.values?.vehicleModel]);
   return null;
 };
 
@@ -113,6 +92,7 @@ const VehicleForm: React.FC = () => {
     image: {},
     documents: [],
   });
+  
   const [paramData, setParamData] = useState<any>({});
   const [options, setOptions] = useState([
     {

@@ -1,85 +1,78 @@
-import React from "react";
+// RTL.tsx
+
+import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "components/navbar/RTL";
 import Sidebar from "components/sidebar/RTL";
 import Footer from "components/footer/Footer";
-import routes from "routes";
+import { authenticatedRoutes, publicRoutes } from "routes";
 
-export default function RTL() {
+interface RoutesType {
+  name: string;
+  layout: string;
+  path: string;
+  component: React.ReactNode;
+  secondary?: boolean;
+  icon?: JSX.Element;
+}
+
+const RTL: React.FC = () => {
   const location = useLocation();
-  const [open, setOpen] = React.useState(true);
-  const [currentRoute, setCurrentRoute] = React.useState("Main Dashboard");
+  const [open, setOpen] = useState(true);
+  const [currentRoute, setCurrentRoute] = useState("Main Dashboard");
 
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener("resize", () =>
       window.innerWidth < 1200 ? setOpen(false) : setOpen(true)
     );
   }, []);
-  React.useEffect(() => {
-    getActiveRoute(routes);
+
+  useEffect(() => {
+    getActiveRoute([...authenticatedRoutes, ...publicRoutes]);
   }, [location.pathname]);
 
-  const getActiveRoute = (routes: RoutesType[]): string | boolean => {
-    let activeRoute = "RTL";
+  const getActiveRoute = (routes: RoutesType[]): void => {
     for (let i = 0; i < routes.length; i++) {
-      if (
-        window.location.href.indexOf(
-          routes[i].layout + "/" + routes[i].path
-        ) !== -1
-      ) {
+      if (location.pathname.includes(routes[i].layout + "/" + routes[i].path)) {
         setCurrentRoute(routes[i].name);
+        return;
       }
     }
-    return activeRoute;
+    setCurrentRoute("Main Dashboard");
   };
-  const getActiveNavbar = (routes: RoutesType[]): string | boolean => {
-    let activeNavbar = false;
+
+  const getActiveNavbar = (routes: RoutesType[]): boolean => {
     for (let i = 0; i < routes.length; i++) {
-      if (
-        window.location.href.indexOf(routes[i].layout + routes[i].path) !== -1
-      ) {
-        return routes[i].secondary;
+      if (location.pathname.includes(routes[i].layout + routes[i].path)) {
+        return !!routes[i].secondary;
       }
     }
-    return activeNavbar;
+    return false;
   };
-  const getRoutes = (routes: RoutesType[]): any => {
-    return routes.map((prop, key) => {
-      if (prop.layout === "/rtl") {
-        return (
-          <Route path={`/${prop.path}`} element={prop.component} key={key} />
-        );
-      } else {
-        return null;
-      }
-    });
+
+  const getRoutes = (routes: RoutesType[]): JSX.Element[] => {
+    return routes.map((prop, key) => (
+      <Route key={key} path={`/${prop.layout}/${prop.path}`} element={prop.component} />
+    ));
   };
 
   document.documentElement.dir = "rtl";
+
   return (
     <div className="flex h-full w-full">
       <Sidebar open={open} onClose={() => setOpen(false)} />
-      {/* Navbar & Main Content */}
       <div className="h-full w-full bg-lightPrimary dark:!bg-navy-900">
-        {/* Main Content */}
-        <main
-          className={`mx-[12px] h-full flex-none transition-all md:pe-2 xl:mr-[313px]`}
-        >
-          {/* Routes */}
+        <main className={`mx-[12px] h-full flex-none transition-all md:pe-2 xl:mr-[313px]`}>
           <div className="h-full">
             <Navbar
               onOpenSidenav={() => setOpen(true)}
               brandText={currentRoute}
-              secondary={getActiveNavbar(routes)}
+              secondary={getActiveNavbar([...authenticatedRoutes, ...publicRoutes])}
             />
             <div className="pt-5s mx-auto mb-auto h-full min-h-[84vh] p-2 md:pr-2">
               <Routes>
-                {getRoutes(routes)}
-
-                <Route
-                  path="/"
-                  element={<Navigate to="/admin/default" replace />}
-                />
+                {getRoutes([...authenticatedRoutes, ...publicRoutes])}
+                <Route path="/" element={<Navigate to="/admin/default" replace />} />
               </Routes>
             </div>
             <div className="p-3">
@@ -90,4 +83,6 @@ export default function RTL() {
       </div>
     </div>
   );
-}
+};
+
+export default RTL;

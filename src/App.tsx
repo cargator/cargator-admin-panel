@@ -11,18 +11,23 @@ const ProtectedRoute = React.lazy(
 );
 const Login = React.lazy(() => import("./views/login/login"));
 const Register = React.lazy(() => import("./views/register/register"));
-const ResetPassword = React.lazy(() => import('./views/reset-password/resetPass'))
+const ResetPassword = React.lazy(
+  () => import("./views/reset-password/resetPass")
+);
+const PrivacyPolicy = React.lazy(
+  () => import("./views/admin/settings/privacyPolicy")
+);
 
 const CustomRoutes = () => {
   const token = useSelector((store: any) => store.auth.token);
-  console.log("token", token);
 
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Navigate to="/admin" replace />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/privacyPolicy" element={<PrivacyPolicy />} />
+      <Route path="/" element={<Navigate to="/admin" replace />} />
       <Route element={<ProtectedRoute />}>
         <Route path="admin/*" element={<AdminLayout />} />
       </Route>

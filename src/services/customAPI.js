@@ -322,3 +322,10 @@ export const deleteBreakPoints = (id) => {
   return customAxios.delete(`/delete-breakingPoints/${id}`);
 };
 
+export const findOrders = (data) => {
+  return customAxios.get(
+    `/get-order-history?page=${data.page}&limit=${data.limit}&query=${data.query}`
+  );
+};
+
+
