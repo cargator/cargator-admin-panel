@@ -27,6 +27,7 @@ import Riders from "views/admin/riders";
 import Rides from "views/admin/rides";
 import Drivers from "views/admin/drivers";
 import Orders from "views/admin/orders";
+import CreateOrder from "views/admin/orders/components/createOrder";
 
 export interface RoutesType {
   name: string;
@@ -102,6 +103,13 @@ const authenticatedRoutes: RoutesType[] = [
     path: "order",
     icon: <MdFastfood className="h-6 w-6" />,
     component: <Orders />,
+  },
+  {
+    name: "Add Order",
+    layout: "/admin",
+    path: "order/add",
+    component: <CreateOrder />,
+    secondary: true,
   },
   {
     name: "privacyPolicy",

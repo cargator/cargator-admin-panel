@@ -33,65 +33,63 @@ const Logger = (props: any): JSX.Element => {
 function CreateOrder() {
   const initialValues = {
     order_details: {
-      vendor_order_id: '',
-      order_total: '',
-      paid: '',
-      order_source: '',
-      customer_orderId: ''
+      vendor_order_id: "",
+      order_total: "",
+      paid: "",
+      order_source: "",
+      customer_orderId: "",
     },
     pickup_details: {
-      name: '',
-      contact_number: '',
-      latitude: '',
-      longitude: '',
-      address: '',
-      city: ''
+      name: "",
+      contact_number: "",
+      latitude: "",
+      longitude: "",
+      address: "",
+      city: "",
     },
     drop_details: {
-      name: '',
-      contact_number: '',
-      latitude: '',
-      longitude: '',
-      address: '',
-      city: ''
+      name: "",
+      contact_number: "",
+      latitude: "",
+      longitude: "",
+      address: "",
+      city: "",
     },
-    order_items: [
-      { id: '', name: '', quantity: '', price: '' }
-    ]
+    order_items: [{ id: "", name: "", quantity: "", price: "" }],
   };
 
   const orderSchema = Yup.object().shape({
     order_details: Yup.object().shape({
-      vendor_order_id: Yup.string().required('Vendor order ID is required'),
-      order_total: Yup.number().required('Order total is required'),
-      paid: Yup.string().required('Paid status is required'),
-      order_source: Yup.string().required('Order source is required'),
-      customer_orderId: Yup.string().nullable()
+      vendor_order_id: Yup.string().required("Vendor order ID is required"),
+      order_total: Yup.number().required("Order total is required"),
+      paid: Yup.string().required("Paid status is required"),
+      order_source: Yup.string().required("Order source is required"),
+      customer_orderId: Yup.string().nullable(),
     }),
     pickup_details: Yup.object().shape({
-      name: Yup.string().required('Pickup name is required'),
-      contact_number: Yup.string().required('Contact number is required'),
-      latitude: Yup.string().required('Latitude is required'),
-      longitude: Yup.string().required('Longitude is required'),
-      address: Yup.string().required('Address is required'),
-      city: Yup.string().required('City is required')
+      name: Yup.string().required("Pickup name is required"),
+      contact_number: Yup.string().required("Contact number is required"),
+      latitude: Yup.string().required("Latitude is required"),
+      longitude: Yup.string().required("Longitude is required"),
+      address: Yup.string().required("Address is required"),
+      city: Yup.string().required("City is required"),
     }),
     drop_details: Yup.object().shape({
-      name: Yup.string().required('Drop name is required'),
-      contact_number: Yup.string().required('Contact number is required'),
-      latitude: Yup.number().required('Latitude is required'),
-      longitude: Yup.number().required('Longitude is required'),
-      address: Yup.string().required('Address is required'),
-      city: Yup.string().required('City is required')
+      name: Yup.string().required("Drop name is required"),
+      contact_number: Yup.string().required("Contact number is required"),
+      latitude: Yup.number().required("Latitude is required"),
+      longitude: Yup.number().required("Longitude is required"),
+      address: Yup.string().required("Address is required"),
+      city: Yup.string().required("City is required"),
     }),
     order_items: Yup.array().of(
       Yup.object().shape({
-        id: Yup.number().required('Item ID is required'),
-        name: Yup.string().required('Item name is required'),
-        quantity: Yup.number().required('Item quantity is required'),
-        price: Yup.number().required('Item price is required')
+        id: Yup.number().required("Item ID is required"),
+        name: Yup.string().required("Item name is required"),
+        quantity: Yup.number().required("Item quantity is required"),
+        price: Yup.number().required("Item price is required"),
       })
-    )
+    ),
   });
 
   const params = useParams<{ id?: string }>();
@@ -126,142 +124,90 @@ function CreateOrder() {
 
           <div className="p-10 pb-5 pe-20 ps-20">
             <Formik
-              initialValues={initialValues}
+              initialValues={{ ...initialValues, toggle: false }}
               validationSchema={orderSchema}
               onSubmit={(values) => {
                 handleCreateOrder(values);
               }}
             >
-              {({ handleChange, handleBlur, handleSubmit, values }) => (
-                <Form>
-                  <div>
-                    <h3>Order Details</h3>
-                    <div>
-                      <label>Vendor Order ID</label>
-                      <Field name="order_details.vendor_order_id" />
-                      <ErrorMessage name="order_details.vendor_order_id" />
-                    </div>
-                    <div>
-                      <label>Order Total</label>
-                      <Field name="order_details.order_total" type="number" />
-                      <ErrorMessage name="order_details.order_total" />
-                    </div>
-                    <div>
-                      <label>Paid</label>
-                      <Field name="order_details.paid" />
-                      <ErrorMessage name="order_details.paid" />
-                    </div>
-                    <div>
-                      <label>Order Source</label>
-                      <Field name="order_details.order_source" />
-                      <ErrorMessage name="order_details.order_source" />
-                    </div>
-                    <div>
-                      <label>Customer Order ID</label>
-                      <Field name="order_details.customer_orderId" />
-                      <ErrorMessage name="order_details.customer_orderId" />
-                    </div>
-                  </div>
+              {({ handleChange, handleBlur, handleSubmit, values }) => {
+                return (
+                  <Form>
+                    <div className="flex flex-grow gap-3">
+                      <div className="w-full">
+                        <div>
+                          <label className="mb-2 font-bold text-gray-800">
+                            Order Details
+                          </label>
+                          <div className="grid grid-cols-3 gap-3">
+                            <div className="mb-5">
+                              <label
+                                htmlFor="orderId"
+                                className="mb-2 block font-medium text-gray-800"
+                              >
+                                Order ID
+                                <span className="text-red-500"> * </span>
+                              </label>
+                              <Field
+                                type="text"
+                                name="orderId"
+                                id="orderId"
+                                placeholder="Enter Order ID"
+                                className="w-full rounded-lg border-2 border-gray-200 p-2 hover:border-gray-500 focus:border-gray-500"
+                              />
+                              <ErrorMessage
+                                name="orderId"
+                                component="div"
+                                className="text-red-600"
+                              />
+                            </div>
 
-                  <div>
-                    <h3>Pickup Details</h3>
-                    <div>
-                      <label>Name</label>
-                      <Field name="pickup_details.name" />
-                      <ErrorMessage name="pickup_details.name" />
-                    </div>
-                    <div>
-                      <label>Contact Number</label>
-                      <Field name="pickup_details.contact_number" />
-                      <ErrorMessage name="pickup_details.contact_number" />
-                    </div>
-                    <div>
-                      <label>Latitude</label>
-                      <Field name="pickup_details.latitude" />
-                      <ErrorMessage name="pickup_details.latitude" />
-                    </div>
-                    <div>
-                      <label>Longitude</label>
-                      <Field name="pickup_details.longitude" />
-                      <ErrorMessage name="pickup_details.longitude" />
-                    </div>
-                    <div>
-                      <label>Address</label>
-                      <Field name="pickup_details.address" />
-                      <ErrorMessage name="pickup_details.address" />
-                    </div>
-                    <div>
-                      <label>City</label>
-                      <Field name="pickup_details.city" />
-                      <ErrorMessage name="pickup_details.city" />
-                    </div>
-                  </div>
+                            <div className="mb-5">
+                              <label
+                                htmlFor="orderAmount"
+                                className="mb-2 block font-medium text-gray-800"
+                              >
+                                Order Amount
+                                <span className="text-red-500"> * </span>
+                              </label>
+                              <Field
+                                type="text"
+                                name="orderAmount"
+                                id="orderAmount"
+                                placeholder="Enter Order Amount"
+                                className="w-full rounded-lg border-2 border-gray-200 p-2 hover:border-gray-500 focus:border-gray-500"
+                              />
+                              <ErrorMessage
+                                name="orderAmount"
+                                component="div"
+                                className="text-red-600"
+                              />
+                            </div>
 
-                  <div>
-                    <h3>Drop Details</h3>
-                    <div>
-                      <label>Name</label>
-                      <Field name="drop_details.name" />
-                      <ErrorMessage name="drop_details.name" />
-                    </div>
-                    <div>
-                      <label>Contact Number</label>
-                      <Field name="drop_details.contact_number" />
-                      <ErrorMessage name="drop_details.contact_number" />
-                    </div>
-                    <div>
-                      <label>Latitude</label>
-                      <Field name="drop_details.latitude" />
-                      <ErrorMessage name="drop_details.latitude" />
-                    </div>
-                    <div>
-                      <label>Longitude</label>
-                      <Field name="drop_details.longitude" />
-                      <ErrorMessage name="drop_details.longitude" />
-                    </div>
-                    <div>
-                      <label>Address</label>
-                      <Field name="drop_details.address" />
-                      <ErrorMessage name="drop_details.address" />
-                    </div>
-                    <div>
-                      <label>City</label>
-                      <Field name="drop_details.city" />
-                      <ErrorMessage name="drop_details.city" />
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3>Order Items</h3>
-                    {values.order_items.map((item, index) => (
-                      <div key={index}>
-                        <div>
-                          <label>ID</label>
-                          <Field name={`order_items[${index}].id`} />
-                          <ErrorMessage name={`order_items[${index}].id`} />
-                        </div>
-                        <div>
-                          <label>Name</label>
-                          <Field name={`order_items[${index}].name`} />
-                          <ErrorMessage name={`order_items[${index}].name`} />
-                        </div>
-                        <div>
-                          <label>Quantity</label>
-                          <Field name={`order_items[${index}].quantity`} />
-                          <ErrorMessage name={`order_items[${index}].quantity`} />
-                        </div>
-                        <div>
-                          <label>Price</label>
-                          <Field name={`order_items[${index}].price`} />
-                          <ErrorMessage name={`order_items[${index}].price`} />
+                            <div className="mb-5">
+                              <label className="mb-2 block font-medium text-gray-800">
+                                Paid
+                              </label>
+                              <label className="flex items-center">
+                                <Field
+                                  type="checkbox"
+                                  name="paid"
+                                  className="checked:border-transparent h-6 w-6 appearance-none rounded-md border-2 border-gray-200 checked:bg-blue-600 focus:outline-none"
+                                />
+                              </label>
+                              <ErrorMessage
+                                name="paid"
+                                component="div"
+                                className="text-red-600"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-
-                  <button type="submit">Submit</button>
-                </Form>
-              )}
+                    </div>
+                  </Form>
+                );
+              }}
             </Formik>
           </div>
         </Card>

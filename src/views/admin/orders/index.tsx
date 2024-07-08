@@ -58,23 +58,24 @@ function Orders() {
   }
 
   function convertToOrders(orders: any) {
+    console.log("allOrders ====>", orders);
+
     const response = orders.map((order: any) => {
       let dateTime = convertUtcToIst(order.createdAt);
       return {
-        bookingDate: dateTime.substring(0, 10),
-        bookingTime: dateTime.substring(11, 16),
-        riderMobileNum: order?.riderDetails[0]?.mobileNumber
-          ? order?.riderDetails[0]?.mobileNumber
-          : "N/A",
-        DriverMobileNum: order?.driverDetails[0]?.mobileNumber
-          ? order?.driverDetails[0]?.mobileNumber
-          : "N/A",
-        fare: order.fare,
-        platform: order.platform,
+        orderDate: dateTime.substring(0, 10),
+        orderTime: dateTime.substring(11, 16),
+        customerMobileNum: order?.drop_details?.contact_number
+          ? order?.drop_details?.contact_number
+          : null,
+        DriverMobileNum: order?.driver_details?.contact
+          ? order?.driver_details?.contact
+          : null,
+        amount: order.order_details.order_total,
         status: order.status,
-        origin: order.pickUpAddress,
-        destination: order.dropAddress,
-        view: order._id,
+        pickUpLocation: order.pickup_details.address,
+        dropLocation: order.drop_details.address,
+        view: order.order_details.vendor_order_id,
       };
     });
     return response;
@@ -112,8 +113,9 @@ function Orders() {
         limit: limit,
         query: searchText.trim(),
       });
-      console.log("RESPONSE", response);
-
+      //! update data to orders after prod
+      console.log("RESPONSE", response.data[0].data);
+      setAllOrders(await convertToOrders(response?.data[0].data));
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
@@ -126,7 +128,7 @@ function Orders() {
   const handleOrderStatusSelect = async (status: string) => {
     console.log("status", status);
     try {
-      // setLoading(true);
+      setLoading(true);
       let response: any;
 
       if (status === "all") {
@@ -138,8 +140,7 @@ function Orders() {
         response = await getAllOrders(currentPage.current, limit, filter);
       }
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-      // setAllOrders(await convertToOrders(response?.data[0].orders));
-      setAllOrders([]);
+      setAllOrders(await convertToOrders(response?.data[0].orders));
       setPageItemRange(
         currentPage.current,
         response?.data[0].count[0]?.totalcount
@@ -157,9 +158,9 @@ function Orders() {
     if (!response) {
       return;
     }
+
     setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-    // setAllOrders(await convertToOrders(response?.data[0].data));
-    setAllOrders([]);
+    setAllOrders(await convertToOrders(response?.data[0].orders));
     setPageItemRange(
       currentPage.current,
       response?.data[0].count[0]?.totalcount
@@ -183,6 +184,12 @@ function Orders() {
   }
 
   useEffect(() => {
+    console.log("hello i am in fn");
+    getAllOrders(1, 10);
+    setLoading(false);
+  });
+
+  useEffect(() => {
     currentPage.current = 1;
     if (firstRender.current) {
       firstRender.current = false;
@@ -193,7 +200,7 @@ function Orders() {
 
   useEffect(() => {
     if (searchText.trim() == "") {
-      // setLoading(true);
+      setLoading(true);
       setPageCount(Math.ceil(allOrders.length / limit));
       if (allOrders.length === 0) {
         setPageItemRange(0, allOrders.length);
@@ -201,34 +208,34 @@ function Orders() {
         currentPage.current = 1;
         setPageItemRange(currentPage.current, allOrders.length);
       }
-      // setLoading(false);
+      setLoading(false);
     }
   }, [searchText]);
 
-  useEffect(() => {
-    currentPage.current = 1;
-    if (orderStatus === "completed") {
-      handleOrderStatusSelect(orderStatus);
-    } else if (orderStatus === "current-rides") {
-      handleOrderStatusSelect(orderStatus);
-    } else {
-      getAllOrders(1, 10);
-    }
-  }, []);
+  // useEffect(() => {
+  //   currentPage.current = 1;
+  //   setLoading(true);
+  //   console.log("hello i am in fn");
+
+  //   getAllOrders(1, 10);
+  //   console.log("hello i am after in fn");
+
+  //   setLoading(false);
+  // }, []);
 
   return (
     <div>
-      {/* <Navbar
+      <Navbar
         flag={true}
         brandText="rides"
         handleSearch={(e: React.SyntheticEvent<EventTarget>) =>
           handleSearchSubmit(e)
         }
         setSearchText={setSearchText}
-      /> */}
-      {/* {loading ? (
+      />
+      {loading ? (
         <Loader />
-      ) : ( */}
+      ) : (
         <>
           <div className="mt-4">
             <ColumnsTable
@@ -275,7 +282,7 @@ function Orders() {
             </div>
           </div>
         </>
-      {/* )} */}
+      )}
     </div>
   );
 }

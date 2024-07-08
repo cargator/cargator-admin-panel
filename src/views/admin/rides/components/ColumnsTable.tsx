@@ -97,7 +97,7 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
+          {info.getValue() == null ? "N/A" : ` + ${info.getValue()}`}
         </p>
       ),
     }),
@@ -105,7 +105,7 @@ function ColumnsTable(props: {
       id: "amount",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Amountt")}
+          {t("Amount")}
         </p>
       ),
       cell: (info) => (
@@ -237,62 +237,63 @@ function ColumnsTable(props: {
 
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
-      <header className="relative flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
-          {t("Orders")}
-        </div>
-        <button
-          className={`rounded-md bg-[rgba(43,122,11,1)] px-6 py-2 text-lg text-white`}
-          onClick={() => {
-            navigate("/admin/order/add");
-          }}
-        >
-          Add Order
-        </button>
-        <div style={{ width: "200px" }}>
-          <Select
-            isSearchable={false}
-            // className="w-400"
-            className="custom-select"
-            // options={statusOptions}
-            options={statusOptions.map((option) => ({
-              // Map over statusOptions to translate labels
-              ...option,
-              label: t(`${option.label}`), // Translate label
-              // value: t(`${option.label}`), // Translate value
-            }))}
-            onChange={(e: any) => {
-              setRideStatus(e.value);
-            }}
-            value={statusOptions.filter(function (option: any) {
-              return option.value === orderStatus;
-            })}
-            // value={statusOptions.find(option => option.value === rideStatus)} // Use find instead of filter
-            name="rideStatus"
-            // defaultValue={{ label: defaultLabel, value: rideStatus }} // Set the translated default value
-            styles={{
-              // Fixes the overlapping problem of the component
-              menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
-              option: (provided: any, state: any) => ({
-                ...provided,
-                backgroundColor: state.isSelected ? "#f2f3f7" : "white", // Change the background color here
-                cursor: "pointer",
-                color: "black", // Change the text color herevscode-file://vscode-app/c:/Users/codeb/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html
-                "&:hover": {
-                  backgroundColor: "#f2f3f7", // Change the background color on hover
-                },
-              }),
-              // control: (base: any) => ({
-              //   ...base,
-              //   flexDirection: 'row-reverse',
-              // })
-            }}
-            components={{
-              DropdownIndicator: arrowdown,
-              IndicatorSeparator: () => null,
-              ValueContainer: filter,
-            }}
-          />
+      <header>
+        <div className="w-90 flex justify-between">
+          <div className="justify-between text-3xl font-bold text-navy-700 dark:text-white ">
+            Orders
+          </div>
+
+          <div className="flex justify-between">
+            <button
+              className={`rounded-md bg-[rgba(43,122,11,1)] px-6 py-2 text-lg text-white `}
+              onClick={() => {
+                navigate("/admin/order/add");
+              }}
+            >
+              Add Order
+            </button>
+            <div style={{ width: "200px", paddingLeft: "10%" }}>
+              <Select
+                isSearchable={false}
+                // className="w-400"
+                className="custom-select"
+                // options={statusOptions}
+                options={statusOptions.map((option) => ({
+                  // Map over statusOptions to translate labels
+                  ...option,
+                  label: t(`${option.label}`), // Translate label
+                  // value: t(`${option.label}`), // Translate value
+                }))}
+                onChange={(e: any) => {
+                  setRideStatus(e.value);
+                }}
+                value={statusOptions.filter(function (option: any) {
+                  return option.value === orderStatus;
+                })}
+                // value={statusOptions.find(option => option.value === rideStatus)} // Use find instead of filter
+                name="rideStatus"
+                // defaultValue={{ label: defaultLabel, value: rideStatus }} // Set the translated default value
+                styles={{
+                  // Fixes the overlapping problem of the component
+                  menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
+                  option: (provided: any, state: any) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected ? "#f2f3f7" : "white", // Change the background color here
+                    cursor: "pointer",
+                    color: "black", // Change the text color herevscode-file://vscode-app/c:/Users/codeb/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html
+                    "&:hover": {
+                      backgroundColor: "#f2f3f7", // Change the background color on hover
+                    },
+                  }),
+                }}
+                components={{
+                  DropdownIndicator: arrowdown,
+                  IndicatorSeparator: () => null,
+                  ValueContainer: filter,
+                }}
+              />
+            </div>
+          </div>
         </div>
         {/* <CardMenu /> */}
       </header>
