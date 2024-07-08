@@ -70,11 +70,11 @@ const authenticatedRoutes: RoutesType[] = [
     // secondary: true,
   },
   {
-    name: "Riders",
+    name: "Orders",
     layout: "/admin",
-    icon: <MdPerson className="h-6 w-6" />,
-    path: "riders",
-    component: <Riders />,
+    path: "order",
+    icon: <MdFastfood className="h-6 w-6" />,
+    component: <Orders />,
   },
   {
     name: "Vehicles",
@@ -94,15 +94,8 @@ const authenticatedRoutes: RoutesType[] = [
     name: "General",
     layout: "/admin",
     path: "settings/general",
-    component: <General/>,
+    component: <General />,
     secondary: true,
-  },
-  {
-    name: "Orders",
-    layout: "/admin",
-    path: "order",
-    icon: <MdFastfood className="h-6 w-6" />,
-    component: <Orders />,
   },
   {
     name: "Add Order",
@@ -115,21 +108,21 @@ const authenticatedRoutes: RoutesType[] = [
     name: "privacyPolicy",
     layout: "/admin",
     path: "settings/privacyPolicy",
-    component: <PrivacyPolicy/>,
+    component: <PrivacyPolicy />,
     secondary: true,
   },
   {
     name: "support",
     layout: "/admin",
     path: "settings/support",
-    component: <Support/>,
+    component: <Support />,
     secondary: true,
   },
   {
     name: "Settings",
     layout: "/admin",
     path: "settings/countrycode",
-    component: <CountryCode/>,
+    component: <CountryCode />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
@@ -145,7 +138,7 @@ const authenticatedRoutes: RoutesType[] = [
     name: "Settings",
     layout: "/admin",
     path: "settings/flows",
-    component: <Flows/>,
+    component: <Flows />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
@@ -224,24 +217,24 @@ const authenticatedRoutes: RoutesType[] = [
     layout: "/admin",
     path: "settings/countrycode-form",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <CountryCodeForm/>,
-    secondary:true
+    component: <CountryCodeForm />,
+    secondary: true
   },
   {
     name: "Flows-Form",
     layout: "/admin",
     path: "settings/flow-form",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <FlowsForm/>,
-    secondary:true
+    component: <FlowsForm />,
+    secondary: true
   },
   {
     name: "Flows-Form ID",
     layout: "/admin",
     path: "settings/flow-form/:id",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <FlowsForm/>,
-    secondary:true
+    component: <FlowsForm />,
+    secondary: true
   },
 ];
 
