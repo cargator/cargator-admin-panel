@@ -384,10 +384,10 @@ const Dashboard = () => {
                     >
                       <div style={{width:'100%'}}>
                         <h2 style={{fontWeight:'bold'}}>Driver Details</h2>
-                        <p>ID: {selectedDriver?.driverId}</p>
-                        <p>Name: {selectedDriver?.firstName} {selectedDriver?.lastName}</p>
-                        <p>Mobile No.: {selectedDriver?.mobileNumber}</p>
-                        <p>Vehical Number.: {selectedDriver?.vehicleNumber}</p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p>ID:</p> <p> {selectedDriver?.driverId}</p></p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p>Name:</p> <p>{selectedDriver?.firstName}{"  "} {selectedDriver?.lastName}</p></p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p> Mobile No.:</p><p> {selectedDriver?.mobileNumber}</p></p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p>Vehical Number.:</p><p> {selectedDriver?.vehicleNumber}</p></p>
                         {/* Add more driver details as needed */}
                       </div>
                     </InfoWindow>
@@ -401,5 +401,6 @@ const Dashboard = () => {
     </div>
   );
 };
+
 
 export default Dashboard;
