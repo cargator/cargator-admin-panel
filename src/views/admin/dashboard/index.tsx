@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from "@react-google-maps/api";
 import car from "../../../assets/images/car.svg";
 import RidesIcon from "../../../assets/svg/RidesIcon.svg";
 import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
@@ -47,6 +47,8 @@ const Dashboard = () => {
   const [completeRidesCount, setCompleteRidesCount] = useState([]);
   const [onlineDriversCount, setOnlineDriversCount] = useState([]);
   const [totalDriver, setTotalDriver] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [driverPosition, setDriverPosition] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -103,6 +105,13 @@ const Dashboard = () => {
 
   const handleNavigationCompleteRide = () => {
     navigate('/admin/rides?data=completed');
+  };
+
+  const showDriversDetails = (driver: any, position: any) => {
+    console.log(driver);
+    
+    setSelectedDriver(driver);
+    setDriverPosition(position);
   };
 
   useEffect(() => {
@@ -355,22 +364,37 @@ const Dashboard = () => {
                   {allOnlineDrivers &&
                     allOnlineDrivers.length > 0 &&
                     allOnlineDrivers.map((driverId) => {
+                      const position = {
+                        lat: driverId.liveLocation && driverId.liveLocation[1],
+                        lng: driverId.liveLocation && driverId.liveLocation[0],
+                      };
                       return (
                         <Marker
                           key={driverId}
-                          position={{
-                            lat:
-                              driverId.liveLocation && driverId.liveLocation[1],
-                            lng:
-                              driverId.liveLocation && driverId.liveLocation[0],
-                          }}
+                          position={position}
                           icon={car}
+                          onClick={() => showDriversDetails(driverId, position)}
                         />
                       );
                     })}
+                     {selectedDriver && driverPosition && (
+                    <InfoWindow
+                      position={driverPosition}
+                      onCloseClick={() => setSelectedDriver(null)}
+                    >
+                      <div style={{width:'100%'}}>
+                        <h2 style={{fontWeight:'bold'}}>Driver Details</h2>
+                        <p>ID: {selectedDriver?.driverId}</p>
+                        <p>Name: {selectedDriver?.firstName} {selectedDriver?.lastName}</p>
+                        <p>Mobile No.: {selectedDriver?.mobileNumber}</p>
+                        <p>Vehical Number.: {selectedDriver?.vehicleNumber}</p>
+                        {/* Add more driver details as needed */}
+                      </div>
+                    </InfoWindow>
+                  )}
                 </GoogleMap>
               )}
-            </div>
+            </div>           
           </Card>
         </>
       )}

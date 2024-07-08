@@ -1,4 +1,4 @@
-// routes.ts
+// routes.ts 
 
 import React from "react";
 import Dashboard from "views/admin/dashboard";
