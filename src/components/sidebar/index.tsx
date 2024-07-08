@@ -5,7 +5,9 @@ import { HiX } from "react-icons/hi";
 import Links from "./components/Links";
 import SidebarCard from "components/sidebar/componentsrtl/SidebarCard";
 import { authenticatedRoutes, publicRoutes } from "../../routes"; // Adjust path as per your file structure
-import logo from "../../assets/svg/logosidebar.svg";
+// import logo from "../../assets/images/sukam-logo 3.png";
+import logo from "../../assets/images/sukam-logo 1.png";
+// import logo from "../../assets/svg/sukam-logo 3.svg"
 import { useDispatch, useSelector } from "react-redux";
 import { setSideBarState } from "../../redux/reducers/sideBarReducer";
 
@@ -54,9 +56,9 @@ const Sidebar: React.FC<{
         <HiX />
       </span>
 
-      <div className={`mx-[90px] mt-[50px] flex items-center`}>
-        <div className="ml-1 mt-1 h-2.5 ">
-          <img src={logo} alt="Logo" />
+      <div className={`mx-[90px] mt-[80px] flex items-center`}>
+        <div style={{widows:'1px'}}>
+          <img src={logo} alt="Logo" style={{ width: '130px',height: 'auto',margin:'0%'}}/>
         </div>
       </div>
       <div className="mb-7 mt-[58px] h-px " />
