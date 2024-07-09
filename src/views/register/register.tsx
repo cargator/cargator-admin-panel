@@ -11,8 +11,9 @@ import { toast } from "react-toastify";
 export type registerCred = {
   name: string;
   email: string;
-  password: string;
-  confirmPassword: string;
+  mobile_Number:string
+  // password: string;
+  // confirmPassword: string;
 };
 
 export default function Register() {
@@ -28,13 +29,14 @@ export default function Register() {
       .max(30, "Too long !")
       .required("Name is required"),
     email: Yup.string().required("Email is required").email("Invalid email"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(8, "Too short !")
-      .max(15, "Too long !"),
-    confirmPassword: Yup.string()
-      .oneOf([Yup.ref("password")], "Password must match")
-      .required("Please confirm password"),
+    mobile_Number:Yup.string().min(10,"Invalid Mobile Number").max(10,"Invalid Mobile Number")
+    // password: Yup.string()
+    //   .required("Password is required")
+    //   .min(8, "Too short !")
+    //   .max(15, "Too long !"),
+    // confirmPassword: Yup.string()
+    //   .oneOf([Yup.ref("password")], "Password must match")
+    //   .required("Please confirm password"),
   });
 
   const successToast = (message: string) => {
@@ -69,10 +71,12 @@ export default function Register() {
   const handleRegister = async (formValues: registerCred) => {
     try {
       setIsLoading(true);
+      console.log({...formValues});
       const registerRes = await handleRegisterApi({ ...formValues });
       if (!registerRes) {
         errorToast("Something went wrong ! Please try again.");
       }
+     
       dispatch(setToken(registerRes.data.token));
       successToast("Account created successfully !");
       navigate("/");
@@ -97,9 +101,8 @@ export default function Register() {
         enableReinitialize={true}
         initialValues={{
           name: "",
+          mobile_Number:"",
           email: "",
-          password: "",
-          confirmPassword: "",
         }}
         onSubmit={(values) => handleRegister(values)}
         validationSchema={registerSchema}
@@ -124,12 +127,29 @@ export default function Register() {
                   className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                   id="name"
                   type="text"
-                  placeholder="Email"
+                  placeholder="Name"
                   autoComplete="name"
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.name}
                 />
+
+                <p className="text-medium-emphasis">Mobile Number</p>
+                {errors.mobile_Number && touched.mobile_Number? (
+                  <div className="error-input text-danger">{errors.mobile_Number}</div>
+                ) : null}
+                <input
+                  className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                  id="mobile_Number"
+                  type="number"
+                  placeholder="1234567890"
+                  // autoComplete="mobile_Number"
+                  // pattern="[6-9]\d{9}"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.mobile_Number}
+                />
+
                 {/* {email} */}
                 <p className="text-medium-emphasis">Email</p>
                 {errors.email && touched.email ? (
@@ -146,13 +166,13 @@ export default function Register() {
                   value={values.email}
                 />
                 {/* Password */}
-                <p className="text-medium-emphasis">Password</p>
-                {errors.password && touched.password ? (
+                {/* <p className="text-medium-emphasis">Password</p> */}
+                {/* {errors.password && touched.password ? (
                   <div className="error-input text-danger">
                     {errors.password}
                   </div>
-                ) : null}
-                <input
+                ) : null} */}
+                {/* <input
                   className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                   id="password"
                   name="password"
@@ -161,15 +181,15 @@ export default function Register() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.password}
-                />
+                /> */}
                 {/* Confirm Password */}
-                <p className="text-medium-emphasis">Confirm Password</p>
-                {errors.confirmPassword && touched.confirmPassword ? (
+                {/* <p className="text-medium-emphasis">Confirm Password</p> */}
+                {/* {errors.confirmPassword && touched.confirmPassword ? (
                   <div className="error-input text-danger">
                     {errors.confirmPassword}
                   </div>
-                ) : null}
-                <input
+                ) : null} */}
+                {/* <input
                   className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
                   id="confirmPassword"
                   name="confirmPassword"
@@ -178,7 +198,7 @@ export default function Register() {
                   onChange={handleChange}
                   onBlur={handleBlur}
                   value={values.confirmPassword}
-                />
+                /> */}
                 <button
                   className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200"
                   // onClick={handleSubmit}
