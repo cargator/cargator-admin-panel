@@ -245,6 +245,12 @@ const publicRoutes: RoutesType[] = [
     path: "privacyPolicy",
     component: <PrivacyPolicy />,
   },
+  {
+    name: "support",
+    layout: "/",
+    path: "support",
+    component: <Support />,
+  },
   // Add more public routes as needed
 ];
 
