@@ -123,25 +123,17 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          {info.getValue() === "completed" ? (
+          {info.getValue() === "DELIVERED" ? (
             <img src={completedRide} height={25} width={25} alt="Completed" />
-          ) : info.getValue() === "cancelled" ||
-            info.getValue() === "Failed" ? (
-            <img src={cancelRide} height={25} width={25} alt="Canceled" />
+          ) : info.getValue() === "CANCELLED" ? (
+            <img src={cancelRide} height={25} width={25} alt="Cancelled" />
           ) : (
-            <img
-              src={ongoingRide}
-              height={21}
-              width={21}
-              alt="Ongoing"
-              className="me-1"
-            />
+            <img src={ongoingRide} height={25} width={25} alt="Ongoing" />
           )}
           <p className="text-sm font-bold text-navy-700 dark:text-white">
             {" "}
             {info.getValue().charAt(0).toUpperCase() +
               info.getValue()?.slice(1)}
-            {/* {info.getValue()} */}
           </p>
         </div>
       ),

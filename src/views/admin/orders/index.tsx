@@ -184,10 +184,8 @@ function Orders() {
   }
 
   useEffect(() => {
-    console.log("hello i am in fn");
     getAllOrders(1, 10);
-    setLoading(false);
-  });
+  }, []);
 
   useEffect(() => {
     currentPage.current = 1;
@@ -196,7 +194,7 @@ function Orders() {
     } else {
       handleOrderStatusSelect(orderStatus);
     }
-  }, [orderStatus]);
+  }, []);
 
   useEffect(() => {
     if (searchText.trim() == "") {
@@ -211,17 +209,6 @@ function Orders() {
       setLoading(false);
     }
   }, [searchText]);
-
-  // useEffect(() => {
-  //   currentPage.current = 1;
-  //   setLoading(true);
-  //   console.log("hello i am in fn");
-
-  //   getAllOrders(1, 10);
-  //   console.log("hello i am after in fn");
-
-  //   setLoading(false);
-  // }, []);
 
   return (
     <div>
