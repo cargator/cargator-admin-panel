@@ -19,7 +19,7 @@ function Orders() {
 
   const [loading, setLoading] = useState(false);
   const [allOrders, setAllOrders] = useState([]);
-  const currentPage = useRef<number>();
+  const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [limit, setLimit] = useState(10);
@@ -58,8 +58,6 @@ function Orders() {
   }
 
   function convertToOrders(orders: any) {
-    console.log("allOrders ====>", orders);
-
     const response = orders.map((order: any) => {
       let dateTime = convertUtcToIst(order.createdAt);
       return {
@@ -85,7 +83,7 @@ function Orders() {
     try {
       setLoading(true);
       const response: any = await findOrders({
-        page: currentPage.current,
+        page: currentPage,
         limit: limit,
         query: searchText.trim(),
       });
@@ -116,6 +114,8 @@ function Orders() {
       //! update data to orders after prod
       console.log("RESPONSE", response.data[0].data);
       setAllOrders(await convertToOrders(response?.data[0].data));
+      setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+      setPageItemRange(page, response?.data[0].count[0]?.totalcount);
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
@@ -132,19 +132,15 @@ function Orders() {
       let response: any;
 
       if (status === "all") {
-        response = await getAllOrders(currentPage.current, limit);
+        response = await getAllOrders(currentPage, limit);
       } else if (status === "current-rides") {
-        response = await getAllOrders(currentPage.current, limit);
+        response = await getAllOrders(currentPage, limit);
       } else {
         const filter = status;
-        response = await getAllOrders(currentPage.current, limit, filter);
+        response = await getAllOrders(currentPage, limit, filter);
       }
-      setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
       setAllOrders(await convertToOrders(response?.data[0].orders));
-      setPageItemRange(
-        currentPage.current,
-        response?.data[0].count[0]?.totalcount
-      );
+      setPageItemRange(currentPage, response?.data[0].count[0]?.totalcount);
     } catch (error) {
       console.log(`handleRideStatusSelect error :>> `, error);
     }
@@ -161,10 +157,7 @@ function Orders() {
 
     setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
     setAllOrders(await convertToOrders(response?.data[0].orders));
-    setPageItemRange(
-      currentPage.current,
-      response?.data[0].count[0]?.totalcount
-    );
+    setPageItemRange(currentPage, response?.data[0].count[0]?.totalcount);
     setLoading(false);
   };
 
@@ -175,7 +168,8 @@ function Orders() {
   };
 
   async function handlePageClick(event: any) {
-    currentPage.current = event.selected + 1;
+    const selectedPage = event.selected + 1;
+    setCurrentPage(selectedPage);
     if (searchText !== "") {
       searchOrderFn();
     } else {
@@ -188,23 +182,22 @@ function Orders() {
   }, []);
 
   useEffect(() => {
-    currentPage.current = 1;
-    if (firstRender.current) {
-      firstRender.current = false;
-    } else {
+    if (!firstRender.current) {
       handleOrderStatusSelect(orderStatus);
+    } else {
+      firstRender.current = false;
     }
-  }, []);
+  }, [orderStatus]);
 
   useEffect(() => {
-    if (searchText.trim() == "") {
+    if (searchText.trim() === "") {
       setLoading(true);
       setPageCount(Math.ceil(allOrders.length / limit));
       if (allOrders.length === 0) {
         setPageItemRange(0, allOrders.length);
       } else {
-        currentPage.current = 1;
-        setPageItemRange(currentPage.current, allOrders.length);
+        setCurrentPage(1);
+        setPageItemRange(currentPage, allOrders.length);
       }
       setLoading(false);
     }
@@ -263,7 +256,7 @@ function Orders() {
                   nextClassName="next-page-btn"
                   nextLinkClassName="page-link"
                   activeClassName="active"
-                  forcePage={currentPage.current - 1}
+                  forcePage={currentPage - 1}
                 />
               </div>
             </div>
