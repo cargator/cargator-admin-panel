@@ -1,110 +1,98 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Formik, Form, Field, ErrorMessage, useFormikContext, FieldArray } from "formik";
+import {
+  Formik,
+  Form,
+  Field,
+  ErrorMessage,
+  useFormikContext,
+  FieldArray,
+} from "formik";
 import * as Yup from "yup";
 import Loader from "components/loader/loader";
 import Navbar from "components/navbar";
 import Card from "components/card";
-
-const Logger = (props: any): JSX.Element => {
-  const { setIsDocuments } = props;
-  const firstRender = useRef(true);
-  const formik = useFormikContext<any>();
-  const params = useParams();
-
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-    } else {
-      if (formik.values?.documents?.length > 0) {
-        setIsDocuments(true);
-      } else {
-        if (params.id) {
-          setIsDocuments(false);
-        }
-      }
-    }
-  }, [formik.values?.documents]);
-
-  return null;
-};
+import { createOrder } from "services/customAPI";
 
 function CalculateTotalPrice(): any {
-
   const { values, setFieldValue } = useFormikContext<any>();
 
   useEffect(() => {
-    const total = values.order_items.reduce((sum: any, item: any) => sum + (parseFloat(item.price) || 0), 0);
+    const total = values.order_items.reduce(
+      (sum: any, item: any) => sum + (parseFloat(item.price) || 0),
+      0
+    );
     setFieldValue("order_details.order_total", total.toFixed(2));
   }, [values.order_items, setFieldValue]);
 
   return null;
 }
 
+function uniqueRandomId(): string {
+  const timestamp = Math.floor(Date.now() / 1000) % 1000000;
+  const randomData = timestamp.toString().padStart(6, "0");
+  return randomData;
+}
+
 function CreateOrder() {
   const initialValues = {
     order_details: {
-      vendor_order_id: 101,
+      vendor_order_id: uniqueRandomId(),
       order_total: "",
-      paid: true,
-      agree: Yup.boolean()
-        .oneOf([true], 'You must paid to the terms'),
-      order_source: "",
+      paid: "false",
+      order_source: "POS",
       customer_orderId: "",
     },
     pickup_details: {
       name: "Food Station",
       contact_number: "9876543210",
-      latitude: "17.342545",
-      longitude: "16.74518",
+      latitude: "19.221172",
+      longitude: "72.984738",
       address: "mulund",
       city: "Mumbai",
     },
     drop_details: {
       name: "",
       contact_number: "",
-      latitude: "",
-      longitude: "",
+      latitude: "19.102537",
+      longitude: "73.007877",
       address: "",
       city: "",
     },
     order_items: [{ id: "", name: "", quantity: 1, price: 0 }],
   };
 
-  console.log("initialValues ===> ", initialValues);
-
   const orderSchema = Yup.object().shape({
     order_details: Yup.object().shape({
       vendor_order_id: Yup.string(),
-      order_total: Yup.number().required("Order total is required"),
+      order_total: Yup.number(),
       paid: Yup.boolean(),
-      order_source: Yup.string().required("Order source is required"),
+      order_source: Yup.string(),
       customer_orderId: Yup.string().nullable(),
     }),
     pickup_details: Yup.object().shape({
-      name: Yup.string().required("Pickup name is required"),
-      contact_number: Yup.string().required("Contact number is required"),
-      latitude: Yup.string().required("Latitude is required"),
-      longitude: Yup.string().required("Longitude is required"),
-      address: Yup.string().required("Address is required"),
-      city: Yup.string().required("City is required"),
+      name: Yup.string(),
+      contact_number: Yup.string(),
+      latitude: Yup.string(),
+      longitude: Yup.string(),
+      address: Yup.string(),
+      city: Yup.string(),
     }),
     drop_details: Yup.object().shape({
-      name: Yup.string().required("Drop name is required"),
-      contact_number: Yup.string().required("Contact number is required"),
-      latitude: Yup.number().required("Latitude is required"),
-      longitude: Yup.number().required("Longitude is required"),
-      address: Yup.string().required("Address is required"),
-      city: Yup.string().required("City is required"),
+      name: Yup.string(),
+      contact_number: Yup.string(),
+      latitude: Yup.string(),
+      longitude: Yup.string(),
+      address: Yup.string(),
+      city: Yup.string(),
     }),
     order_items: Yup.array().of(
       Yup.object().shape({
         id: Yup.number(),
-        // .required("Item ID is required"),
-        name: Yup.string().required("Item name is required"),
-        quantity: Yup.number().min(1, 'Quantity must be at least 1').required('Quantity is required'),
-        price: Yup.number().min(0, 'Price must be greater than or equal to 0').required('Price is required'),
+        name: Yup.string(),
+        quantity: Yup.number().min(1, "Quantity must be at least 1"),
+        price: Yup.number().min(0, "Price must be greater than or equal to 0"),
       })
     ),
   });
@@ -116,41 +104,36 @@ function CreateOrder() {
 
   console.log(orderItems);
 
-
   useEffect(() => {
-    setOrderItems([{
-      name: 'chicken',
-      id: 1,
-      price: 145,
-    }, {
-      name: 'panner',
-      id: 3,
-      price: 200,
-    }, {
-      name: 'daal',
-      id: 2,
-      price: 105,
-    }]);
+    setOrderItems([
+      {
+        name: "chicken",
+        id: 1,
+        price: 145,
+      },
+      {
+        name: "panner",
+        id: 3,
+        price: 200,
+      },
+      {
+        name: "daal",
+        id: 2,
+        price: 105,
+      },
+    ]);
   }, []);
 
-  const handleSubmit = async (values: any, { setSubmitting }: any) => {
+  const handleSubmitAPI = async (values: any) => {
     try {
-      // Validate the form using Yup schema
-      // await orderSchema.validate(values, { abortEarly: false });
-
-      // If validation succeeds, proceed with form submission logic
       console.log("Submitting values:", values);
 
-      // Simulate API call or perform actual submission
-      // Replace with actual API call logic
-      setTimeout(() => {
-        alert(JSON.stringify(values, null, 2)); // Replace with actual submission logic
-        setSubmitting(false);
-      }, 500);
+      const response = await createOrder(values);
+
+      console.log("response", response);
     } catch (errors) {
       // If validation fails, handle errors appropriately
       console.error("Validation errors:", errors);
-      setSubmitting(false); // Ensure setSubmitting is called appropriately
     }
   };
 
@@ -177,17 +160,13 @@ function CreateOrder() {
             <Formik
               initialValues={initialValues}
               validationSchema={orderSchema}
-              onSubmit={(values, { setSubmitting }) => {
-                console.log(values);
-                setSubmitting(false);
-              }}
+              onSubmit={(values) => handleSubmitAPI(values)}
             >
               {({ values, handleSubmit, isSubmitting, setFieldValue }) => (
                 <Form onSubmit={handleSubmit}>
                   <CalculateTotalPrice />
                   <div className="flex flex-grow gap-3">
                     <div className="w-full">
-
                       {/* drop details */}
                       <div>
                         <label className="mb-2 font-bold text-gray-800">
@@ -293,7 +272,7 @@ function CreateOrder() {
                           {({ push, remove }) => (
                             <div>
                               {values.order_items.map((item, index) => (
-                                <div key={index} className="border-b pb-4 mb-4">
+                                <div key={index} className="mb-4 border-b pb-4">
                                   <div className="grid grid-cols-5 gap-3">
                                     <div className="mb-5">
                                       <label
@@ -301,7 +280,10 @@ function CreateOrder() {
                                         className="mb-2 block font-medium text-gray-800"
                                       >
                                         ID
-                                        <span className="text-red-500"> * </span>
+                                        <span className="text-red-500">
+                                          {" "}
+                                          *{" "}
+                                        </span>
                                       </label>
                                       <Field
                                         disabled
@@ -322,28 +304,50 @@ function CreateOrder() {
                                         className="mb-2 block font-medium text-gray-800"
                                       >
                                         Item Name
-                                        <span className="text-red-500"> * </span>
+                                        <span className="text-red-500">
+                                          {" "}
+                                          *{" "}
+                                        </span>
                                       </label>
                                       <Field
                                         as="select"
                                         name={`order_items.${index}.name`}
                                         id={`order_items.${index}.name`}
                                         className="w-full rounded-lg border-2 border-gray-200 p-2 hover:border-gray-500 focus:border-gray-500"
-                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                        onChange={(
+                                          e: React.ChangeEvent<HTMLSelectElement>
+                                        ) => {
                                           const selectedName = e.target.value;
-                                          const selectedItem = orderItems.find((item) => item.name === selectedName);
-                                          setFieldValue(`order_items.${index}.name`, selectedName);
+                                          const selectedItem = orderItems.find(
+                                            (item) => item.name === selectedName
+                                          );
+                                          setFieldValue(
+                                            `order_items.${index}.name`,
+                                            selectedName
+                                          );
                                           if (selectedItem) {
-                                            const quantity = values.order_items[index].quantity; // Get current quantity
-                                            const price = selectedItem.price * quantity
-                                            setFieldValue(`order_items.${index}.price`, price);
-                                            setFieldValue(`order_items.${index}.id`, selectedItem.id);
+                                            const quantity =
+                                              values.order_items[index]
+                                                .quantity; // Get current quantity
+                                            const price =
+                                              selectedItem.price * quantity;
+                                            setFieldValue(
+                                              `order_items.${index}.price`,
+                                              price
+                                            );
+                                            setFieldValue(
+                                              `order_items.${index}.id`,
+                                              selectedItem.id
+                                            );
                                           }
                                         }}
                                       >
                                         <option value="">Select Item</option>
                                         {orderItems.map((item) => (
-                                          <option key={item.id} value={item.name}>
+                                          <option
+                                            key={item.id}
+                                            value={item.name}
+                                          >
                                             {item.name}
                                           </option>
                                         ))}
@@ -361,7 +365,10 @@ function CreateOrder() {
                                         className="mb-2 block font-medium text-gray-800"
                                       >
                                         Quantity
-                                        <span className="text-red-500"> * </span>
+                                        <span className="text-red-500">
+                                          {" "}
+                                          *{" "}
+                                        </span>
                                       </label>
                                       <Field
                                         type="number"
@@ -369,14 +376,22 @@ function CreateOrder() {
                                         id={`order_items.${index}.quantity`}
                                         placeholder="Enter Quantity"
                                         className="w-full rounded-lg border-2 border-gray-200 p-2 hover:border-gray-500 focus:border-gray-500"
-                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        onChange={(
+                                          e: React.ChangeEvent<HTMLInputElement>
+                                        ) => {
                                           const quantity = e.target.value;
-                                          setFieldValue(`order_items.${index}.quantity`, quantity);
-                                          const itemPrice = values.order_items[index].price;
+                                          setFieldValue(
+                                            `order_items.${index}.quantity`,
+                                            quantity
+                                          );
+                                          const itemPrice =
+                                            values.order_items[index].price;
                                           if (itemPrice) {
                                             setFieldValue(
                                               `order_items.${index}.price`,
-                                              (itemPrice * Number(quantity)).toString()
+                                              (
+                                                itemPrice * Number(quantity)
+                                              ).toString()
                                             );
                                           }
                                         }}
@@ -394,7 +409,10 @@ function CreateOrder() {
                                         className="mb-2 block font-medium text-gray-800"
                                       >
                                         Price
-                                        <span className="text-red-500"> * </span>
+                                        <span className="text-red-500">
+                                          {" "}
+                                          *{" "}
+                                        </span>
                                       </label>
                                       <Field
                                         type="number"
@@ -423,8 +441,15 @@ function CreateOrder() {
                               ))}
                               <button
                                 type="button"
-                                className="mt-3 bg-blue-500 text-white px-4 py-2 rounded-lg"
-                                onClick={() => push({ id: "", name: "", quantity: "", price: "" })}
+                                className="mt-3 rounded-lg bg-blue-500 px-4 py-2 text-white"
+                                onClick={() =>
+                                  push({
+                                    id: "",
+                                    name: "",
+                                    quantity: "",
+                                    price: "",
+                                  })
+                                }
                               >
                                 Add Item
                               </button>
@@ -439,7 +464,6 @@ function CreateOrder() {
                           Order Details
                         </label>
                         <div className="grid grid-cols-2 gap-7">
-
                           <div className="mb-5">
                             <label
                               htmlFor="orderAmount"
@@ -487,11 +511,11 @@ function CreateOrder() {
                     </div>
                   </div>
                   {/* Submit */}
-                  <div className="flex justify-end mt-5 space-x-3">
+                  <div className="mt-5 flex justify-end space-x-3">
                     <button
                       type="submit"
-                      className="bg-blue-500 text-white p-2 rounded"
-                    // disabled={isSubmitting}
+                      className="rounded bg-blue-500 p-2 text-white"
+                      // disabled={isSubmitting}
                     >
                       Submit
                     </button>
