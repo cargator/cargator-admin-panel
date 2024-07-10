@@ -137,6 +137,14 @@ function CreateOrder() {
     }
   };
 
+  const filterAvailableItems = (currentOrderItems: any[]) => {
+    // Example filter logic, adjust according to your needs
+    return orderItems.filter(
+      (item) =>
+        !currentOrderItems.some((orderItem) => orderItem.name === item.name)
+    );
+  };
+  
   return (
     <>
       <Navbar flag={false} brandText="addOrder" />
@@ -298,6 +306,7 @@ function CreateOrder() {
                                         className="text-red-600"
                                       />
                                     </div>
+
                                     <div className="mb-5">
                                       <label
                                         htmlFor={`order_items.${index}.name`}
@@ -428,13 +437,14 @@ function CreateOrder() {
                                       />
                                     </div>
                                   </div>
+
                                   <div className="flex justify-end">
                                     <button
                                       type="button"
-                                      className="text-red-600 hover:text-red-900"
                                       onClick={() => remove(index)}
+                                      className="rounded bg-red-500 p-2 text-white hover:bg-red-600 focus:outline-none"
                                     >
-                                      Remove Item
+                                      Remove
                                     </button>
                                   </div>
                                 </div>
