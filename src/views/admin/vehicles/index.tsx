@@ -127,7 +127,8 @@ const Vehicles: React.FC = () => {
             name: vehicle.vehicleName,
             path: path,
           },
-          vehicleNumber:`${vehicle?.vehicleNumber?.substring(0, 2) || ''} ${vehicle?.vehicleNumber?.substring(2, 4) || ''} ${vehicle?.vehicleNumber?.substring(4, 6) || ''} ${vehicle?.vehicleNumber?.substring(6, 10) || ''}`,
+          vehicleNumber:`${getVehicalNumberFormat(vehicle?.vehicleNumber)}`,
+          // vehicleNumber:`${vehicle?.vehicleNumber?.substring(0, 2) || ''} ${vehicle?.vehicleNumber?.substring(2, 4) || ''} ${vehicle?.vehicleNumber?.substring(4, 6) || ''} ${vehicle?.vehicleNumber?.substring(6, 10) || ''}`,
           vehicleType: vehicle.vehicleType,
           vehicleStatus: vehicle.vehicleStatus,
           action: {
@@ -138,10 +139,28 @@ const Vehicles: React.FC = () => {
         };
       })
     );
+    
 
     return res;
   }
-
+  const getVehicalNumberFormat=(vehicalNumber:string)=>{
+    let number=vehicalNumber?.substring(0, 2)+" "+ vehicalNumber?.substring(2, 4)+" "
+    // let number="";
+    for(let i=4;i<vehicalNumber.length;i++)
+    {
+      if((vehicalNumber.charAt(i)>= 'A' && vehicalNumber.charAt(i) <= 'Z') || (vehicalNumber.charAt(i)>= 'a' && vehicalNumber.charAt(i) <= 'z')){
+        number=number+vehicalNumber.charAt(i)
+        console.log();
+        
+      }
+      else{
+        number=number+" "+vehicalNumber.substring(i);
+        break;
+      }
+    }
+    return number;
+    
+  }
   const getPaginatedVehicleData = async () => {
     try {
       setIsLoading(true);
@@ -258,7 +277,7 @@ const Vehicles: React.FC = () => {
   };
 
   useEffect(() => {
-    if (firstRender.current) {
+    if (firstRender.current) { 
       firstRender.current = false;
     } else {
       if (searchText.trim() == "") {

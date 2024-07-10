@@ -591,7 +591,7 @@ const VehicleForm: React.FC = () => {
                         id="vehicleNumber"
                         width="90%"
                         // label="Vehicle Name"
-                        placeholder={t("Vehicle Number")}
+                        placeholder={t("MH04AB1234")}
                         onChange={handleChange}
                         onBlur={(event) => {
                           handleBlur(event);
