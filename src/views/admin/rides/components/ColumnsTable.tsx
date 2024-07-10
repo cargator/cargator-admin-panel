@@ -97,7 +97,7 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue() == null ? "N/A" : ` + ${info.getValue()}`}
+          {info.getValue() == null ? "N/A" : ` +${info.getValue()}`}
         </p>
       ),
     }),
@@ -122,7 +122,7 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) => (
-        <div className="flex items-center">
+        <div className="flex items-center justify-around">
           {info.getValue() === "DELIVERED" ? (
             <img src={completedRide} height={25} width={25} alt="Completed" />
           ) : info.getValue() === "CANCELLED" ? (
@@ -131,7 +131,6 @@ function ColumnsTable(props: {
             <img src={ongoingRide} height={25} width={25} alt="Ongoing" />
           )}
           <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {" "}
             {info.getValue().charAt(0).toUpperCase() +
               info.getValue()?.slice(1)}
           </p>

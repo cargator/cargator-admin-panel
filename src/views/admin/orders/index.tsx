@@ -93,7 +93,6 @@ function Orders() {
     } catch (error: any) {
       console.log(error.response.data.success);
       setAllOrders([]);
-      setPageCount(1);
       setLoading(false);
     }
     setLoading(false);
@@ -106,6 +105,11 @@ function Orders() {
   ) {
     try {
       setLoading(true);
+      console.log("limits shows", {
+        page: page,
+        limit: limit,
+      });
+
       const response: any = await findOrders({
         page: page,
         limit: limit,
@@ -116,11 +120,11 @@ function Orders() {
       setAllOrders(await convertToOrders(response?.data[0].data));
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
       setPageItemRange(page, response?.data[0].count[0]?.totalcount);
+      setLoading(false);
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
       setAllOrders([]);
-      setPageCount(1);
     }
     setLoading(false);
   }
@@ -148,8 +152,6 @@ function Orders() {
   };
 
   const searchOrderFn = async () => {
-    console.log("log in search fn");
-
     const response: any = await searchOrders();
     if (!response) {
       return;
@@ -167,19 +169,14 @@ function Orders() {
     setLoading(false);
   };
 
-  async function handlePageClick(event: any) {
+  const handlePageClick = (event: any) => {
     const selectedPage = event.selected + 1;
     setCurrentPage(selectedPage);
-    if (searchText !== "") {
-      searchOrderFn();
-    } else {
-      await handleOrderStatusSelect(orderStatus);
-    }
-  }
+  };
 
   useEffect(() => {
-    getAllOrders(1, 10);
-  }, []);
+    getAllOrders(currentPage, 10);
+  }, [currentPage]);
 
   useEffect(() => {
     if (!firstRender.current) {
