@@ -156,12 +156,12 @@ function ColumnsTable(props) {
                 onClick={() => handleUpdate(info.row.original.action.id)}
               />
             </div>
-            <div className="cursor-pointer">
+            {/* <div className="cursor-pointer">
               <img
                 src={deleteIcon}
                 onClick={() => handleClickForDeleteModal(info.row.original)}
               />
-            </div>
+            </div> */}
           </div>)
       },
     }),
@@ -246,7 +246,7 @@ function ColumnsTable(props) {
               <div className="text-xl font-bold text-navy-700 dark:text-white">
                 Add Flows
               </div>
-              <div>
+              {/* <div>
                 <button
                   className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
                   type="submit"
@@ -254,7 +254,7 @@ function ColumnsTable(props) {
                 >
                   Add Flows
                 </button>
-              </div>
+              </div> */}
             </header>
 
             <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">
