@@ -226,7 +226,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      {t("Drivers")}
+                      {t("Riders")}
                     </h1>
                   </div>
 
@@ -333,7 +333,7 @@ const Dashboard = () => {
                   className="card-title mb-2"
                   style={{ fontSize: "25px" }}
                 >
-                  {t("Active Drivers:")}
+                  {t("Active Riders:")}
                 </h4>
               </div>
               <div className="d-none d-md-block">
@@ -383,7 +383,7 @@ const Dashboard = () => {
                       onCloseClick={() => setSelectedDriver(null)}
                     >
                       <div style={{width:'100%'}}>
-                        <h2 style={{fontWeight:'bold'}}>Driver Details</h2>
+                        <h2 style={{fontWeight:'bold'}}>Rider Details</h2>
                         <p style={{display:'flex',fontWeight:'400'}}><p>ID:</p> <p> {selectedDriver?.driverId}</p></p>
                         <p style={{display:'flex',fontWeight:'400'}}><p>Name:</p> <p>{selectedDriver?.firstName}{"  "} {selectedDriver?.lastName}</p></p>
                         <p style={{display:'flex',fontWeight:'400'}}><p> Mobile No.:</p><p> {selectedDriver?.mobileNumber}</p></p>

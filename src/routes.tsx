@@ -62,7 +62,7 @@ const authenticatedRoutes: RoutesType[] = [
     secondary: true,
   },
   {
-    name: "Drivers",
+    name: "Riders ",
     layout: "/admin",
     path: "drivers",
     icon: <MdTwoWheeler className="h-6 w-6" />,
