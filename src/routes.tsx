@@ -213,6 +213,14 @@ const authenticatedRoutes: RoutesType[] = [
     secondary: true,
   },
   {
+    name: "Order Details",
+    layout: "/admin",
+    path: "orders/orderDetails/:id",
+    // icon: <MdPerson className="h-6 w-6" />,
+    component: <RideView />,
+    secondary: true,
+  },
+  {
     name: "Country-Form",
     layout: "/admin",
     path: "settings/countrycode-form",

@@ -257,7 +257,7 @@ const Rides = () => {
                 tableData={allRideData}
                 statusOptions={statusOptions}
                 setRideStatus={setRideStatus}
-                orderStatus={rideStatus}
+                rideStatus={rideStatus}
               />
               {/* )} */}
 

@@ -4,7 +4,7 @@ import { findOrders } from "services/customAPI";
 import Loader from "components/loader/loader";
 import { orderStatusOptions } from "utils/constants";
 import { useLocation } from "react-router-dom";
-import ColumnsTable from "../rides/components/ColumnsTable";
+import ColumnsOrderTable from "./components/ColumnsTable";
 import ReactPaginate from "react-paginate";
 
 function Orders() {
@@ -215,7 +215,7 @@ function Orders() {
       ) : (
         <>
           <div className="mt-4">
-            <ColumnsTable
+            <ColumnsOrderTable
               tableData={allOrders}
               statusOptions={orderStatusOptions}
               setRideStatus={setOrderStatus}

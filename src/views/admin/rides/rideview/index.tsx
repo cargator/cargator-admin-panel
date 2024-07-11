@@ -83,7 +83,6 @@ const RideView = () => {
 
   const getDriverLocation = async (id: string) => {
     console.log(`getDriverLocationcalled`);
-    // console.log('rideDriverId', rideDriverId)
     const response = await getDriverLocationApi({
       driverId: id,
     });
