@@ -69,7 +69,7 @@ const Dashboard = () => {
       setIsSpinner(true);
       const dashboardDataResponse: any = await dashboardDataApi();
       setDashboardData(dashboardDataResponse.data);
-      setOngoingRidesCount(dashboardDataResponse.data.ongoingRidesCount);
+      setOngoingRidesCount(dashboardDataResponse.data.ongoingOrderCount);
       setCompleteRidesCount(dashboardDataResponse.data.completedRidesCount);
       setOnlineDriversCount(dashboardDataResponse.data.onlineDriversCount);
       setTotalDriver(dashboardDataResponse.data.totalDriversCount);
