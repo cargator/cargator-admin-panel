@@ -52,6 +52,8 @@ export const getRideDetailsApi = (id) => {
   return customAxios.get(`/get-ride-details/${id}`);
 };
 
+
+
 export const deleteVehicleApi = (data) => {
   const headers = {
     "X-Profile-Image-Key": data.profileImageKey,
@@ -320,6 +322,10 @@ export const deleteBreakPoints = (id) => {
   // console.log("deleteBreakPoints")
   return customAxios.delete(`/delete-breakingPoints/${id}`);
 };
+
+export const orderById=(id)=>{
+  return customAxios.get(`/get-order/${id}`);
+}
 
 export const findOrders = (data) => {
   return customAxios.get(

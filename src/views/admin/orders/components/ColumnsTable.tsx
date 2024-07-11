@@ -181,8 +181,9 @@ function ColumnsOrderTable(props: {
             height={30}
             width={30}
             style={{ cursor: "pointer" }}
-            onClick={() =>
-              navigate(`/admin/orders/orderDetails/${info.getValue()}`)
+            onClick={() =>{
+             
+              navigate(`/admin/orders/orderDetails/${info.getValue()}`)}
             }
           />
         </div>

@@ -28,6 +28,7 @@ import Rides from "views/admin/rides";
 import Drivers from "views/admin/drivers";
 import Orders from "views/admin/orders";
 import CreateOrder from "views/admin/orders/components/createOrder";
+import OrderView from "views/admin/orders/components/orderView";
 
 export interface RoutesType {
   name: string;
@@ -217,7 +218,7 @@ const authenticatedRoutes: RoutesType[] = [
     layout: "/admin",
     path: "orders/orderDetails/:id",
     // icon: <MdPerson className="h-6 w-6" />,
-    component: <RideView />,
+    component: <OrderView />,
     secondary: true,
   },
   {
