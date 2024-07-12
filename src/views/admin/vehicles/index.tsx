@@ -26,7 +26,7 @@ import { Button, ChakraProvider } from "@chakra-ui/react";
 import deleteIcon from "../../../assets/svg/deleteIcon.svg";
 import Navbar from "components/navbar";
 import { getS3SignUrlApi } from "../../../services/customAPI";
-
+import { vehicleNumberFormat } from "helper/commonFunction";
 const Vehicles: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentPage = useRef<number>(1);
@@ -43,15 +43,6 @@ const Vehicles: React.FC = () => {
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
   const { t } = useTranslation();
-
-  // const extractSpecificValues = (item: any) => {
-  //   return {
-  //     vehicleName: item.vehicleName,
-  //     vehicleNumber: item.vehicleNumber,
-  //     vehicleType: item.vehicleType,
-  //     vehicleStatus: item.vehicleStatus,
-  //   };
-  // };
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -127,7 +118,7 @@ const Vehicles: React.FC = () => {
             name: vehicle.vehicleName,
             path: path,
           },
-          vehicleNumber:`${getVehicalNumberFormat(vehicle?.vehicleNumber)}`,
+          vehicleNumber:`${vehicleNumberFormat(vehicle?.vehicleNumber)}`,
           // vehicleNumber:`${vehicle?.vehicleNumber?.substring(0, 2) || ''} ${vehicle?.vehicleNumber?.substring(2, 4) || ''} ${vehicle?.vehicleNumber?.substring(4, 6) || ''} ${vehicle?.vehicleNumber?.substring(6, 10) || ''}`,
           vehicleType: vehicle.vehicleType,
           vehicleStatus: vehicle.vehicleStatus,
@@ -143,24 +134,7 @@ const Vehicles: React.FC = () => {
 
     return res;
   }
-  const getVehicalNumberFormat=(vehicalNumber:string)=>{
-    let number=vehicalNumber?.substring(0, 2)+" "+ vehicalNumber?.substring(2, 4)+" "
-    // let number="";
-    for(let i=4;i<vehicalNumber.length;i++)
-    {
-      if((vehicalNumber.charAt(i)>= 'A' && vehicalNumber.charAt(i) <= 'Z') || (vehicalNumber.charAt(i)>= 'a' && vehicalNumber.charAt(i) <= 'z')){
-        number=number+vehicalNumber.charAt(i)
-        console.log();
-        
-      }
-      else{
-        number=number+" "+vehicalNumber.substring(i);
-        break;
-      }
-    }
-    return number;
-    
-  }
+
   const getPaginatedVehicleData = async () => {
     try {
       setIsLoading(true);

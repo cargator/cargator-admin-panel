@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
   Formik,
@@ -14,6 +14,7 @@ import Loader from "components/loader/loader";
 import Navbar from "components/navbar";
 import Card from "components/card";
 import { createOrder } from "services/customAPI";
+import { toast } from "react-toastify";
 
 function CalculateTotalPrice(): any {
   const { values, setFieldValue } = useFormikContext<any>();
@@ -34,6 +35,35 @@ function uniqueRandomId(): string {
   const randomData = timestamp.toString().padStart(6, "0");
   return randomData;
 }
+
+const errorToast = (message: string) => {
+  toast.error(`${message}`, {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 4000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    style: { borderRadius: "15px" },
+  });
+};
+
+const successToast = (message: string) => {
+  // console.log("Inside successToast", message); // Add this line for debugging
+  toast.success(`${message}`, {
+    position: toast.POSITION.TOP_RIGHT,
+    autoClose: 4000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    style: { borderRadius: "15px" },
+  });
+};
 
 function CreateOrder() {
   const initialValues = {
@@ -98,6 +128,7 @@ function CreateOrder() {
   });
 
   const params = useParams<{ id?: string }>();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [isLoading, setIsLoading] = useState(false);
   const [orderItems, setOrderItems] = useState([]);
@@ -130,6 +161,14 @@ function CreateOrder() {
 
       const response = await createOrder(values);
 
+      if (response) {
+        successToast(t("order Created Successfully"));
+        navigate("/admin/order");
+        setIsLoading(false);
+      } else {
+        errorToast(t("Something went wrong"));
+      }
+
       console.log("response", response);
     } catch (errors) {
       // If validation fails, handle errors appropriately
@@ -144,7 +183,7 @@ function CreateOrder() {
         !currentOrderItems.some((orderItem) => orderItem.name === item.name)
     );
   };
-  
+
   return (
     <>
       <Navbar flag={false} brandText="addOrder" />
