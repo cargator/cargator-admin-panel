@@ -153,16 +153,17 @@ const OrderView = () => {
       const res = await orderById(params.id);
       const order=res.data;
       setOrderDetails(order)
-      //   console.log(order.order_details);
-      setpickUp(order.pickup_details.address)
-      setDrop(order.drop_details.address)
-      setOrderPrice(order.order_details.order_total)
-      setDriverName(order.driver_details.name)
-      setDriverMobileNumber(order.driver_details.contact)
-      setVehicalName(order.driver_details.vehicalName)
-      setVehicalNumber(order.driver_details.vehicalNumber)
-      setOrderStatus(order.status)
-      setDateTimeCreatedAt(convertUtcToIst(order.createdAt));
+
+      //   console.log(order?.order_details);
+      setpickUp(order?.pickup_details?.address)
+      setDrop(order?.drop_details?.address)
+      setOrderPrice(order?.order_details?.order_total)
+      setDriverName(order?.driver_details?.name)
+      setDriverMobileNumber(order?.driver_details?.contact)
+      setVehicalName(order?.vehicleName)
+      setVehicalNumber(order?.vehicleNumber)
+      setOrderStatus(order?.status)
+      setDateTimeCreatedAt(convertUtcToIst(order?.createdAt));
    
       setIsLoading(false);
     } catch (error) {
@@ -173,9 +174,6 @@ const OrderView = () => {
  
 
   useEffect(() => {
-   
-    console.log(params.id);
-
     getData();
     
 
@@ -250,7 +248,7 @@ const OrderView = () => {
                   }
                 >
                     
-                  {orderStatus}
+                  {orderStatus ||"NA"}
                 </span>
               </div>
               <div className="grid grid-cols-8 gap-2 pb-3">
