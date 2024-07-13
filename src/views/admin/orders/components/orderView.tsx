@@ -249,13 +249,13 @@ const OrderView = () => {
                   center={center}
                   zoom={10}
                 >
-                   <Marker
+                   {path.length!==0 && <Marker
                     position={{
-                      lat: orderDetails?.riderPathToPickUp[0].latitude,
-                      lng: orderDetails?.riderPathToPickUp[0].longitude,
+                      lat: orderDetails?.riderPathToPickUp[0]?.latitude,
+                      lng: orderDetails?.riderPathToPickUp[0]?.longitude,
                     }}
                     label="S"
-                  />
+                  />}
                   <Marker
                     position={{
                       lat: orderDetails?.pickup_details?.latitude,
@@ -273,7 +273,7 @@ const OrderView = () => {
                   {driverLocation && (
                     <Marker position={driverLocation} label="DR" />
                   )}
-                  <Polyline path={path} options={{ strokeColor: "red", strokeWeight: 4 }} />
+                  <Polyline path={path} options={{ strokeColor: "blue", strokeWeight: 4 }} />
                 </GoogleMap>
               )}
             </div>
