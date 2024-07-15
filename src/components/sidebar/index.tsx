@@ -56,9 +56,9 @@ const Sidebar: React.FC<{
         <HiX />
       </span>
 
-      <div className={`mx-[90px] mt-[80px] flex items-center`}>
+      <div className={`mx-[90px] mt-[100px] flex items-center`}>
         <div style={{widows:'1px'}}>
-          <img src={logo} alt="Logo" style={{ width: '130px',height: 'auto',margin:'0%'}}/>
+          <img src={logo} alt="Logo" style={{ width: '80px',height: 'auto',margin:'0%'}}/>
         </div>
       </div>
       <div className="mb-7 mt-[58px] h-px " />
