@@ -299,7 +299,7 @@ const RideView = () => {
                   paddingBottom: "8px",
                 }}
               >
-                Drivers
+                Riders
               </div>
               <div className="grid grid-cols-8 gap-2 pb-3">
                 <div className="col-span-2">
