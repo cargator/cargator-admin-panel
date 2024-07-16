@@ -34,6 +34,7 @@ function ColumnsTable(props) {
   const [selectedFlowOption, setSelectedFlowOption] = useState("default");
   const [isLoading, setIsLoading] = useState(false);
   const [AppFlowId, setAppFLowId] = useState();
+  const [isDisabled, setIsDisabled] = useState(true)
 
   const handleOptionChange = (event) => {
     setSelectedFlowOption(event.target.value);
@@ -210,6 +211,7 @@ function ColumnsTable(props) {
                       value="default"
                       checked={selectedFlowOption === "default"}
                       onChange={handleOptionChange}
+                      disabled={isDisabled}
                     />
                     <label className="ml-2">Default</label>
                   </label>
@@ -221,6 +223,7 @@ function ColumnsTable(props) {
                       value="custom"
                       checked={selectedFlowOption === "custom"}
                       onChange={handleOptionChange}
+                      disabled={isDisabled}
                     />
                     <label className="ml-2">Custom</label>
                   </label>

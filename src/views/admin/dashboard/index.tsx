@@ -365,8 +365,8 @@ const Dashboard = () => {
                     allOnlineDrivers.length > 0 &&
                     allOnlineDrivers.map((driverId) => {
                       const position = {
-                        lat: driverId.liveLocation && driverId.liveLocation[1],
-                        lng: driverId.liveLocation && driverId.liveLocation[0],
+                        lat: driverId.liveLocation && driverId.liveLocation[0],
+                        lng: driverId.liveLocation && driverId.liveLocation[1],
                       };
                       return (
                         <Marker
