@@ -53,12 +53,12 @@ const Navbar = (props: {
     <nav className="sticky top-4 z-40 flex flex-row flex-wrap items-center justify-end rounded-xl bg-white/10 p-2  dark:bg-[#0b14374d]">
       {/* {Laguage selecter} */}
       <div className="relative">
-        <button
+        {/* <button
           className="flex items-center justify-center w-[40px] h-[40px] mr-5 bg-white"
           style={{ backgroundImage: `url('${languageIcon}')`, backgroundSize: 'cover' }}
           onClick={toggleDropdown}
         >
-        </button>
+        </button> */}
         {isOpen && (
           <div className="absolute z-100 mt-3 w-[130px] bg-white border border-gray-300 rounded-xl shadow-md mr-[100px] mr-20">
             <button className="block w-full px-4 py-2 text-left hover:bg-gray-100" onClick={() => chooseLanguage("en")}>English</button>
