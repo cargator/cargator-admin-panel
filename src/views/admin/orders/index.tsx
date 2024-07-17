@@ -88,14 +88,13 @@ function Orders() {
         query: searchText.trim(),
       });
       console.log("response ===>", response);
-
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
       setAllOrders([]);
+    } finally {
       setLoading(false);
     }
-    setLoading(false);
   };
 
   async function getAllOrders(
@@ -115,24 +114,23 @@ function Orders() {
         limit: limit,
         query: searchText.trim(),
       });
-      //! update data to orders after prod
       console.log("RESPONSE", response.data[0].data);
       setAllOrders(await convertToOrders(response?.data[0].data));
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
       setPageItemRange(page, response?.data[0].count[0]?.totalcount);
-      setLoading(false);
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
       setAllOrders([]);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }
 
   const handleOrderStatusSelect = async (status: string) => {
     console.log("status", status);
     try {
-      setLoading(true);
+      // setLoading(true);
       let response: any;
 
       if (status === "all") {
@@ -147,48 +145,63 @@ function Orders() {
       setPageItemRange(currentPage, response?.data[0].count[0]?.totalcount);
     } catch (error) {
       console.log(`handleRideStatusSelect error :>> `, error);
+    } finally {
+      // setLoading(false);
     }
-    setLoading(false);
   };
 
   const searchOrderFn = async () => {
-    const response: any = await searchOrders();
-    if (!response) {
-      return;
-    }
+    setLoading(true);
+    try {
+      const response: any = await searchOrders();
+      if (!response) {
+        return;
+      }
 
-    setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-    setAllOrders(await convertToOrders(response?.data[0].orders));
-    setPageItemRange(currentPage, response?.data[0].count[0]?.totalcount);
-    setLoading(false);
+      setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+      setAllOrders(await convertToOrders(response?.data[0].orders));
+      setPageItemRange(currentPage, response?.data[0].count[0]?.totalcount);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSearchSubmit = async (e: any) => {
     e.preventDefault();
-    searchOrderFn();
-    setLoading(false);
+    await searchOrderFn();
   };
 
-  const handlePageClick = (event: any) => {
+  const handlePageClick = async (event: any) => {
     const selectedPage = event.selected + 1;
     setCurrentPage(selectedPage);
+    await getAllOrders(selectedPage, limit);
   };
 
   useEffect(() => {
-    getAllOrders(currentPage, 10);
+    const fetchData = async () => {
+      setLoading(true);
+      await getAllOrders(currentPage, 10);
+      setLoading(false);
+    };
+    fetchData();
   }, [currentPage]);
 
   useEffect(() => {
-    if (!firstRender.current) {
-      handleOrderStatusSelect(orderStatus);
-    } else {
-      firstRender.current = false;
-    }
+    const handleStatusChange = async () => {
+      // setLoading(true);
+      if (!firstRender.current) {
+        await handleOrderStatusSelect(orderStatus);
+      } else {
+        firstRender.current = false;
+      }
+      // setLoading(false);
+    };
+
+    // handleStatusChange();
   }, [orderStatus]);
 
   useEffect(() => {
     if (searchText.trim() === "") {
-      setLoading(true);
       setPageCount(Math.ceil(allOrders.length / limit));
       if (allOrders.length === 0) {
         setPageItemRange(0, allOrders.length);
@@ -196,7 +209,6 @@ function Orders() {
         setCurrentPage(1);
         setPageItemRange(currentPage, allOrders.length);
       }
-      setLoading(false);
     }
   }, [searchText]);
 
