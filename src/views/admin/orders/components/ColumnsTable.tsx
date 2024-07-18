@@ -41,10 +41,10 @@ type statusOption = {
 function ColumnsOrderTable(props: {
   tableData: any;
   statusOptions: statusOption[];
-  setRideStatus: (val: string) => void;
+  setOrderStatus: (val: string) => void;
   orderStatus: string;
 }) {
-  const { tableData, statusOptions, setRideStatus, orderStatus } = props;
+  const { tableData, statusOptions, setOrderStatus, orderStatus } = props;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -257,7 +257,7 @@ function ColumnsOrderTable(props: {
                   // value: t(`${option.label}`), // Translate value
                 }))}
                 onChange={(e: any) => {
-                  setRideStatus(e.value);
+                  setOrderStatus(e.value);
                 }}
                 value={statusOptions.filter(function (option: any) {
                   return option.value === orderStatus;

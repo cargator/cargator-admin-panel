@@ -27,6 +27,7 @@ function Orders() {
   const firstRender = useRef(true);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
+  console.log("orderStatus =====> ", orderStatus);
 
   const setPageItemRange = (currPageNumber: number, maxItemRange: number) => {
     let startNumber = currPageNumber * limit - limit + 1;
@@ -107,12 +108,13 @@ function Orders() {
       console.log("limits shows", {
         page: page,
         limit: limit,
+        filter
       });
 
       const response: any = await findOrders({
         page: page,
         limit: limit,
-        query: searchText.trim(),
+        filter,
       });
       console.log("RESPONSE", response.data[0].data);
       setAllOrders(await convertToOrders(response?.data[0].data));
@@ -128,15 +130,19 @@ function Orders() {
   }
 
   const handleOrderStatusSelect = async (status: string) => {
-    console.log("status", status);
+    console.log("status =======> ", status);
     try {
       // setLoading(true);
       let response: any;
 
       if (status === "all") {
-        response = await getAllOrders(currentPage, limit);
-      } else if (status === "current-rides") {
-        response = await getAllOrders(currentPage, limit);
+        response = await getAllOrders(currentPage, limit, status);
+      } else if (status === "current-order") {
+        console.log("hey am here~~~");
+        
+        response = await getAllOrders(currentPage, limit, status);
+      } else if (status === "completed") {
+        response = await getAllOrders(currentPage, limit, status);
       } else {
         const filter = status;
         response = await getAllOrders(currentPage, limit, filter);
@@ -187,7 +193,10 @@ function Orders() {
   }, [currentPage]);
 
   useEffect(() => {
+
+    
     const handleStatusChange = async () => {
+      console.log("useeffect call after change", orderStatus, firstRender.current);
       // setLoading(true);
       if (!firstRender.current) {
         await handleOrderStatusSelect(orderStatus);
@@ -197,7 +206,7 @@ function Orders() {
       // setLoading(false);
     };
 
-    // handleStatusChange();
+    handleStatusChange();
   }, [orderStatus]);
 
   useEffect(() => {
@@ -230,7 +239,7 @@ function Orders() {
             <ColumnsOrderTable
               tableData={allOrders}
               statusOptions={orderStatusOptions}
-              setRideStatus={setOrderStatus}
+              setOrderStatus={setOrderStatus}
               orderStatus={orderStatus}
             />
 
