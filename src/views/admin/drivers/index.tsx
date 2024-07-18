@@ -30,6 +30,7 @@ import "./driverlist.css";
 import Navbar from "../../../components/navbar";
 import { toast } from "react-toastify";
 import { getS3SignUrlApi } from "../../../services/customAPI";
+import { vehicleNumberFormat } from "helper/commonFunction";
 
 const Drivers = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -232,7 +233,7 @@ const Drivers = () => {
           path: path,
         },
         mobileNumber: driver.mobileNumber,
-        vehicleNumber: `${driver?.vehicleNumber?.substring(0, 2) || ''} ${driver?.vehicleNumber?.substring(2, 4) || ''} ${driver?.vehicleNumber?.substring(4, 6) || ''} ${driver?.vehicleNumber?.substring(6, 10) || ''}`,
+        vehicleNumber:`${vehicleNumberFormat(driver?.vehicleNumber)}`,
         vehicleType: driver.vehicleType,
         status: driver.rideStatus,
         action: {

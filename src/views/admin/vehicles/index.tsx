@@ -113,7 +113,7 @@ const Vehicles: React.FC = () => {
           path = "";
         }
 
-        return {
+        return { 
           vehicleName: {
             name: vehicle.vehicleName,
             path: path,
