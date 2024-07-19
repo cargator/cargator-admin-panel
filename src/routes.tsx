@@ -23,8 +23,6 @@ import { MdHome, MdBarChart, MdFastfood, MdOutlineShoppingCart, MdPerson, MdTwoW
 import { HiLocationMarker } from "react-icons/hi";
 import { BsChatLeftText } from "react-icons/bs";
 import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
-import Riders from "views/admin/riders";
-import Rides from "views/admin/rides";
 import Drivers from "views/admin/drivers";
 import Orders from "views/admin/orders";
 import CreateOrder from "views/admin/orders/components/createOrder";

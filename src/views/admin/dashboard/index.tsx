@@ -100,11 +100,11 @@ const Dashboard = () => {
   };
 
   const handleNavigation = () => {
-    navigate('/admin/rides?data=ongoing-rides');
+    navigate('/admin/order?data=ongoing-rides');
   };
 
   const handleNavigationCompleteRide = () => {
-    navigate('/admin/rides?data=completed');
+    navigate('/admin/order?data=completed');
   };
 
   const showDriversDetails = (driver: any, position: any) => {
