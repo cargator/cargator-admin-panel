@@ -21,6 +21,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
+
 type RowObj = {
   orderDate: string;
   orderTime: string;
@@ -38,6 +39,14 @@ type statusOption = {
   value: string;
 };
 
+const Tooltip = ({ children, text }: { children: ReactNode; text: string }) => (
+  <div className="tooltip-container">
+    {children}
+    <span className="tooltip-text">{text}</span>
+  </div>
+);
+
+
 function ColumnsOrderTable(props: {
   tableData: any;
   statusOptions: statusOption[];
@@ -48,6 +57,7 @@ function ColumnsOrderTable(props: {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const columnHelper = createColumnHelper<RowObj>();
   const columns = [
     columnHelper.accessor("orderDate", {
       id: "orderDate",
@@ -122,21 +132,26 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
-        <div className="flex items-center justify-around">
-          {info.getValue() === "DELIVERED" ? (
-            <img src={completedRide} height={25} width={25} alt="Completed" />
-          ) : info.getValue() === "CANCELLED" ? (
-            <img src={cancelRide} height={25} width={25} alt="Cancelled" />
-          ) : (
-            <img src={ongoingRide} height={25} width={25} alt="Ongoing" />
-          )}
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {info.getValue().charAt(0).toUpperCase() +
-              info.getValue()?.slice(1)}
-          </p>
-        </div>
+        <Tooltip text={info.getValue()}>
+          <div className="flex items-center justify-around">
+            {info.getValue() === "DELIVERED" ? (
+              <img src={completedRide} height={25} width={25} alt="Completed" />
+            ) : info.getValue() === "CANCELLED" ? (
+              <img src={cancelRide} height={25} width={25} alt="Cancelled" />
+            ) : (
+              <img src={ongoingRide} height={25} width={25} alt="Ongoing" />
+            )}
+            <p className="text-sm font-bold text-navy-700 dark:text-white">
+              {info.getValue().length > 9
+                ? `${info.getValue().slice(0, 9)}...`
+                : info.getValue().charAt(0).toUpperCase() +
+                  info.getValue()?.slice(1)}
+            </p>
+          </div>
+        </Tooltip>
       ),
     }),
+    
     columnHelper.accessor("pickUpLocation", {
       id: "pickUpLocation",
       header: () => (
@@ -171,25 +186,20 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
-        // <p className="text-sm font-bold text-navy-700 dark:text-white">
-        //   <img src={eyeview} height={30} width={30} />
-        // </p>
-
         <div className="flex items-center">
           <img
             src={eyeview}
             height={30}
             width={30}
             style={{ cursor: "pointer" }}
-            onClick={() =>{
-             
-              navigate(`/admin/orders/orderDetails/${info.getValue()}`)}
-            }
+            onClick={() => navigate(`/admin/orders/orderDetails/${info.getValue()}`)}
+            alt="View"
           />
         </div>
       ),
     }),
-  ]; // eslint-disable-next-line
+  ];
+
   const [data, setData] = React.useState([...tableData]);
   const table = useReactTable({
     data,
@@ -209,7 +219,7 @@ function ColumnsOrderTable(props: {
       style={{ cursor: "pointer" }}
       {...props}
     >
-      <img src={filterIcon} className="ml-3" height={20} width={20} />
+      <img src={filterIcon} className="ml-3" height={20} width={20} alt="Filter" />
       {children}
     </div>
   );
@@ -219,7 +229,7 @@ function ColumnsOrderTable(props: {
       className="flex items-center justify-between"
       style={{ cursor: "pointer" }}
     >
-      <img src={arrow_down} className="mr-3" height={15} width={15} />
+      <img src={arrow_down} className="mr-3" height={15} width={15} alt="Arrow Down" />
     </div>
   );
 
@@ -247,34 +257,24 @@ function ColumnsOrderTable(props: {
             <div style={{ width: "200px", paddingLeft: "10%" }}>
               <Select
                 isSearchable={false}
-                // className="w-400"
                 className="custom-select"
-                // options={statusOptions}
                 options={statusOptions.map((option) => ({
-                  // Map over statusOptions to translate labels
                   ...option,
-                  label: t(`${option.label}`), // Translate label
-                  // value: t(`${option.label}`), // Translate value
+                  label: t(`${option.label}`),
                 }))}
                 onChange={(e: any) => {
                   setOrderStatus(e.value);
                 }}
-                value={statusOptions.filter(function (option: any) {
-                  return option.value === orderStatus;
-                })}
-                // value={statusOptions.find(option => option.value === rideStatus)} // Use find instead of filter
-                name="rideStatus"
-                // defaultValue={{ label: defaultLabel, value: rideStatus }} // Set the translated default value
+                value={statusOptions.filter((option: any) => option.value === orderStatus)}
                 styles={{
-                  // Fixes the overlapping problem of the component
                   menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
                   option: (provided: any, state: any) => ({
                     ...provided,
-                    backgroundColor: state.isSelected ? "#f2f3f7" : "white", // Change the background color here
+                    backgroundColor: state.isSelected ? "#f2f3f7" : "white",
                     cursor: "pointer",
-                    color: "black", // Change the text color herevscode-file://vscode-app/c:/Users/codeb/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html
+                    color: "black",
                     "&:hover": {
-                      backgroundColor: "#f2f3f7", // Change the background color on hover
+                      backgroundColor: "#f2f3f7",
                     },
                   }),
                 }}
@@ -287,7 +287,6 @@ function ColumnsOrderTable(props: {
             </div>
           </div>
         </div>
-        {/* <CardMenu /> */}
       </header>
 
       <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
@@ -353,7 +352,6 @@ function ColumnsOrderTable(props: {
                 .getRowModel()
                 .rows?.slice(0, 10)
                 .map((row) => {
-                  // console.log("object row :>> ", row);
                   return (
                     <tr key={row.id}>
                       {row.getVisibleCells().map((cell) => {
@@ -381,4 +379,3 @@ function ColumnsOrderTable(props: {
 }
 
 export default ColumnsOrderTable;
-const columnHelper = createColumnHelper<RowObj>();
