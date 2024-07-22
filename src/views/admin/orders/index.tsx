@@ -80,6 +80,11 @@ function Orders() {
     return response;
   }
 
+  const checkOrderStatus=(status:string)=>{
+    if(status.length<=9){return status}
+    return status.slice(0,9)+'...'
+  }
+
   const searchOrders = async () => {
     try {
       setLoading(true);
