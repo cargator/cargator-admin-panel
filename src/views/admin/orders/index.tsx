@@ -64,7 +64,7 @@ function Orders() {
       
       let dateTime = convertUtcToIst(order.createdAt);
       return {
-        orderId:order?._id.slice(-6),
+        orderId:order?._id,
         orderDate: dateTime.substring(0, 10),
         orderTime: dateTime.substring(11, 16),
         customerMobileNum: order?.drop_details?.contact_number
@@ -81,11 +81,6 @@ function Orders() {
       };
     });
     return response;
-  }
-
-  const checkOrderStatus=(status:string)=>{
-    if(status.length<=9){return status}
-    return status.slice(0,9)+'...'
   }
 
   const searchOrders = async () => {

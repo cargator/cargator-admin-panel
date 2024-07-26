@@ -60,19 +60,6 @@ function ColumnsOrderTable(props: {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const columnHelper = createColumnHelper<RowObj>();
   const columns = [
-    columnHelper.accessor("orderId", {
-      id: "orderId",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Order Id")}
-        </p>
-      ),
-      cell: (info: any) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
     columnHelper.accessor("orderDate", {
       id: "orderDate",
       header: () => (
@@ -84,6 +71,21 @@ function ColumnsOrderTable(props: {
         <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
+      ),
+    }),
+    columnHelper.accessor("orderId", {
+      id: "orderId",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Order Id")}
+        </p>
+      ),
+      cell: (info: any) => (
+        <Tooltip text={info.getValue()}>
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue().slice(-6)}
+        </p>
+        </Tooltip>
       ),
     }),
     columnHelper.accessor("orderTime", {

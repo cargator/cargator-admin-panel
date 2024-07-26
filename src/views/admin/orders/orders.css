@@ -66,8 +66,8 @@
   transform: translateX(-50%);
   opacity: 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  /* overflow: hidden; */
+  /* text-overflow: ellipsis; */
   transition: opacity 0.3s;
 }
 
