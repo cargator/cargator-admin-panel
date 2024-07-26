@@ -60,8 +60,11 @@ function Orders() {
 
   function convertToOrders(orders: any) {
     const response = orders.map((order: any) => {
+      console.log(order);
+      
       let dateTime = convertUtcToIst(order.createdAt);
       return {
+        orderId:order?._id.slice(-6),
         orderDate: dateTime.substring(0, 10),
         orderTime: dateTime.substring(11, 16),
         customerMobileNum: order?.drop_details?.contact_number
