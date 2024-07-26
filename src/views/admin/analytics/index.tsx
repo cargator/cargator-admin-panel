@@ -453,7 +453,7 @@ export default function Analytics() {
                 </Flex>
               </>
             )}
-          </Flex>
+          </Flex> 
         </div>
         <div className="px-10" style={{ position: "relative" }}>
           <>

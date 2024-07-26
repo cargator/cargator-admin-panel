@@ -23,6 +23,7 @@ import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 
 type RowObj = {
+  orderId:string;
   orderDate: string;
   orderTime: string;
   customerMobileNum: string;
@@ -59,6 +60,19 @@ function ColumnsOrderTable(props: {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const columnHelper = createColumnHelper<RowObj>();
   const columns = [
+    columnHelper.accessor("orderId", {
+      id: "orderId",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Order Id")}
+        </p>
+      ),
+      cell: (info: any) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
     columnHelper.accessor("orderDate", {
       id: "orderDate",
       header: () => (
@@ -160,9 +174,11 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
+        <Tooltip text={info.getValue()}>
         <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()?.slice(0, 15)}...
         </p>
+        </Tooltip>
       ),
     }),
     columnHelper.accessor("dropLocation", {
@@ -173,9 +189,11 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
+        <Tooltip text={info.getValue()}>
         <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()?.slice(0, 15)}...
         </p>
+        </Tooltip>
       ),
     }),
     columnHelper.accessor("view", {
