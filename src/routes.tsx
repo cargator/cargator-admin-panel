@@ -1,41 +1,43 @@
-// Admin Imports
-import Drivers from "views/admin/drivers";
-import Analytics from "views/admin/analytics";
-import Rides from "views/admin/rides";
-import DriverForm from "views/admin/drivers/driverForm";
-import RideView from "views/admin/rides/rideview";
-import Vehicles from "views/admin/vehicles";
-import { GiMountainRoad, GiSteeringWheel } from "react-icons/gi";
-import Flows from 'views/admin/settings/Flow'
-import FlowsForm from "views/admin/settings/FlowsForm";
-// import RTLDefault from "views/rtl/default";
+// routes.ts 
 
-// Auth Imports
-
-// Icon Imports
-import {
-  MdHome,
-  MdOutlineShoppingCart,
-  MdBarChart,
-  MdPerson,
-} from "react-icons/md";
-import Riders from "views/admin/riders";
-import VehicleForm from "views/admin/vehicles/vehicleform";
+import React from "react";
 import Dashboard from "views/admin/dashboard";
-import { BsChatLeftText } from "react-icons/bs";
-import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
-import Settings from "views/admin/settings/settings";
+import Spots from "views/admin/spots";
+import SpotForm from "views/admin/spots/components/SpotForm";
+import Vehicles from "views/admin/vehicles";
+import Analytics from "views/admin/analytics";
+import General from "views/admin/settings/general";
+import PrivacyPolicy from "views/admin/settings/privacyPolicy";
+import Support from "views/admin/settings/support";
+import CountryCode from "views/admin/settings/countryCode/components";
+import CountryCodeForm from "views/admin/settings/countryCodeForm";
+import Flows from "views/admin/settings/Flow";
+import FlowsForm from "views/admin/settings/FlowsForm";
 import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
 import VehicleTypeList from "views/admin/settings/vehicleTypeList";
-import General from "views/admin/settings/general";
-import CountryCode from "views/admin/settings/countryCode/components";
-import CountryCodeForm from "views/admin/settings/countryCodeForm";
+import DriverForm from "views/admin/drivers/driverForm";
+import RideView from "views/admin/rides/rideview";
+import VehicleForm from "views/admin/vehicles/vehicleform";
+import { MdHome, MdBarChart, MdFastfood, MdOutlineShoppingCart, MdPerson, MdTwoWheeler } from "react-icons/md";
 import { HiLocationMarker } from "react-icons/hi";
-import SpotForm from "views/admin/spots/components/SpotForm";
-import Spots from "views/admin/spots";
-// import CountryCodeForm from "views/admin/settings/countryCodeForm";
-const routes = [
+import { BsChatLeftText } from "react-icons/bs";
+import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
+import Drivers from "views/admin/drivers";
+import Orders from "views/admin/orders";
+import CreateOrder from "views/admin/orders/components/createOrder";
+import OrderView from "views/admin/orders/components/orderView";
+
+export interface RoutesType {
+  name: string;
+  layout: string;
+  path: string;
+  component: React.ReactNode;
+  secondary?: boolean;
+  icon?: JSX.Element;
+}
+
+const authenticatedRoutes: RoutesType[] = [
   {
     name: "Dashboards",
     layout: "/admin",
@@ -59,19 +61,19 @@ const routes = [
     secondary: true,
   },
   {
-    name: "Drivers",
+    name: "Riders ",
     layout: "/admin",
     path: "drivers",
-    icon: <GiSteeringWheel className="h-6 w-6" />,
+    icon: <MdTwoWheeler className="h-6 w-6" />,
     component: <Drivers />,
     // secondary: true,
   },
   {
-    name: "Riders",
+    name: "Orders",
     layout: "/admin",
-    icon: <MdPerson className="h-6 w-6" />,
-    path: "riders",
-    component: <Riders />,
+    path: "order",
+    icon: <MdFastfood className="h-6 w-6" />,
+    component: <Orders />,
   },
   {
     name: "Vehicles",
@@ -79,13 +81,6 @@ const routes = [
     icon: <IoCarSportSharp className="h-6 w-6" />,
     path: "vehicles",
     component: <Vehicles />,
-  },
-  {
-    name: "Rides",
-    layout: "/admin",
-    icon: <GiMountainRoad className="h-6 w-6" />,
-    path: "rides",
-    component: <Rides />,
   },
   {
     name: "Analytics",
@@ -98,14 +93,35 @@ const routes = [
     name: "General",
     layout: "/admin",
     path: "settings/general",
-    component: <General/>,
+    component: <General />,
+    secondary: true,
+  },
+  {
+    name: "Add Order",
+    layout: "/admin",
+    path: "order/add",
+    component: <CreateOrder />,
+    secondary: true,
+  },
+  {
+    name: "privacyPolicy",
+    layout: "/admin",
+    path: "settings/privacyPolicy",
+    component: <PrivacyPolicy />,
+    secondary: true,
+  },
+  {
+    name: "support",
+    layout: "/admin",
+    path: "settings/support",
+    component: <Support />,
     secondary: true,
   },
   {
     name: "Settings",
     layout: "/admin",
     path: "settings/countrycode",
-    component: <CountryCode/>,
+    component: <CountryCode />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
@@ -121,7 +137,7 @@ const routes = [
     name: "Settings",
     layout: "/admin",
     path: "settings/flows",
-    component: <Flows/>,
+    component: <Flows />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
@@ -196,28 +212,53 @@ const routes = [
     secondary: true,
   },
   {
+    name: "Order Details",
+    layout: "/admin",
+    path: "orders/orderDetails/:id",
+    // icon: <MdPerson className="h-6 w-6" />,
+    component: <OrderView />,
+    secondary: true,
+  },
+  {
     name: "Country-Form",
     layout: "/admin",
     path: "settings/countrycode-form",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <CountryCodeForm/>,
-    secondary:true
+    component: <CountryCodeForm />,
+    secondary: true
   },
   {
     name: "Flows-Form",
     layout: "/admin",
     path: "settings/flow-form",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <FlowsForm/>,
-    secondary:true
+    component: <FlowsForm />,
+    secondary: true
   },
   {
     name: "Flows-Form ID",
     layout: "/admin",
     path: "settings/flow-form/:id",
     icon: <MdPerson className="h-6 w-6" />,
-    component: <FlowsForm/>,
-    secondary:true
+    component: <FlowsForm />,
+    secondary: true
   },
 ];
-export default routes;
+
+const publicRoutes: RoutesType[] = [
+  {
+    name: "Public Privacy Policy",
+    layout: "/",
+    path: "privacyPolicy",
+    component: <PrivacyPolicy />,
+  },
+  {
+    name: "support",
+    layout: "/",
+    path: "support",
+    component: <Support />,
+  },
+  // Add more public routes as needed
+];
+
+export { authenticatedRoutes, publicRoutes };

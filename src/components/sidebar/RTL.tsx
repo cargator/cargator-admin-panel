@@ -4,7 +4,7 @@ import { HiX } from "react-icons/hi";
 import Links from "./components/Links";
 
 import SidebarCard from "components/sidebar/components/SidebarCard";
-import routes from "routes";
+import { authenticatedRoutes, publicRoutes } from "routes";
 
 const Sidebar = (props: {
   open: boolean;
@@ -18,22 +18,22 @@ const Sidebar = (props: {
       }`}
     >
       <span
-        className="absolute top-4 block cursor-pointer end-4 xl:hidden"
+        className="absolute end-4 top-4 block cursor-pointer xl:hidden"
         onClick={onClose}
       >
         <HiX />
       </span>
 
       <div className={`mx-[56px] mt-[50px] flex items-center`}>
-        <div className="mt-1 h-2.5 font-poppins text-[26px] font-bold uppercase text-navy-700 ms-1 dark:text-white">
+        <div className="ms-1 mt-1 h-2.5 font-poppins text-[26px] font-bold uppercase text-navy-700 dark:text-white">
           Horizon <span className="font-medium">FREE</span>
         </div>
       </div>
-      <div className="mt-[58px] mb-7 h-px bg-gray-300 dark:bg-white/30" />
+      <div className="mb-7 mt-[58px] h-px bg-gray-300 dark:bg-white/30" />
       {/* Nav item */}
 
       <ul className="mb-auto pt-1">
-        <Links routes={routes} />
+        <Links routes={[...authenticatedRoutes, ...publicRoutes]} />
       </ul>
 
       {/* Free Horizon Card */}

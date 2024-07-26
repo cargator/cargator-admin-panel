@@ -1,5 +1,5 @@
 import React, { useEffect, useState, ReactNode } from "react";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next";
 import CardMenu from "components/card/CardMenu";
 import Card from "components/card";
 import Select, { components, DropdownIndicatorProps } from "react-select";
@@ -9,10 +9,7 @@ import cancelRide from "../../../../assets/svg/cancelRide.svg";
 import ongoingRide from "../../../../assets/svg/ongoingRide.svg";
 import filterIcon from "../../../../assets/svg/filterIcon.svg";
 import arrow_down from "../../../../assets/svg/arrow_down.svg";
-import whatsApp_logo from "../../../../assets/images/Logo-WhatsApp.png"
-import android_logo from "../../../../assets/images/android_logo.png"
-import ios_logo from "../../../../assets/images/ios_logo.png"
-import "../rides.css";
+import "../orders.css";
 import {
   createColumnHelper,
   flexRender,
@@ -24,17 +21,17 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
+
 type RowObj = {
-  logo: string;
-  bookingDate: string;
-  bookingTime: string;
-  riderMobileNum: string;
+  orderId:string;
+  orderDate: string;
+  orderTime: string;
+  customerMobileNum: string;
   DriverMobileNum: string;
-  fare: number;
+  amount: number;
   status: string;
-  platform: string;
-  origin: string;
-  destination: string;
+  pickUpLocation: string;
+  dropLocation: string;
   view: string;
 };
 
@@ -43,35 +40,31 @@ type statusOption = {
   value: string;
 };
 
-function ColumnsTable(props: {
+const Tooltip = ({ children, text }: { children: ReactNode; text: string }) => (
+  <div className="tooltip-container">
+    {children}
+    <span className="tooltip-text">{text}</span>
+  </div>
+);
+
+
+function ColumnsOrderTable(props: {
   tableData: any;
   statusOptions: statusOption[];
-  setRideStatus: (val: string) => void;
-  rideStatus: string;
+  setOrderStatus: (val: string) => void;
+  orderStatus: string;
 }) {
-  const { tableData, statusOptions, setRideStatus, rideStatus } = props;
+  const { tableData, statusOptions, setOrderStatus, orderStatus } = props;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const columnHelper = createColumnHelper<RowObj>();
   const columns = [
-    columnHelper.accessor("platform", {
-      id: "logo",
+    columnHelper.accessor("orderId", {
+      id: "orderId",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Source")}
-        </p>
-      ),
-      cell: (info: any) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()==="whatsApp" ? <img src={whatsApp_logo} alt="whatsApp_logo" width={30} height={30}/> : info.getValue()==="android" ? <img src={android_logo} alt="android_logo" width={30} height={30}/> : info.getValue()==="ios"  ? <img src={ios_logo} alt="whatsApp_logo" width={30} height={30}/> : ""}
-        </p>
-      ),
-    }),
-    columnHelper.accessor("bookingDate", {
-      id: "bookingDate",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Booking Date")}
+          {t("Order Id")}
         </p>
       ),
       cell: (info: any) => (
@@ -80,11 +73,24 @@ function ColumnsTable(props: {
         </p>
       ),
     }),
-    columnHelper.accessor("bookingTime", {
-      id: "bookingTime",
+    columnHelper.accessor("orderDate", {
+      id: "orderDate",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Booking Time")}
+          {t("Order Date")}
+        </p>
+      ),
+      cell: (info: any) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
+    columnHelper.accessor("orderTime", {
+      id: "orderTime",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Order Time")}
         </p>
       ),
       cell: (info) => (
@@ -93,11 +99,11 @@ function ColumnsTable(props: {
         </p>
       ),
     }),
-    columnHelper.accessor("riderMobileNum", {
-      id: "riderMobileNum",
+    columnHelper.accessor("customerMobileNum", {
+      id: "customerMobileNum",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Rider Mobile No.")}
+          {t("Cust. Mobile No.")}
         </p>
       ),
       cell: (info) => (
@@ -110,19 +116,21 @@ function ColumnsTable(props: {
       id: "DriverMobileNum",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Operator Mobile No.")}
+          {t("Driver Mobile No.")}
         </p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
+          {info.getValue() == null ? "N/A" : ` +${info.getValue()}`}
         </p>
       ),
     }),
-    columnHelper.accessor("fare", {
-      id: "fare",
+    columnHelper.accessor("amount", {
+      id: "amount",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">{t("Fare")}</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Amount")}
+        </p>
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
@@ -138,83 +146,78 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) => (
-        // <div className="flex items-center">
-        //   {getStatusImage(info.row.original.status)}
-        //   <p className="ml-2 text-sm font-bold text-navy-700 dark:text-white">
-        //     {info.getValue()}
-        //   </p>
-        // </div>
-        <div className="flex items-center">
-          {info.getValue() === "completed" ? (
-            <img src={completedRide} height={25} width={25} alt="Completed" />
-          ) : info.getValue() === "cancelled" || info.getValue() === "Failed" ? (
-            <img src={cancelRide} height={25} width={25} alt="Canceled" />
-          ) : (
-            <img
-              src={ongoingRide}
-              height={21}
-              width={21}
-              alt="Ongoing"
-              className="me-1"
-            />
-          )}
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
-            {" "}
-            {info.getValue().charAt(0).toUpperCase() +
-                            info.getValue()?.slice(1)}
-            {/* {info.getValue()} */}
-          </p>
-        </div>
+        <Tooltip text={info.getValue()}>
+          <div className="flex items-center justify-around">
+            {info.getValue() === "DELIVERED" ? (
+              <img src={completedRide} height={25} width={25} alt="Completed" />
+            ) : info.getValue() === "CANCELLED" ? (
+              <img src={cancelRide} height={25} width={25} alt="Cancelled" />
+            ) : (
+              <img src={ongoingRide} height={25} width={25} alt="Ongoing" />
+            )}
+            <p className="text-sm font-bold text-navy-700 dark:text-white">
+              {info.getValue().length > 9
+                ? `${info.getValue().slice(0, 9)}...`
+                : info.getValue().charAt(0).toUpperCase() +
+                  info.getValue()?.slice(1)}
+            </p>
+          </div>
+        </Tooltip>
       ),
     }),
-    columnHelper.accessor("origin", {
-      id: "origin",
+    
+    columnHelper.accessor("pickUpLocation", {
+      id: "pickUpLocation",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Origin")}
+          {t("Pick-Up Location")}
         </p>
       ),
       cell: (info) => (
+        <Tooltip text={info.getValue()}>
         <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()?.slice(0, 15)}...
         </p>
+        </Tooltip>
       ),
     }),
-    columnHelper.accessor("destination", {
-      id: "destination",
+    columnHelper.accessor("dropLocation", {
+      id: "dropLocation",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Destination")}
+          {t("Drop Location")}
         </p>
       ),
       cell: (info) => (
+        <Tooltip text={info.getValue()}>
         <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()?.slice(0, 15)}...
         </p>
+        </Tooltip>
       ),
     }),
     columnHelper.accessor("view", {
       id: "view",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">{t("View")}</p>
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("View")}
+        </p>
       ),
       cell: (info) => (
-        // <p className="text-sm font-bold text-navy-700 dark:text-white">
-        //   <img src={eyeview} height={30} width={30} />
-        // </p>
-
         <div className="flex items-center">
           <img
             src={eyeview}
             height={30}
             width={30}
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/admin/rides/ridedetails/${info.getValue()}`)}
+            onClick={() => navigate(`/admin/orders/orderDetails/${info.getValue()}`)}
+            alt="View"
           />
         </div>
       ),
     }),
-  ]; // eslint-disable-next-line
+  ];
+
   const [data, setData] = React.useState([...tableData]);
   const table = useReactTable({
     data,
@@ -229,15 +232,22 @@ function ColumnsTable(props: {
   });
 
   const filter = ({ children, ...props }: { children: ReactNode }) => (
-    <div className="flex items-center justify-between" style={{cursor:'pointer'}} {...props}>
-      <img src={filterIcon} className="ml-3" height={20} width={20} />
+    <div
+      className="flex items-center justify-between"
+      style={{ cursor: "pointer" }}
+      {...props}
+    >
+      <img src={filterIcon} className="ml-3" height={20} width={20} alt="Filter" />
       {children}
     </div>
   );
 
   const arrowdown = () => (
-    <div className="flex items-center justify-between" style={{cursor:'pointer'}}>
-      <img src={arrow_down} className="mr-3" height={15} width={15} />
+    <div
+      className="flex items-center justify-between"
+      style={{ cursor: "pointer" }}
+    >
+      <img src={arrow_down} className="mr-3" height={15} width={15} alt="Arrow Down" />
     </div>
   );
 
@@ -247,55 +257,54 @@ function ColumnsTable(props: {
 
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
-      <header className="relative flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
-          {t("Rides")}
+      <header>
+        <div className="w-90 flex justify-between">
+          <div className="justify-between text-3xl font-bold text-navy-700 dark:text-white ">
+            Orders
+          </div>
+
+          <div className="flex justify-between">
+            <button
+              className={`rounded-md bg-[rgba(43,122,11,1)] px-6 py-2 text-lg text-white `}
+              onClick={() => {
+                navigate("/admin/order/add");
+              }}
+            >
+              Add Order
+            </button>
+            <div style={{ width: "200px", paddingLeft: "10%" }}>
+              <Select
+                isSearchable={false}
+                className="custom-select"
+                options={statusOptions.map((option) => ({
+                  ...option,
+                  label: t(`${option.label}`),
+                }))}
+                onChange={(e: any) => {
+                  setOrderStatus(e.value);
+                }}
+                value={statusOptions.filter((option: any) => option.value === orderStatus)}
+                styles={{
+                  menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
+                  option: (provided: any, state: any) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected ? "#f2f3f7" : "white",
+                    cursor: "pointer",
+                    color: "black",
+                    "&:hover": {
+                      backgroundColor: "#f2f3f7",
+                    },
+                  }),
+                }}
+                components={{
+                  DropdownIndicator: arrowdown,
+                  IndicatorSeparator: () => null,
+                  ValueContainer: filter,
+                }}
+              />
+            </div>
+          </div>
         </div>
-        <div style={{ width: "200px" }}>
-          <Select
-            isSearchable={false}
-            // className="w-400"
-            className="custom-select"
-            // options={statusOptions}
-            options={statusOptions.map(option => ({ // Map over statusOptions to translate labels
-              ...option,
-              label: t(`${option.label}`), // Translate label
-              // value: t(`${option.label}`), // Translate value 
-            }))}
-            onChange={(e: any) => {
-              setRideStatus(e.value);
-            }}
-            value={statusOptions.filter(function (option: any) {
-              return option.value === rideStatus;
-            })}
-            // value={statusOptions.find(option => option.value === rideStatus)} // Use find instead of filter
-            name="rideStatus"
-            // defaultValue={{ label: defaultLabel, value: rideStatus }} // Set the translated default value
-            styles={{
-              // Fixes the overlapping problem of the component
-              menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
-              option: (provided: any, state: any) => ({
-                ...provided,
-                backgroundColor: state.isSelected ? "#f2f3f7" : "white", // Change the background color here
-                cursor:'pointer',
-                color: "black", // Change the text color herevscode-file://vscode-app/c:/Users/codeb/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html
-                "&:hover": {
-                  backgroundColor: "#f2f3f7", // Change the background color on hover
-                },
-              }),
-              // control: (base: any) => ({
-              //   ...base,
-              //   flexDirection: 'row-reverse',
-              // })
-            }}
-            components={{
-              DropdownIndicator: arrowdown,
-              IndicatorSeparator: () => null,
-              ValueContainer: filter,
-            }}
-          />
-        </div>
-        {/* <CardMenu /> */}
       </header>
 
       <div className="mt-8 overflow-x-scroll xl:overflow-x-hidden">
@@ -316,19 +325,24 @@ function ColumnsTable(props: {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {/* {{
-                          asc: "",
-                          desc: "",
-                        }[header.column.getIsSorted() as string] ?? null} */}
-                         {
+                        {
                           <>
                             {header.column.getIsSorted() === "asc" ? (
-                              <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
+                              <FaCaretUp
+                                className="mr-[-6] font-bold text-gray-600"
+                                size={20}
+                              />
                             ) : header.column.getIsSorted() === "desc" ? (
-                              <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                              <FaCaretDown
+                                size={20}
+                                className="font-bold text-gray-600"
+                              />
                             ) : (
-                              <div className="flex mr-[-6]">
-                               <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                              <div className="mr-[-6] flex">
+                                <FaCaretDown
+                                  size={20}
+                                  className="font-bold text-gray-600"
+                                />
                               </div>
                             )}
                           </>
@@ -356,7 +370,6 @@ function ColumnsTable(props: {
                 .getRowModel()
                 .rows?.slice(0, 10)
                 .map((row) => {
-                  // console.log("object row :>> ", row);
                   return (
                     <tr key={row.id}>
                       {row.getVisibleCells().map((cell) => {
@@ -383,5 +396,4 @@ function ColumnsTable(props: {
   );
 }
 
-export default ColumnsTable;
-const columnHelper = createColumnHelper<RowObj>();
+export default ColumnsOrderTable;

@@ -26,7 +26,7 @@ import { Button, ChakraProvider } from "@chakra-ui/react";
 import deleteIcon from "../../../assets/svg/deleteIcon.svg";
 import Navbar from "components/navbar";
 import { getS3SignUrlApi } from "../../../services/customAPI";
-
+import { vehicleNumberFormat } from "helper/commonFunction";
 const Vehicles: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentPage = useRef<number>(1);
@@ -43,15 +43,6 @@ const Vehicles: React.FC = () => {
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
   const { t } = useTranslation();
-
-  // const extractSpecificValues = (item: any) => {
-  //   return {
-  //     vehicleName: item.vehicleName,
-  //     vehicleNumber: item.vehicleNumber,
-  //     vehicleType: item.vehicleType,
-  //     vehicleStatus: item.vehicleStatus,
-  //   };
-  // };
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -122,12 +113,13 @@ const Vehicles: React.FC = () => {
           path = "";
         }
 
-        return {
+        return { 
           vehicleName: {
             name: vehicle.vehicleName,
             path: path,
           },
-          vehicleNumber:`${vehicle?.vehicleNumber?.substring(0, 2) || ''} ${vehicle?.vehicleNumber?.substring(2, 4) || ''} ${vehicle?.vehicleNumber?.substring(4, 6) || ''} ${vehicle?.vehicleNumber?.substring(6, 10) || ''}`,
+          vehicleNumber:`${vehicleNumberFormat(vehicle?.vehicleNumber)}`,
+          // vehicleNumber:`${vehicle?.vehicleNumber?.substring(0, 2) || ''} ${vehicle?.vehicleNumber?.substring(2, 4) || ''} ${vehicle?.vehicleNumber?.substring(4, 6) || ''} ${vehicle?.vehicleNumber?.substring(6, 10) || ''}`,
           vehicleType: vehicle.vehicleType,
           vehicleStatus: vehicle.vehicleStatus,
           action: {
@@ -138,6 +130,7 @@ const Vehicles: React.FC = () => {
         };
       })
     );
+    
 
     return res;
   }
@@ -258,7 +251,7 @@ const Vehicles: React.FC = () => {
   };
 
   useEffect(() => {
-    if (firstRender.current) {
+    if (firstRender.current) { 
       firstRender.current = false;
     } else {
       if (searchText.trim() == "") {

@@ -23,8 +23,8 @@ export default function SignIn() {
     email: Yup.string().required("Email is required").email("Invalid email"),
 
     password: Yup.string()
-      .min(8, "Too short !")
-      .max(15, "Too long !")
+      .min(4, "Too short !")
+      // .max(15, "Too long !")
       .required("Password is required"),
   });
 

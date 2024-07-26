@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GoogleMap, Marker, useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from "@react-google-maps/api";
 import car from "../../../assets/images/car.svg";
 import RidesIcon from "../../../assets/svg/RidesIcon.svg";
 import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
@@ -47,6 +47,8 @@ const Dashboard = () => {
   const [completeRidesCount, setCompleteRidesCount] = useState([]);
   const [onlineDriversCount, setOnlineDriversCount] = useState([]);
   const [totalDriver, setTotalDriver] = useState([]);
+  const [selectedDriver, setSelectedDriver] = useState(null);
+  const [driverPosition, setDriverPosition] = useState(null);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -67,7 +69,7 @@ const Dashboard = () => {
       setIsSpinner(true);
       const dashboardDataResponse: any = await dashboardDataApi();
       setDashboardData(dashboardDataResponse.data);
-      setOngoingRidesCount(dashboardDataResponse.data.ongoingRidesCount);
+      setOngoingRidesCount(dashboardDataResponse.data.ongoingOrderCount);
       setCompleteRidesCount(dashboardDataResponse.data.completedRidesCount);
       setOnlineDriversCount(dashboardDataResponse.data.onlineDriversCount);
       setTotalDriver(dashboardDataResponse.data.totalDriversCount);
@@ -98,11 +100,18 @@ const Dashboard = () => {
   };
 
   const handleNavigation = () => {
-    navigate('/admin/rides?data=ongoing-rides');
+    navigate('/admin/order?data=ongoing-rides');
   };
 
   const handleNavigationCompleteRide = () => {
-    navigate('/admin/rides?data=completed');
+    navigate('/admin/order?data=completed');
+  };
+
+  const showDriversDetails = (driver: any, position: any) => {
+    console.log(driver);
+    
+    setSelectedDriver(driver);
+    setDriverPosition(position);
   };
 
   useEffect(() => {
@@ -217,7 +226,7 @@ const Dashboard = () => {
                         marginLeft: "10px",
                       }}
                     >
-                      {t("Drivers")}
+                      {t("Riders")}
                     </h1>
                   </div>
 
@@ -324,7 +333,7 @@ const Dashboard = () => {
                   className="card-title mb-2"
                   style={{ fontSize: "25px" }}
                 >
-                  {t("Active Drivers:")}
+                  {t("Active Riders:")}
                 </h4>
               </div>
               <div className="d-none d-md-block">
@@ -355,27 +364,43 @@ const Dashboard = () => {
                   {allOnlineDrivers &&
                     allOnlineDrivers.length > 0 &&
                     allOnlineDrivers.map((driverId) => {
+                      const position = {
+                        lng: driverId.liveLocation && driverId.liveLocation[0],
+                        lat : driverId.liveLocation && driverId.liveLocation[1],
+                      };
                       return (
                         <Marker
                           key={driverId}
-                          position={{
-                            lat:
-                              driverId.liveLocation && driverId.liveLocation[1],
-                            lng:
-                              driverId.liveLocation && driverId.liveLocation[0],
-                          }}
+                          position={position}
                           icon={car}
+                          onClick={() => showDriversDetails(driverId, position)}
                         />
                       );
                     })}
+                     {selectedDriver && driverPosition && (
+                    <InfoWindow
+                      position={driverPosition}
+                      onCloseClick={() => setSelectedDriver(null)}
+                    >
+                      <div style={{width:'100%'}}>
+                        <h2 style={{fontWeight:'bold'}}>Rider Details</h2>
+                        <p style={{display:'flex',fontWeight:'400'}}><p>ID:</p> <p> {selectedDriver?.driverId}</p></p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p>Name:</p> <p>{selectedDriver?.firstName}{"  "} {selectedDriver?.lastName}</p></p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p> Mobile No.:</p><p> {selectedDriver?.mobileNumber}</p></p>
+                        <p style={{display:'flex',fontWeight:'400'}}><p>Vehical Number.:</p><p> {selectedDriver?.vehicleNumber}</p></p>
+                        {/* Add more driver details as needed */}
+                      </div>
+                    </InfoWindow>
+                  )}
                 </GoogleMap>
               )}
-            </div>
+            </div>           
           </Card>
         </>
       )}
     </div>
   );
 };
+
 
 export default Dashboard;
