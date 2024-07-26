@@ -64,7 +64,7 @@ function Orders() {
       
       let dateTime = convertUtcToIst(order.createdAt);
       return {
-        orderId:order?._id,
+        orderId:order.order_details.vendor_order_id,
         orderDate: dateTime.substring(0, 10),
         orderTime: dateTime.substring(11, 16),
         customerMobileNum: order?.drop_details?.contact_number
