@@ -27,6 +27,7 @@ import Drivers from "views/admin/drivers";
 import Orders from "views/admin/orders";
 import CreateOrder from "views/admin/orders/components/createOrder";
 import OrderView from "views/admin/orders/components/orderView";
+import Admin from "views/admin/admins";
 
 export interface RoutesType {
   name: string;
@@ -59,6 +60,13 @@ const authenticatedRoutes: RoutesType[] = [
     // icon: <MdPerson className="h-6 w-6" />,
     component: <SpotForm />,
     secondary: true,
+  },
+  {
+    name: "Admins",
+    layout: "/admin",
+    icon: <IoCarSportSharp className="h-6 w-6" />,
+    path: "admin",
+    component: <Admin />,
   },
   {
     name: "Riders ",

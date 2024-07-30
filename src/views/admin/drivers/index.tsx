@@ -274,7 +274,7 @@ const Drivers = () => {
   const updateDriverStatus = async (id: string) => {
     setLoading(true);
     try {
-      // setVisibleModal(false);
+
       onClose();
       const result: any = await updateDriverStatusApi(id);
 
@@ -300,7 +300,7 @@ const Drivers = () => {
     setLoading(true);
     setModalState(true);
     setSelectedItem(data);
-    // setVisibleModal(true);
+  
     onOpen();
     setLoading(false);
   };
@@ -310,7 +310,7 @@ const Drivers = () => {
     setLoading(true);
     setModalState(false);
     setSelectedItem(data);
-    //   setVisibleModal(true);
+
     onOpen();
     setLoading(false);
   };
@@ -342,13 +342,7 @@ const Drivers = () => {
         }
         setSearchText={setSearchText}
       />
-      {/* {!noData ? (
-        <Card extra={" m-4 w-full p-4 h-full"}>
-          <div className="m-4 text-center">
-            <h2 style={{ fontSize: "30px" }}>No Results !</h2>
-          </div>
-        </Card>
-      ) : ( */}
+     
       {loading ? (
         <Loader />
       ) : (

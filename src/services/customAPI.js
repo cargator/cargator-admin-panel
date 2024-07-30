@@ -48,6 +48,10 @@ export const searchDriversApi = (data) => {
   );
 };
 
+export const getAllAdminsData=(data)=>{
+  return customAxios.get(`get-all-admins?page=${data.page}&limit=${data.limit}&query=${data.query}`)
+}
+
 export const getRideDetailsApi = (id) => {
   return customAxios.get(`/get-ride-details/${id}`);
 };
