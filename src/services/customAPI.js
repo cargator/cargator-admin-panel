@@ -49,8 +49,32 @@ export const searchDriversApi = (data) => {
 };
 
 export const getAllAdminsData=(data)=>{
-  return customAxios.get(`get-all-admins?page=${data.page}&limit=${data.limit}&query=${data.query}`)
+  
+  return customAxios.get(`get-all-admins`, {
+    params: {
+      page: data.page,
+      limit: data.limit,
+      query: data.query,
+    },
+    headers: {
+      'email': data.email
+    },
+  });
 }
+
+export const deleteAdmin=(data)=>{
+  return customAxios.delete(`/delete-admin/${data._id}`);
+}
+
+export const updatetoSuperAdmin=(data)=>{
+  return customAxios.patch(`/update-to-super-admin/${data._id}`);
+}
+
+export const updateAdmin=(data)=>{
+  return customAxios.patch(`/update-to-super-admin/${data._id}`,data);
+}
+
+
 
 export const getRideDetailsApi = (id) => {
   return customAxios.get(`/get-ride-details/${id}`);

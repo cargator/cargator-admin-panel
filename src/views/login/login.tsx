@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "redux/reducers/authReducer";
+import { setEmail, setSuper_Admin, setToken } from "redux/reducers/authReducer";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import Loader from "components/loader/loader";
@@ -68,12 +68,15 @@ export default function SignIn() {
         password: formValues.password,
       };
       const loginRes = await handleLoginApi(data);
+      console.log("loginRes---------->",loginRes);
+      
       if (!loginRes) {
         console.log("Invalid email or password !");
         errorToast("Invalid email or password !");
       }
-      console.log("loginRes :>> ", loginRes);
       dispatch(setToken(loginRes.data.token));
+      dispatch(setSuper_Admin(loginRes.data.super_Admin))
+      dispatch(setEmail(data.email))
       navigate("/admin/default");
     } catch (error: any) {
       console.log(`handleLogin error :>> `, error);

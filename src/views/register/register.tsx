@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setToken } from "redux/reducers/authReducer";
+import { setEmail, setToken } from "redux/reducers/authReducer";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import Loader from "components/loader/loader";
@@ -71,6 +71,8 @@ export default function Register() {
   const handleRegister = async (formValues: registerCred) => {
     try {
       setIsLoading(true);
+      console.log(formValues);
+      
       console.log({...formValues});
       const registerRes = await handleRegisterApi({ ...formValues });
       if (!registerRes) {
@@ -78,6 +80,7 @@ export default function Register() {
       }
      
       dispatch(setToken(registerRes.data.token));
+      dispatch(setEmail(formValues.email))
       successToast("Account created successfully !");
       navigate("/");
     } catch (error: any) {

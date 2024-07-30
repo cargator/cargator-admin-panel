@@ -179,7 +179,6 @@ function ColumnsTable(props: {
             {" "}
             {info.getValue()?.charAt(0).toUpperCase() +
               info.getValue()?.slice(1)}
-            {/* {info.getValue()} */}
           </p>
         </div>
       ),
