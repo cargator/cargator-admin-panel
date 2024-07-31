@@ -24,7 +24,6 @@ import cross from "../../../../assets/svg/cross.svg";
 import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
 import { toast } from "react-toastify";
 import { t } from "i18next";
-import { vehicleNumberFormat } from "helper/commonFunction";
 
 const Logger = (props: any): JSX.Element => {
   const {
@@ -248,7 +247,9 @@ const DriverForm = () => {
     });
   };
 
-
+  function modifyVehicleNumber(vehicleNumber:string){
+    return `${vehicleNumber?.substring(0, 2) || ''} ${vehicleNumber?.substring(2, 4) || ''} ${vehicleNumber?.substring(4, 6) || ''} ${vehicleNumber?.substring(6, 10) || ''}`
+  }
 
   const getAvailableVehicles = async () => {
     try {
@@ -261,7 +262,7 @@ const DriverForm = () => {
         res.data.map((option: any) => {
           return {
             value: option.vehicleNumber,
-            label: vehicleNumberFormat(option.vehicleNumber),
+            label: modifyVehicleNumber(option.vehicleNumber),
           };
         })
       );
@@ -431,13 +432,10 @@ const DriverForm = () => {
           navigate("/admin/drivers");
           setIsLoading(false);
         } else {
-          console.log("11112345678");
-          
           errorToast(t("Something went wrong"));
         }
       }
     } catch (error: any) {
-      console.log("2222222222");
       errorToast(error.response.data.message);
       console.log(error);
       setIsLoading(false);
@@ -561,7 +559,7 @@ const DriverForm = () => {
         // });
         setOptions([...options, {
           value: paramData?.vehicleNumber,
-          label: vehicleNumberFormat(paramData.vehicleNumber),
+          label: modifyVehicleNumber(paramData.vehicleNumber),
         }]);
         allAvailableVehicles.push(paramData);
       }
@@ -589,11 +587,11 @@ const DriverForm = () => {
           <header className="relative flex items-center justify-between ps-20">
             {params.id ? (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Edit Rider
+                Edit Drivers
               </div>
             ) : (
               <div className="text-xl font-bold text-navy-700 dark:text-white">
-                Add Rider
+                Add Drivers
               </div>
             )}
           </header>

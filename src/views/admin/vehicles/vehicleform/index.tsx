@@ -18,6 +18,8 @@ import {
 import Loader from "components/loader/loader";
 import Card from "components/card";
 import { Button } from "@chakra-ui/react";
+import { vehicleType } from "utils/constants";
+import { type } from "os";
 import Navbar from "components/navbar";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
@@ -55,6 +57,25 @@ const Logger = (props: any): JSX.Element => {
       console.log("documents values in logger :>> ", formik.values?.documents);
     }
   }, [formik.values?.documents]);
+
+  // React.useEffect(() => {
+  //   if (firstRender.current) {
+  //     firstRender.current = false;
+  //   } else {
+  //     if (formik.values?.vehicleModel) {
+  //       allAvailableVehiclesTypes.map((data: any) => {
+  //         if (data.vehicleModel === formik.values.vehicleModel) {
+  //           console.log("data.vehicleType",data.vehicleType)
+  //           formik.values.vehicleMake = data.vehicleMake;
+  //           formik.values.vehicleType = data.vehicleType;
+  //           setVehicleMake(data.vehicleMake);
+  //           setVehicleType(data.vehicleType);
+  //         }
+  //       });
+  //     } else {
+  //     }
+  //   }
+  // }, [formik.values?.vehicleModel]);
   return null;
 };
 
@@ -92,7 +113,6 @@ const VehicleForm: React.FC = () => {
     image: {},
     documents: [],
   });
-  
   const [paramData, setParamData] = useState<any>({});
   const [options, setOptions] = useState([
     {
@@ -132,11 +152,10 @@ const VehicleForm: React.FC = () => {
       .min(2, "Vehicle name must be atleast two characters.")
       .required("First name is required"),
     vehicleNumber: Yup.string()
-      .min(6, "Vehicle Number atleast be 6 digits.")
+      .min(10, "Vehicle Number must be 10 digits only.")
       .max(10, "Vehicle Number must be 10 digits only.")
       .matches(
-        // /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
-        /^[A-Za-z]{2}\d{2}[A-Za-z]{1,2}\d{1,4}$/,
+        /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
         "Vehicle Number must follow the pattern: XX99XX9999"
       )
       .required("Vehicle number is required"),
@@ -591,7 +610,7 @@ const VehicleForm: React.FC = () => {
                         id="vehicleNumber"
                         width="90%"
                         // label="Vehicle Name"
-                        placeholder={t("MH04AB1234")}
+                        placeholder={t("Vehicle Number")}
                         onChange={handleChange}
                         onBlur={(event) => {
                           handleBlur(event);

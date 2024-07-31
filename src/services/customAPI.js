@@ -52,8 +52,6 @@ export const getRideDetailsApi = (id) => {
   return customAxios.get(`/get-ride-details/${id}`);
 };
 
-
-
 export const deleteVehicleApi = (data) => {
   const headers = {
     "X-Profile-Image-Key": data.profileImageKey,
@@ -116,6 +114,7 @@ export const getAllVehiclesApi = () => {
   return customAxios.get("/allAllVehicles");
 };
 
+
 export const handleCreateDriverApi = (id, data) => {
   return customAxios.patch(`/updateDriver/${id}`, data);
 };
@@ -123,6 +122,7 @@ export const handleCreateDriverApi = (id, data) => {
 export const handleCreateApi = (id, data) => {
   return customAxios.patch(`/updateDriver/${id}`, data);
 };
+
 
 export const createDriverApi = (data) => {
   return customAxios.post("/create-driver", data);
@@ -153,16 +153,17 @@ export const deleteVehicleType = (id) => {
 // fare
 
 export const addFare = (data) => {
-  return customAxios.post(`/add-fare`, data);
+  return customAxios.post(`/add-fare`,data);
 };
 
 export const getFare = () => {
   return customAxios.get(`/get-fare`);
 };
 
-export const upDateFare = (id, data) => {
-  return customAxios.patch(`/update-fare/${id}`, data);
+export const upDateFare = (id,data) => {
+  return customAxios.patch(`/update-fare/${id}`,data);
 };
+
 
 //
 
@@ -232,64 +233,64 @@ export const deleteObjectFromS3Api = (data) => {
 };
 
 // Application flow for driver
-
+ 
 export const createAppFlowAPI = (data) => {
   return customAxios.post("/create-app-flow", data);
-};
+}
 
 export const getFlow = () => {
   return customAxios.get("/get-app-flow");
-};
+}
 
 export const updateAppFlowAPI = (id, data) => {
-  console.log("123456789098765432", id, data);
+  console.log("123456789098765432", id, data)
   return customAxios.patch(`/update-app-flow/${id}`, data);
 };
 
 //spots
 
 export const createSpot = (data) => {
-  console.log("data", data);
+  console.log("data",data)
   return customAxios.post("/create-spot", data);
 };
 
 export const getSpotsList = (data) => {
-  console.log("getDataApi");
-  return customAxios.get(
-    `/get-spot-list?page=${data.page}&limit=${data.limit}`
-  );
+  console.log("getDataApi")
+  return customAxios.get(`/get-spot-list?page=${data.page}&limit=${data.limit}`);
 };
 
 export const getSpotsListVehicle = () => {
-  console.log("getDataApiVehiclespot");
+  console.log("getDataApiVehiclespot")
   return customAxios.get(`/get-spot-list-vehicle`);
 };
 
 export const deleteSpot = (id) => {
-  console.log("deleteSpotApi");
+  console.log("deleteSpotApi")
   return customAxios.delete(`/delete-spot/${id}`);
 };
 
 export const getActiveSpots = () => {
-  return customAxios.get(`/get-active-spot`);
-};
+  return customAxios.get(`/get-active-spot`)
+}
 // country code APIs
 
-export const createCountryCodeApi = (data) => {
-  return customAxios.post("/create-country-code", data);
-};
+export const createCountryCodeApi = (data) =>{
+  return customAxios.post("/create-country-code", data)
+}
 
-export const handleCreateCountryCodeApi = (id, data) => {
-  return customAxios.patch(`/update-country-code/${id}`, data);
-};
+export const handleCreateCountryCodeApi = (id,data) =>{
+  return customAxios.patch(`/update-country-code/${id}`, data)
+}
 
-export const getCountryCodes = () => {
-  return customAxios.get("/get-country-code");
-};
 
-export const getCountryCodesById = (id) => {
-  return customAxios.get(`/get-country-code/${id}`);
-};
+export const getCountryCodes = () =>{
+  return customAxios.get("/get-country-code")
+}
+
+
+export const getCountryCodesById = (id) =>{
+  return customAxios.get(`/get-country-code/${id}`)
+}
 
 export const deleteCoutryCode = (id) => {
   return customAxios.delete(`/delete-country-code/${id}`);
@@ -297,48 +298,27 @@ export const deleteCoutryCode = (id) => {
 
 // Flows -----------------
 export const createBreakPointApi = (data) => {
-  console.log("api called : ", data);
-  return customAxios.post("/create-break-points", data);
+  console.log("api called : " ,data)
+  return customAxios.post("/create-break-points", data)
 };
 
 export const getBreakingPoints = (data) => {
-  console.log("getBreakingPoints--------------called");
-  return customAxios.get(
-    `/get-breaking-points?page=${data.page}&limit=${data.limit}`
-  );
+  console.log("getBreakingPoints--------------called")
+  return customAxios.get(`/get-breaking-points?page=${data.page}&limit=${data.limit}`);
 };
 
 export const updateBreakPointApi = (id, data) => {
-  console.log("updateBreakPointApi called", id, data);
+  console.log("updateBreakPointApi called",id,data)
   return customAxios.patch(`/update-break-points/${id}`, data);
 };
 
 export const getBreakPointById = (id) => {
-  console.log("getBreakPointById called", id);
-  return customAxios.get(`/get-break-point-id/${id}`);
-};
+  console.log("getBreakPointById called",id)
+  return customAxios.get(`/get-break-point-id/${id}`)
+}
 
 export const deleteBreakPoints = (id) => {
   // console.log("deleteBreakPoints")
   return customAxios.delete(`/delete-breakingPoints/${id}`);
 };
 
-export const orderById=(id)=>{
-  return customAxios.get(`/get-order/${id}`);
-}
-
-export const findOrders = (data) => {
-  return customAxios.get(
-    `/get-order-history?page=${data.page}&limit=${data.limit}&filter=${data.filter}`
-  );
-};
-
-export const createOrder = (data) => {
-  try {
-    console.log("data>>>>>>>", data);
-    return customAxios.post(`/place-order`, data);
-  } catch (error) {
-    console.log(error);
-    throw error(error);
-  }
-};
