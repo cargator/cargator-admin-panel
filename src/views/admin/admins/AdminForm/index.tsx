@@ -28,9 +28,9 @@ import { vehicleNumberFormat } from "helper/commonFunction";
 
 const Logger = (props: any): JSX.Element => {
   const {
-    setVehicleName,
-    setVehicleType,
-    allAvailableVehicles,
+    setAdminName,
+    setEmail,
+    setMobileNumber,
     setIsDocuments,
   } = props;
   const firstRender = useRef(true);
@@ -62,16 +62,16 @@ const Logger = (props: any): JSX.Element => {
       if (formik.values?.vehicleNumber === "none") {
         formik.values.vehicleType = "none";
         formik.values.vehicleName = "none";
-        setVehicleName("None");
-        setVehicleType("None");
+        setAdminName("None");
+        setEmail("None");
 
       } else {
-        allAvailableVehicles.map((data: any) => {
+        setMobileNumber.map((data: any) => {
           if (data.vehicleNumber === formik.values.vehicleNumber) {
             formik.values.vehicleType = data.vehicleType;
             formik.values.vehicleName = data.vehicleName;
-            setVehicleName(data.vehicleName);
-            setVehicleType(data.vehicleType);
+            setAdminName(data.vehicleName);
+            setEmail(data.vehicleType);
           }
         });
       }
@@ -109,8 +109,8 @@ type formvalues = {
 
 const DriverForm = () => {
   const [paramData, setParamData] = useState<any>({});
-  const [vehicleName, setVehicleName] = useState("");
-  const [vehicleType, setVehicleType] = useState("");
+  const [vehicleName, setAdminName] = useState("");
+  const [vehicleType, setEmail] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({
@@ -125,7 +125,7 @@ const DriverForm = () => {
     image: {},
     documents: [],
   });
-  const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
+  const [setMobileNumber, setAllAvailableVehicles] = useState([]);
   const [options, setOptions] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const anchorImageRef = useRef(null);
@@ -500,8 +500,8 @@ const DriverForm = () => {
 
       setParamData(res.data);
       setVehicleNumber(res.data.vehicleNumber);
-      setVehicleName(res.data.vehicleName);
-      setVehicleType(res.data.vehicleType);
+      setAdminName(res.data.vehicleName);
+      setEmail(res.data.vehicleType);
 
       setIsLoading(false);
     } catch (error: any) {
@@ -563,7 +563,7 @@ const DriverForm = () => {
           value: paramData?.vehicleNumber,
           label: vehicleNumberFormat(paramData.vehicleNumber),
         }]);
-        allAvailableVehicles.push(paramData);
+        setMobileNumber.push(paramData);
       }
     }
   }, [options, paramData]);
@@ -616,9 +616,9 @@ const DriverForm = () => {
                 <form onSubmit={handleSubmit}>
                   <Logger
                     display="hidden"
-                    setVehicleName={setVehicleName}
-                    setVehicleType={setVehicleType}
-                    allAvailableVehicles={allAvailableVehicles}
+                    setAdminName={setAdminName}
+                    setEmail={setEmail}
+                    setMobileNumber={setMobileNumber}
                     setIsDocuments={setIsDocuments}
                   />
 

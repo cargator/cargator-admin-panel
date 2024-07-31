@@ -181,17 +181,17 @@ export default function Admin() {
 
       const updateAdmin=async (data:any)=>{
         console.log(data);
-        try {
-          setLoading(true);
-          const response: any = await updateAdmin(data);
-          if(response){
-            successToast("Admin update to super Admin successfully");
-          }
-        } catch (error: any) {
-          errorToast(error.response.data.message);
-        } finally {
-          setLoading(false);
-        }
+        // try {
+        //   setLoading(true);
+        //   const response: any = await updateAdmin(data);
+        //   if(response){
+        //     successToast("Admin update to super Admin successfully");
+        //   }
+        // } catch (error: any) {
+        //   errorToast(error.response.data.message);
+        // } finally {
+        //   setLoading(false);
+        // }
       }
 
       const makeSuperAdmin=async (data:any)=>{

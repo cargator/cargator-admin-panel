@@ -153,9 +153,14 @@ function ColumnsTableAdmins(props: {
           <img
               src={ButtonEdit}
               className="button-edit me-2"
-              onClick={() => updateAdmin(info.row.original.action.id)}
+              onClick={() => 
+                // updateAdmin(info.row.original)
+                navigate(`/admin/admins/adminform/${info.getValue()?.id}`)
+
+              }
               height={30}
               width={30}
+              
             />
           <img
             src={deleteIcon}

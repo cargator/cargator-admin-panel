@@ -17,6 +17,7 @@ import {
 } from "@tanstack/react-table";
 import { Navigate, useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 type RowObj = {
   fullName: customFieldType1;
@@ -55,6 +56,7 @@ function ColumnsTable(props: {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const { t } = useTranslation(); 
   const navigate = useNavigate();
+  const admin=useSelector((store: any) => store.auth.super_Admin);
   const columns = [
     columnHelper.accessor("fullName", {
       id: "fullName",
@@ -191,45 +193,20 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) => (
-        <div className="flex items-center">
-          {/* {info.getValue()?.driverStatus === "active" ? (
-            <div className="cursor-pointer">
-              <img
-                style={{ marginRight: "8px", marginLeft: "5px" }}
-                src={unblock}
-                onClick={() => {
-                  handleToggleForStatusMOdal(info.row.original);
-                }}
-              />
-            </div>
-          ) : (
-            <div className="cursor-pointer">
-              <img
-                style={{ marginRight: "8px", marginLeft: "5px" }}
-                src={block}
-                onClick={() => {
-                  handleToggleForStatusMOdal(info.row.original);
-                }}
-              />
-            </div>
-          )} */}
+        <div className={admin ?"flex items-center  cursor-pointer": "flex items-center" }>
+          
 
-          <div className="cursor-pointer">
-            <img
+          
+            {admin ? <img
               src={ButtonEdit}
               style={{ marginRight: "8px" }}
               onClick={() =>
                 navigate(`/admin/drivers/driverform/${info.getValue()?.id}`)
               }
-            />
+            />:<p style={{fontWeight:'bold'}}>None</p> }
           </div>
-          {/* <div className="cursor-pointer">
-            <img
-              src={deleteIcon}
-              onClick={() => handleClickForDeleteModal(info.row.original)}
-            />
-          </div> */}
-        </div>
+          
+        
       ),
     }),
   ]; // eslint-disable-next-line

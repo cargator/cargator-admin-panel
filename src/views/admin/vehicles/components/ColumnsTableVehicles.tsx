@@ -17,6 +17,7 @@ import {
 import { Button } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { useSelector } from "react-redux";
 type RowObj = {
   vehicleName: customFieldType1;
   vehicleNumber: string;
@@ -57,6 +58,7 @@ function ColumnsTableVehicles(props: {
     // Redirect to the VehicleForm page with the vehicle ID as a parameter
     navigate(`../vehicles/vehicleform/${vehicleId}`);
   };
+  const admin = useSelector((store: any) => store.auth.super_Admin);
   const columns = [
     columnHelper.accessor("vehicleName", {
       id: "vehicleName",
@@ -192,6 +194,7 @@ function ColumnsTableVehicles(props: {
         //   <img src={eyeview} height={30} width={30} />
         // </p>
         <div className="flex items-center">
+         {admin ? <div>
           <img
             src={ButtonEdit}
             className="button-edit me-2"
@@ -206,6 +209,9 @@ function ColumnsTableVehicles(props: {
             height={30}
             width={30}
           />
+          </div>:
+          <p style={{fontWeight:'bold'}}>None</p>
+          }
         </div>
       ),
     }),

@@ -8,7 +8,7 @@ import {
   //   options,
   deleteDriverHandleApi,
   searchDriversApi,
-} from "../../../services/customAPI";
+} from "../../../services/customAPI"; 
 import ReactPaginate from "react-paginate";
 // import "./rides.css";
 import Loader from "components/loader/loader";
@@ -31,6 +31,7 @@ import Navbar from "../../../components/navbar";
 import { toast } from "react-toastify";
 import { getS3SignUrlApi } from "../../../services/customAPI";
 import { vehicleNumberFormat } from "helper/commonFunction";
+import { useSelector } from "react-redux";
 
 const Drivers = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -48,6 +49,7 @@ const Drivers = () => {
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
+  
 
   const parser = new DOMParser();
 
