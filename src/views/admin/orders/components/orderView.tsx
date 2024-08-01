@@ -143,7 +143,7 @@ const OrderView = () => {
   return (
     <>
       <Navbar flag={false} brandText="Ride details" />
-      <Link to="/admin/rides" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+      <Link to="/admin/order" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
         <FaArrowLeft />
         <div>Back</div>
       </Link>
