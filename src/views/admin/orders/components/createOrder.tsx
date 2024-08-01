@@ -15,6 +15,8 @@ import Navbar from "components/navbar";
 import Card from "components/card";
 import { createOrder } from "services/customAPI";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 function CalculateTotalPrice(): any {
   const { values, setFieldValue } = useFormikContext<any>();
@@ -187,6 +189,13 @@ function CreateOrder() {
   return (
     <>
       <Navbar flag={false} brandText="addOrder" />
+      <Link
+        to="/admin/order"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
+        <FaArrowLeft />
+        <div>Back</div>
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (

@@ -9,6 +9,8 @@ import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import { createCountryCodeApi, getCountryCodesById, handleCreateCountryCodeApi,  } from 'services/customAPI';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 type formvalues = {
   countryCode: string;
@@ -122,7 +124,13 @@ function CountryCodeForm() {
   return (
     <>
       <Navbar flag={false} brandText="CountryCodeForm" />
-
+      <Link
+        to="/admin/settings/countrycode"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
+        <FaArrowLeft />
+        <div>Back</div>
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (
@@ -154,7 +162,7 @@ function CountryCodeForm() {
                 touched,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between"> 
+                  <div className="flex justify-between">
                     <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="countryCode"
@@ -231,7 +239,7 @@ function CountryCodeForm() {
         </Card>
       )}
     </>
-  )
+  );
 }
 
 export default CountryCodeForm

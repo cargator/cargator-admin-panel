@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from 'react-i18next'
 import "../vehicles.css";
+import { FaArrowLeft } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
 import { ErrorMessage, Form, Formik, useFormikContext } from "formik";
 import * as Yup from "yup";
@@ -25,6 +26,7 @@ import pdf from "../../../../assets/svg/pdf.svg";
 import cross from "../../../../assets/svg/cross.svg";
 import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
 import { t } from "i18next";
+import { Link } from "react-router-dom";
 
 const Logger = (props: any): JSX.Element => {
   const {
@@ -534,6 +536,13 @@ const VehicleForm: React.FC = () => {
   return (
     <>
       <Navbar flag={false} brandText="vehicleform" />
+      <Link
+        to="/admin/vehicles"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
+        <FaArrowLeft />
+        <div>Back</div>
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (
@@ -649,14 +658,17 @@ const VehicleForm: React.FC = () => {
                         id="vehicleModel"
                         onBlur={handleBlur}
                         onChange={(e: any) => {
-                          console.log("e", e.value)
-                          setFieldValue("vehicleModel", e.value)
+                          console.log("e", e.value);
+                          setFieldValue("vehicleModel", e.value);
                           if (e.value) {
                             allAvailableVehiclesTypes.map((data: any) => {
                               if (data.vehicleModel === e.value) {
-                                console.log("data.vehicleType", data.vehicleType)
-                                setFieldValue('vehicleMake', data.vehicleMake)
-                                setFieldValue('vehicleType', data.vehicleType)
+                                console.log(
+                                  "data.vehicleType",
+                                  data.vehicleType
+                                );
+                                setFieldValue("vehicleMake", data.vehicleMake);
+                                setFieldValue("vehicleType", data.vehicleType);
                               }
                             });
                           }
@@ -814,7 +826,9 @@ const VehicleForm: React.FC = () => {
                               <div className="mb-1 mt-1 text-center">
                                 {!params.id
                                   ? t("Click here to upload your vehicle image")
-                                  : t("Click here to change your vehicle image")}
+                                  : t(
+                                      "Click here to change your vehicle image"
+                                    )}
                                 <br />
                                 {t("file size below")} 1MB
                               </div>
@@ -965,8 +979,12 @@ const VehicleForm: React.FC = () => {
                             </div>
                             <div className="mb-1 mt-1 text-center">
                               {!params.id
-                                ? t("Click here to upload your vehicle documents")
-                                : t("Click here to change your vehicle documents")}
+                                ? t(
+                                    "Click here to upload your vehicle documents"
+                                  )
+                                : t(
+                                    "Click here to change your vehicle documents"
+                                  )}
                               <br />
                               {t("file size below")} 1MB
                             </div>

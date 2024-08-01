@@ -9,6 +9,8 @@ import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
 import { createVehicleTypeApi, getVehicleTypeById, handleCreateVehicleTypeApi } from 'services/customAPI';
+import { Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 
 type formvalues = {
  vehicleType: string;
@@ -126,7 +128,13 @@ function VehicleType() {
   return (
     <>
       <Navbar flag={false} brandText="vehicletypeform" />
-
+      <Link
+        to="/admin/settings"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
+        <FaArrowLeft />
+        <div>Back</div>
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (
@@ -158,7 +166,7 @@ function VehicleType() {
                 touched,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between"> 
+                  <div className="flex justify-between">
                     <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="vehicleMake"
@@ -214,7 +222,7 @@ function VehicleType() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex justify-between"> 
+                  <div className="flex justify-between">
                     <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="vehicleType"
@@ -242,8 +250,7 @@ function VehicleType() {
                           : null}
                       </div>
                     </div>
-                    <div className="mb-3 ms-6 w-full">
-                    </div>
+                    <div className="mb-3 ms-6 w-full"></div>
                   </div>
 
                   <div className="button-save-cancel mt-3 flex justify-end">
@@ -267,7 +274,7 @@ function VehicleType() {
         </Card>
       )}
     </>
-  )
+  );
 }
 
 export default VehicleType

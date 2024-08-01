@@ -142,8 +142,11 @@ const OrderView = () => {
 
   return (
     <>
-      <Navbar flag={false} brandText="Ride details" />
-      <Link to="/admin/order" className="flex items-center space-x-2 text-gray-600 hover:text-gray-900">
+      <Navbar flag={false} brandText="order details" />
+      <Link
+        to="/admin/order"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
         <FaArrowLeft />
         <div>Back</div>
       </Link>
@@ -151,21 +154,55 @@ const OrderView = () => {
         <Loader />
       ) : (
         <>
-          <Card extra={"w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4"}>
+          <Card
+            extra={
+              "w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4"
+            }
+          >
             <div className="col-span-5">
-              <div style={{ fontSize: "20px", fontWeight: "600", paddingBottom: "10px", paddingTop: "14px" }}>
+              <div
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  paddingBottom: "10px",
+                  paddingTop: "14px",
+                }}
+              >
                 Order Details
               </div>
-              <div style={{ fontSize: "12px", fontWeight: "500", paddingBottom: "18px" }}>
-                <img src={date} width={16} height={16} style={{ display: "inline-block", marginRight: "2px" }} />
-                <span className="pe-5"> {dateTimeCreatedAt?.substring(0, 10)}</span>
-                <img src={time} width={16} height={16} style={{ display: "inline-block", marginRight: "2px" }} />
-                <span className="pe-5"> {dateTimeCreatedAt?.substring(11, 16)}</span>
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "500",
+                  paddingBottom: "18px",
+                }}
+              >
+                <img
+                  src={date}
+                  width={16}
+                  height={16}
+                  style={{ display: "inline-block", marginRight: "2px" }}
+                />
+                <span className="pe-5">
+                  {" "}
+                  {dateTimeCreatedAt?.substring(0, 10)}
+                </span>
+                <img
+                  src={time}
+                  width={16}
+                  height={16}
+                  style={{ display: "inline-block", marginRight: "2px" }}
+                />
+                <span className="pe-5">
+                  {" "}
+                  {dateTimeCreatedAt?.substring(11, 16)}
+                </span>
                 <span
                   className={
                     ride?.status === "completed"
                       ? "completedClass"
-                      : ride?.status === "cancelled" || ride?.status === "Failed"
+                      : ride?.status === "cancelled" ||
+                        ride?.status === "Failed"
                       ? "cancelledClass"
                       : "ongoingClass"
                   }
@@ -177,17 +214,45 @@ const OrderView = () => {
                 <div className="col-span-1">
                   <img src={ridePickDest} width={20} height={88} />
                 </div>
-                <div className="col-span-7" style={{ fontSize: "12px", fontWeight: "400", width: "70%" }}>
+                <div
+                  className="col-span-7"
+                  style={{ fontSize: "12px", fontWeight: "400", width: "70%" }}
+                >
                   <div style={{ paddingBottom: "30px" }}>{pickUp}</div>
                   <div>{drop}</div>
                 </div>
               </div>
               <div className="m-1 w-1/4 rounded-[4px] p-3 dark:bg-white">
-                <span style={{ fontSize: "14px", fontWeight: "600", color: "#464E5F" }}>Order Price: </span>
-                <span style={{ fontSize: "18px", fontWeight: "600", color: "#212121" }}>₹{orderPrice}</span>
+                <span
+                  style={{
+                    fontSize: "14px",
+                    fontWeight: "600",
+                    color: "#464E5F",
+                  }}
+                >
+                  Order Price:{" "}
+                </span>
+                <span
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    color: "#212121",
+                  }}
+                >
+                  ₹{orderPrice}
+                </span>
               </div>
               <hr style={{ color: "#E1E2F1" }} />
-              <div className="pt-3" style={{ fontSize: "20px", fontWeight: "600", paddingBottom: "8px" }}>Rider</div>
+              <div
+                className="pt-3"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  paddingBottom: "8px",
+                }}
+              >
+                Rider
+              </div>
               <div className="grid grid-cols-8 gap-2 pb-3">
                 <div className="col-span-2">
                   {driverImagePath ? (
@@ -201,17 +266,39 @@ const OrderView = () => {
                   )}
                 </div>
                 <div className="col-span-6">
-                  <div style={{ fontSize: "18px", fontWeight: "500", paddingBottom: "10px" }}>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "500",
+                      paddingBottom: "10px",
+                    }}
+                  >
                     {driverName || "NA"}
                   </div>
                   <div>
-                    <img src={call} width={16} height={16} style={{ display: "inline-block", marginRight: "2px" }} />{" "}
-                    <span style={{ fontSize: "12px", fontWeight: "600" }}>{driverMobileNumber || "NA"}</span>
+                    <img
+                      src={call}
+                      width={16}
+                      height={16}
+                      style={{ display: "inline-block", marginRight: "2px" }}
+                    />{" "}
+                    <span style={{ fontSize: "12px", fontWeight: "600" }}>
+                      {driverMobileNumber || "NA"}
+                    </span>
                   </div>
                 </div>
               </div>
               <hr style={{ color: "#E1E2F1" }} />
-              <div className="pt-3" style={{ fontSize: "20px", fontWeight: "600", paddingBottom: "8px" }}>Vehicle</div>
+              <div
+                className="pt-3"
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "600",
+                  paddingBottom: "8px",
+                }}
+              >
+                Vehicle
+              </div>
               <div className="grid grid-cols-8 gap-2 pb-3">
                 <div className="col-span-2">
                   {vehicleImagePath ? (
@@ -225,11 +312,19 @@ const OrderView = () => {
                   )}
                 </div>
                 <div className="col-span-6">
-                  <div style={{ fontSize: "18px", fontWeight: "500", paddingBottom: "10px" }}>
+                  <div
+                    style={{
+                      fontSize: "18px",
+                      fontWeight: "500",
+                      paddingBottom: "10px",
+                    }}
+                  >
                     {vehicleName || "NA"}
                   </div>
                   <div>
-                    <span style={{ fontSize: "12px", fontWeight: "600" }}>{vehicleNumber || "NA"}</span>
+                    <span style={{ fontSize: "12px", fontWeight: "600" }}>
+                      {vehicleNumber || "NA"}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -249,13 +344,15 @@ const OrderView = () => {
                   center={center}
                   zoom={10}
                 >
-                   {path.length!==0 && <Marker
-                    position={{
-                      lat: orderDetails?.riderPathToPickUp[0]?.latitude,
-                      lng: orderDetails?.riderPathToPickUp[0]?.longitude,
-                    }}
-                    label="S"
-                  />}
+                  {path.length !== 0 && (
+                    <Marker
+                      position={{
+                        lat: orderDetails?.riderPathToPickUp[0]?.latitude,
+                        lng: orderDetails?.riderPathToPickUp[0]?.longitude,
+                      }}
+                      label="S"
+                    />
+                  )}
                   <Marker
                     position={{
                       lat: orderDetails?.pickup_details?.latitude,
@@ -273,7 +370,10 @@ const OrderView = () => {
                   {driverLocation && (
                     <Marker position={driverLocation} label="DR" />
                   )}
-                  <Polyline path={path} options={{ strokeColor: "blue", strokeWeight: 4 }} />
+                  <Polyline
+                    path={path}
+                    options={{ strokeColor: "blue", strokeWeight: 4 }}
+                  />
                 </GoogleMap>
               )}
             </div>

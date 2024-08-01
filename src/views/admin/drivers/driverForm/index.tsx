@@ -25,6 +25,8 @@ import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
 import { toast } from "react-toastify";
 import { t } from "i18next";
 import { vehicleNumberFormat } from "helper/commonFunction";
+import { Link } from "react-router-dom";
+import { FaArrowLeft } from "react-icons/fa";
 
 const Logger = (props: any): JSX.Element => {
   const {
@@ -581,7 +583,13 @@ const DriverForm = () => {
   return (
     <>
       <Navbar flag={false} brandText="driverform" />
-
+      <Link
+        to="/admin/drivers"
+        className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
+      >
+        <FaArrowLeft />
+        <div>Back</div>
+      </Link>
       {isLoading ? (
         <Loader />
       ) : (
@@ -716,7 +724,11 @@ const DriverForm = () => {
                           setVehicleNumber(e.value);
                           values.vehicleNumber = e.value;
                         }}
-                        value={options.find((option: any) => option.value === vehicleNumber) || { value: "none", label: "None" }}
+                        value={
+                          options.find(
+                            (option: any) => option.value === vehicleNumber
+                          ) || { value: "none", label: "None" }
+                        }
                         styles={{
                           // Fixes the overlapping problem of the component
                           menu: (provided: any) => ({
@@ -855,7 +867,7 @@ const DriverForm = () => {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
-                          className="mt-4 h-15 rounded-xl border bg-white/0 p-2 text-sm outline-none"
+                          className="h-15 mt-4 rounded-xl border bg-white/0 p-2 text-sm outline-none"
                         >
                           <label>
                             <div
@@ -871,12 +883,14 @@ const DriverForm = () => {
                                   className="mr-3"
                                 />
                               </div>
-                              <div
-                                className="mb-1 mt-1 text-center"
-                              >
+                              <div className="mb-1 mt-1 text-center">
                                 {!params.id
-                                  ? t("Click here to upload driver profile image")
-                                  : t("Click here to change driver profile image")}
+                                  ? t(
+                                      "Click here to upload driver profile image"
+                                    )
+                                  : t(
+                                      "Click here to change driver profile image"
+                                    )}
                                 <br />
                                 {t("file size below")} 1MB
                               </div>
@@ -888,7 +902,7 @@ const DriverForm = () => {
                                 backgroundColor: "rgba(242, 242, 242, 0.5)",
                                 display: "none",
                               }}
-                              className="mt-2 h-15 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
+                              className="h-15 mt-2 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
                               name="image"
                               type="file"
                               id="image"
@@ -1008,7 +1022,7 @@ const DriverForm = () => {
                           borderRadius: "4px",
                           cursor: "pointer",
                         }}
-                        className="mt-4 h-15 rounded-xl border bg-white/0 p-2 text-sm outline-none"
+                        className="h-15 mt-4 rounded-xl border bg-white/0 p-2 text-sm outline-none"
                       >
                         <label>
                           <div
@@ -1024,9 +1038,7 @@ const DriverForm = () => {
                                 className="mr-3"
                               />
                             </div>
-                            <div
-                              className="mb-1 mt-1 text-center"
-                            >
+                            <div className="mb-1 mt-1 text-center">
                               {!params.id
                                 ? t("Click here to upload driver documents")
                                 : t("Click here to change driver documents")}
