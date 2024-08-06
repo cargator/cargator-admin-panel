@@ -86,21 +86,6 @@ function CountryCodeForm() {
   const handleCreateCountryCode = async (values: any) => {
     setIsLoading(true);
     try {
-      // if (params.id) {
-      //   const result: any = await handleCreateCountryCodeApi(params.id, {
-      //     countryCode: values.countryCode,
-      //     countryName: values.countryName,
-      //   });
-
-      //   if (result.message) {
-      //     successToast("vehicleType Updated Successfully");
-      //     navigate("/admin/settings/countrycode");
-      //     setIsLoading(false);
-      //   } else {
-      //     errorToast("Something went wrong");
-      //   }
-      // } else {
-
         const result: any = await createCountryCodeApi({
           countryCode: values.countryCode,
           countryName: values.countryName,

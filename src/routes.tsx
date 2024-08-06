@@ -27,6 +27,7 @@ import Drivers from "views/admin/drivers";
 import Orders from "views/admin/orders";
 import CreateOrder from "views/admin/orders/components/createOrder";
 import OrderView from "views/admin/orders/components/orderView";
+import Admins from "views/admin/settings/Admins";
 
 export interface RoutesType {
   name: string;
@@ -115,6 +116,14 @@ const authenticatedRoutes: RoutesType[] = [
     layout: "/admin",
     path: "settings/support",
     component: <Support />,
+    secondary: true,
+  },
+  {
+    name: "Settings",
+    layout: "/admin",
+    path: "settings/admins",
+    component: <Admins />,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
   {

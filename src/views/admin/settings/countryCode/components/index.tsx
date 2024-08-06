@@ -165,11 +165,6 @@ function CountryCode() {
     }
   };
 
-  // const handleUpdate = (data: any) => {
-  //   const id = data._id;
-  //   // console.log("id------------------------- ",id)
-  //   navigate(`/admin/settings/countrycode-form/${id}`);
-  // };
 
   const table = useReactTable({
     data,
