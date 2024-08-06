@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Card from "components/card";
-import deleteIcon from "../../../../assets/svg/deleteIcon.svg";
 import ButtonEdit from "../../../../assets/svg/ButtonEdit.svg";
-import block from "../../../../assets/svg/block.svg";
-import unblock from "../../../../assets/svg/unblock.svg";
 import "./ColumnsTable.css";
 import { useTranslation } from 'react-i18next'
 
@@ -15,7 +12,7 @@ import {
   SortingState,
   useReactTable,
 } from "@tanstack/react-table";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
 type RowObj = {
@@ -39,19 +36,13 @@ type customFieldType2 = {
   profileImageKey?: String;
 };
 
-type statusOption = {
-  label: string;
-  value: string;
-};
-
 function ColumnsTable(props: {
   tableData: any;
   handleClickForDeleteModal: (data: any) => void;
   handleToggleForStatusMOdal: (data: any) => void;
 }) {
-  const { tableData, handleClickForDeleteModal, handleToggleForStatusMOdal } =
+  const { tableData } =
     props;
-    console.log("31425674938274838", tableData)
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const { t } = useTranslation(); 
   const navigate = useNavigate();

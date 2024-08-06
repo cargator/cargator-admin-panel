@@ -50,8 +50,8 @@ const Drivers = () => {
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
-
   const parser = new DOMParser();
+  const [isSocketConnected, setIsSocketConnected] = useState<boolean>(false);
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -192,7 +192,6 @@ const Drivers = () => {
   const getPaginatedDriverData = async () => {
     try {
       setLoading(true);
-      console.log("???????????", currentPage.current, limit)
       const response: any = await getPaginatedDriverDataApi({
         page: currentPage.current,
         limit: limit,
@@ -317,13 +316,34 @@ const Drivers = () => {
     setLoading(false);
   };
 
+  const parseSocketMessage = (message: any) => {
+    try {
+      return JSON.parse(message);
+    } catch (error) {
+      console.log(`parseSocketMessage error :>> `, error);
+    }
+  };
+
+  async function statusUpdate() {
+    try { 
+      if (!socketInstance.current || socketInstance.current?.connected) {
+        socketInstance.current = await getSocketInstance(token);
+        setIsSocketConnected(socketInstance.current.connected);
+        socketInstance.current.on("stutus-update", (message: any) => {
+          const data = parseSocketMessage(message);
+        });
+      }
+    } catch (error) {
+      
+    }
+  }
+
 
   const getSocketConnection = async() => {
     try {
       socketInstance.current = await getSocketInstance(token);
     } catch (error) {
       console.log("error", error);
-      
     }
   }
 
