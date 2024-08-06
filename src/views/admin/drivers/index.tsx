@@ -12,7 +12,6 @@ import {
 import ReactPaginate from "react-paginate";
 // import "./rides.css";
 import Loader from "components/loader/loader";
-import { statusOptions } from "utils/constants";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Modal,
@@ -31,7 +30,7 @@ import Navbar from "../../../components/navbar";
 import { toast } from "react-toastify";
 import { getS3SignUrlApi } from "../../../services/customAPI";
 import { vehicleNumberFormat } from "helper/commonFunction";
-import { getSocketInstance } from "./socket";
+import { getSocketInstance } from "../../../config/socket";
 import { useSelector } from "react-redux";
 
 const Drivers = () => {
@@ -43,7 +42,6 @@ const Drivers = () => {
   const [limit, setLimit] = useState(10);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalState, setModalState] = useState(true);
-  const [visibleModal, setVisibleModal] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [driverData, setDriverData] = useState([]);
@@ -322,8 +320,6 @@ const Drivers = () => {
 
   const getSocketConnection = async() => {
     try {
-      console.log("Helllooo");
-      
       socketInstance.current = await getSocketInstance(token);
     } catch (error) {
       console.log("error", error);
@@ -431,9 +427,9 @@ const Drivers = () => {
                     {/* <ModalCloseButton /> */}
                     <div className="mb-2 flex justify-center">
                       {modalState ? (
-                        <img src={deleteIcon} />
+                        <img alt ='' src={deleteIcon} />
                       ) : (
-                        <img src={blockIcon} />
+                        <img alt ='' src={blockIcon} />
                       )}
                     </div>
                     {modalState ? (
@@ -443,7 +439,7 @@ const Drivers = () => {
                       </ModalBody>
                     ) : (
                       <ModalBody className="text-center">
-                        {selectedItem.action.driverStatus == "active"
+                        {selectedItem.action.driverStatus === "active"
                           ? "Are you sure you want to Unassign ?"
                           : "Are you sure you want to Assign ?"}
                         <br />
@@ -482,7 +478,7 @@ const Drivers = () => {
                             updateDriverStatus(selectedItem.action.id)
                           }
                         >
-                          {selectedItem.action.driverStatus == "active"
+                          {selectedItem.action.driverStatus === "active"
                             ? "Unassign"
                             : "Assign"}
                         </Button>

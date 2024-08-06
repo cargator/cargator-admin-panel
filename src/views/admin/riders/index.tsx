@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./riders.css";
 import ReactPaginate from "react-paginate";
 import * as _ from "lodash";
@@ -20,15 +20,11 @@ import {
   getAllRidersApi,
   handleRiderDeleteApi,
   searchRidersApi,
-  searchRidersByNameApi,
   updateRiderStatusApi,
 } from "../../../services/customAPI";
 import ColumnsTableRiders from "./components/ColumnsTableRiders";
 import Loader from "components/loader/loader";
 import Navbar from "../../../components/navbar";
-import Card from "components/card";
-import { useSelector } from "react-redux";
-import { getSocketInstance } from "../drivers/socket";
 
 interface Rider {
   _id: string;
@@ -44,30 +40,16 @@ const Riders: React.FC = () => {
   const [limit, setLimit] = useState<number>(10);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalState, setModalState] = useState(true);
-  const [values, setValues] = useState([]);
   const [pageCount, setPageCount] = useState<number>(1);
   const [searchText, setSearchText] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [ridersData, setRidersData] = useState<Rider[]>([]);
   const [paginatedRiders, setPaginatedRiders] = useState([]);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<number>(1);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<number>(limit);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
-  // const [driverData, setDriverData] = useState([])
-
-  const extractSpecificValues = (item: any) => {
-    return {
-      name: item.name,
-      mobileNumber: item.mobileNumber,
-      totalRidesCompleted: item.totalRidesCompleted,
-      status: item.status,
-    };
-  };
-  // console.log("Status", status);
 
   const successToast = (message: string) => {
-    // console.log("Inside successToast", message); // Add this line for debugging
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 4000,
@@ -108,33 +90,6 @@ const Riders: React.FC = () => {
     const endNumber = currPageNumber * limit;
     setPageItemEndNumber(Math.min(endNumber, maxItemRange));
   };
-
-  // async function searchTextDebounced(text) {
-  //   try {
-  //     setIsLoading(true)
-  //     if (text.trim() == '') {
-  //       errorToast('Invalid rider name! Please provide a valid rider name.')
-  //       // getAllRiders()
-  //       setSearchText('')
-  //       return
-  //     } else {
-  //       const response = await customAxios.post(`/search-riders-by-name`, {
-  //         query: text,
-  //       })
-
-  //       setRidersData(response.data)
-  //       setPageCount(Math.ceil(response.data.length / limit))
-  //       setPaginatedRidersData(response.data)
-  //       setPageItemRange(1, response.data.length)
-  //     }
-  //   } catch (error) {
-  //     errorToast(error?.response?.data?.message)
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
-
-  // const searchTextDebouncer = useCallback(_.debounce(searchTextDebounced, 2000), [])
 
   const searchRiders = async () => {
     try {
@@ -196,16 +151,6 @@ const Riders: React.FC = () => {
       });
       if (response.success) {
         successToast("Rider status updated !");
-        // const updatedRider = response.data;
-        // const updatedRidersData = paginatedRiders.map((rider) => {
-        //   if (rider._id == id) {
-        //     rider = updatedRider;
-        //   }
-        //   return rider;
-        // });
-        // setRidersData(updatedRidersData);
-        // currentPage.current = 1;
-        // setPaginatedRiders(updatedRidersData);
         getAllRiders();
       } else {
         errorToast("Something went wrong! Please try again.");
@@ -224,20 +169,6 @@ const Riders: React.FC = () => {
       setIsLoading(true);
       const response: any = await handleRiderDeleteApi(id);
       if (response.success) {
-        successToast("Rider deleted successfully !");
-        // const updatedRidersData = paginatedRiders.filter((rider) => rider._id != id);
-        // setRidersData(updatedRidersData);
-
-        // setPageCount(Math.ceil(updatedRidersData.length / limit));
-        // currentPage.current = 1;
-        // setPaginatedRidersData(updatedRidersData);
-        // setPaginatedRiders(updatedRidersData)
-        // if (updatedRidersData.length % limit === 0) {
-        //   currentPage.current = currentPage.current - 1;
-        //   setPaginatedRiders(updatedRidersData);
-        // }
-
-        // setPageItemRange(currentPage.current, updatedRidersData.length);
         getAllRiders();
       } else {
         errorToast("Something went wrong! Please try again.");
@@ -268,15 +199,6 @@ const Riders: React.FC = () => {
     onOpen();
     setIsLoading(false);
   };
-
-  // function setPaginatedRidersData(ridersArray: any) {
-  //   setIsLoading(true);
-  //   const currentPage_ZeroBasedIndexing = currentPage.current - 1;
-  //   const startIdx = currentPage_ZeroBasedIndexing * limit;
-  //   const endIdx = currentPage_ZeroBasedIndexing * limit + limit;
-  //   setPaginatedRiders(ridersArray.slice(startIdx, endIdx));
-  //   setIsLoading(false);
-  // }
 
   // Pagination
   function handlePageClick(event: any) {
