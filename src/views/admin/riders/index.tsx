@@ -27,6 +27,8 @@ import ColumnsTableRiders from "./components/ColumnsTableRiders";
 import Loader from "components/loader/loader";
 import Navbar from "../../../components/navbar";
 import Card from "components/card";
+import { useSelector } from "react-redux";
+import { getSocketInstance } from "../drivers/socket";
 
 interface Rider {
   _id: string;
@@ -155,19 +157,22 @@ const Riders: React.FC = () => {
 
   const searchRiderFunction = async () => {
     try {
-    const response: any = await searchRiders();
-    if (!response) {
-      return;
+      const response: any = await searchRiders();
+      if (!response) {
+        return;
+      }
+      // setRidersData(response.data);
+      setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+      setPaginatedRiders(response?.data[0].data);
+      setPageItemRange(
+        currentPage.current,
+        response?.data[0].count[0]?.totalcount
+      );
+    } catch (error) {
+      console.log("search rider error:", error);
+    } finally {
+      setIsLoading(false);
     }
-    // setRidersData(response.data);
-    setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-    setPaginatedRiders(response?.data[0].data);
-    setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
-  } catch (error) {
-    console.log("search rider error:", error)    
-  } finally {
-    setIsLoading(false);
-  }
   };
 
   const handleSearchSubmit = async (e: any) => {
@@ -231,7 +236,7 @@ const Riders: React.FC = () => {
         //   currentPage.current = currentPage.current - 1;
         //   setPaginatedRiders(updatedRidersData);
         // }
-        
+
         // setPageItemRange(currentPage.current, updatedRidersData.length);
         getAllRiders();
       } else {
@@ -299,6 +304,7 @@ const Riders: React.FC = () => {
       setIsLoading(false);
     }
   };
+
 
   useEffect(() => {
     if (firstRender.current) {

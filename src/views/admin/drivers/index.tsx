@@ -31,8 +31,12 @@ import Navbar from "../../../components/navbar";
 import { toast } from "react-toastify";
 import { getS3SignUrlApi } from "../../../services/customAPI";
 import { vehicleNumberFormat } from "helper/commonFunction";
+import { getSocketInstance } from "./socket";
+import { useSelector } from "react-redux";
 
 const Drivers = () => {
+  const socketInstance = useRef<any>(undefined);
+  const token = useSelector((store: any) => store.auth.token);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentPage = useRef<number>();
   const navigate = useNavigate();
@@ -315,9 +319,22 @@ const Drivers = () => {
     setLoading(false);
   };
 
+
+  const getSocketConnection = async() => {
+    try {
+      console.log("Helllooo");
+      
+      socketInstance.current = await getSocketInstance(token);
+    } catch (error) {
+      console.log("error", error);
+      
+    }
+  }
+
   useEffect(() => {
     currentPage.current = 1;
     getPaginatedDriverData();
+    getSocketConnection()
   }, []);
 
   useEffect(() => {
