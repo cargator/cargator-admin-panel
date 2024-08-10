@@ -1,37 +1,35 @@
 import { useEffect, useRef, useState } from "react";
-import ColumnsTable from "./components/ColumnsTable";
+import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-  getPaginatedDriverDataApi,
-  searchDriverApi,
-  updateDriverStatusApi,
   //   options,
   deleteDriverHandleApi,
+  getPaginatedDriverDataApi,
   searchDriversApi,
+  updateDriverStatusApi,
 } from "../../../services/customAPI";
-import ReactPaginate from "react-paginate";
+import ColumnsTable from "./components/ColumnsTable";
 // import "./rides.css";
-import Loader from "components/loader/loader";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { Button, ChakraProvider } from "@chakra-ui/react";
-import deleteIcon from "../../../assets/svg/deleteIcon.svg";
-import blockIcon from "../../../assets/svg/blockIcon.svg";
-import "./driverlist.css";
-import Navbar from "../../../components/navbar";
-import { toast } from "react-toastify";
-import { getS3SignUrlApi } from "../../../services/customAPI";
+import Loader from "components/loader/loader";
 import { vehicleNumberFormat } from "helper/commonFunction";
-import { getSocketInstance } from "../../../config/socket";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import blockIcon from "../../../assets/svg/blockIcon.svg";
+import deleteIcon from "../../../assets/svg/deleteIcon.svg";
+import Navbar from "../../../components/navbar";
+import { getSocketInstance } from "../../../config/socket";
+import { getS3SignUrlApi } from "../../../services/customAPI";
+import "./driverlist.css";
 
 const Drivers = () => {
   const socketInstance = useRef<any>(undefined);
@@ -45,13 +43,13 @@ const Drivers = () => {
   const [pageCount, setPageCount] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [driverData, setDriverData] = useState([]);
+  const driverDataRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
   const parser = new DOMParser();
-  const [isSocketConnected, setIsSocketConnected] = useState<boolean>(false);
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -120,9 +118,11 @@ const Drivers = () => {
       }
       setLoading(false);
     } catch (error: any) {
-      const doc = parser.parseFromString(error.response?.data, 'text/html');
-      const errorElement = doc.querySelector('pre');
-      const errorText = errorElement ? errorElement.textContent : 'Unknown Error';
+      const doc = parser.parseFromString(error.response?.data, "text/html");
+      const errorElement = doc.querySelector("pre");
+      const errorText = errorElement
+        ? errorElement.textContent
+        : "Unknown Error";
       errorToast(errorText);
       console.log("error :>> ", error.response.data.message);
       setLoading(false);
@@ -141,11 +141,12 @@ const Drivers = () => {
       return response;
     } catch (error: any) {
       setDriverData([]);
+      driverDataRef.current = [];
       setPageCount(1);
       console.log(error.response.data.message);
       setNoData(error.response.data.success);
     } finally {
-      setLoading(false);      
+      setLoading(false);
     }
   };
 
@@ -160,9 +161,13 @@ const Drivers = () => {
       const pathArr = await convertToUsableDriverArray(response?.data[0].data);
       const arr: any = convertToDriverArray(response?.data[0].data, pathArr);
       setDriverData(arr);
-      setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
+      driverDataRef.current = arr;
+      setPageItemRange(
+        currentPage.current,
+        response?.data[0].count[0]?.totalcount
+      );
     } catch (error) {
-      console.log("search driver error:", error)
+      console.log("search driver error:", error);
     } finally {
       setLoading(false);
     }
@@ -200,6 +205,7 @@ const Drivers = () => {
       const pathArr = await convertToUsableDriverArray(response?.data);
       const arr: any = convertToDriverArray(response?.data, pathArr);
       setDriverData(arr);
+      driverDataRef.current = arr;
       setPageItemRange(currentPage.current, response.totalDrivers);
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -234,7 +240,7 @@ const Drivers = () => {
           path: path,
         },
         mobileNumber: driver.mobileNumber,
-        vehicleNumber:`${vehicleNumberFormat(driver?.vehicleNumber)}`,
+        vehicleNumber: `${vehicleNumberFormat(driver?.vehicleNumber)}`,
         vehicleType: driver.vehicleType,
         status: driver.rideStatus,
         action: {
@@ -324,33 +330,36 @@ const Drivers = () => {
     }
   };
 
-  async function statusUpdate() {
-    try { 
-      if (!socketInstance.current || socketInstance.current?.connected) {
-        socketInstance.current = await getSocketInstance(token);
-        setIsSocketConnected(socketInstance.current.connected);
-        socketInstance.current.on("stutus-update", (message: any) => {
-          const data = parseSocketMessage(message);
-        });
-      }
-    } catch (error) {
-      
-    }
-  }
-
-
-  const getSocketConnection = async() => {
+  const getSocketConnection = async () => {
     try {
       socketInstance.current = await getSocketInstance(token);
+      socketInstance.current.on("driver-status-update", (message: any) => {
+        const data = parseSocketMessage(message);
+        driverDataRef.current = driverDataRef.current.map((element: any) => {
+          if (
+            element.action.id.toString() ===
+            data.riderStatusDetails.riderId.toString()
+          ) {
+            element["status"] = data.riderStatusDetails["riderStaus"];
+          }
+          return element;
+        });
+        setDriverData(driverDataRef.current);
+      });
     } catch (error) {
       console.log("error", error);
     }
-  }
+  };
 
   useEffect(() => {
     currentPage.current = 1;
     getPaginatedDriverData();
-    getSocketConnection()
+    getSocketConnection();
+    return () => {
+      if (socketInstance.current && socketInstance.current.connected) {
+        socketInstance.current.disconnect();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -447,9 +456,9 @@ const Drivers = () => {
                     {/* <ModalCloseButton /> */}
                     <div className="mb-2 flex justify-center">
                       {modalState ? (
-                        <img alt ='' src={deleteIcon} />
+                        <img alt="" src={deleteIcon} />
                       ) : (
-                        <img alt ='' src={blockIcon} />
+                        <img alt="" src={blockIcon} />
                       )}
                     </div>
                     {modalState ? (
