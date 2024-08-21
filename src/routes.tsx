@@ -137,14 +137,6 @@ const authenticatedRoutes: RoutesType[] = [
   {
     name: "Settings",
     layout: "/admin",
-    path: "settings/users/create",
-    component: <CreateUsers />,
-    icon: <IoSettingsOutline className="h-6 w-6" />,
-    secondary: false,
-  },
-  {
-    name: "Settings",
-    layout: "/admin",
     path: "settings/countrycode",
     component: <CountryCode />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
@@ -242,6 +234,14 @@ const authenticatedRoutes: RoutesType[] = [
     path: "orders/orderDetails/:id",
     // icon: <MdPerson className="h-6 w-6" />,
     component: <OrderView />,
+    secondary: true,
+  },
+  {
+    name: "User-Form",
+    layout: "/admin",
+    path: "settings/users-form",
+    component: <CreateUsers />,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },
   {

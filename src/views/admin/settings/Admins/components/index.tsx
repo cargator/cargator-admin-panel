@@ -110,19 +110,19 @@ function ColumnsTableAdmins(props: {
       ),
     }),
 
-    columnHelper.accessor("email", {
-      id: "email",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("email")}
-        </p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
-      ),
-    }),
+    // columnHelper.accessor("email", {
+    //   id: "email",
+    //   header: () => (
+    //     <p className="text-sm font-bold text-gray-600 dark:text-white">
+    //       {t("email")}
+    //     </p>
+    //   ),
+    //   cell: (info) => (
+    //     <p className="text-sm font-bold text-navy-700 dark:text-white">
+    //       {info.getValue()}
+    //     </p>
+    //   ),
+    // }),
 
     // columnHelper.accessor("action", {
     //   id: "action",
@@ -191,9 +191,7 @@ function ColumnsTableAdmins(props: {
         <div>
           <button
             className="mt-1 rounded-lg bg-[#1d3469] px-2 py-1 text-white"
-            onClick={() => {
-              navigate("create");
-            }}
+            onClick={() => navigate("/admin/settings/users-form")}
           >
             Create User
           </button>

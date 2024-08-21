@@ -283,6 +283,10 @@ export const createCountryCodeApi = (data) => {
   return customAxios.post("/create-country-code", data);
 };
 
+export const createUsersApi = (data) => {
+  return customAxios.post("/create-admin", data);
+};
+
 export const handleCreateCountryCodeApi = (id, data) => {
   return customAxios.patch(`/update-country-code/${id}`, data);
 };
