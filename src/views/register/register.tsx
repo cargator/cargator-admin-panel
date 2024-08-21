@@ -30,17 +30,9 @@ export default function Register() {
       .required("Name is required"),
     email: Yup.string().required("Email is required").email("Invalid email"),
     mobile_Number:Yup.string().min(10,"Invalid Mobile Number").max(10,"Invalid Mobile Number")
-    // password: Yup.string()
-    //   .required("Password is required")
-    //   .min(8, "Too short !")
-    //   .max(15, "Too long !"),
-    // confirmPassword: Yup.string()
-    //   .oneOf([Yup.ref("password")], "Password must match")
-    //   .required("Please confirm password"),
   });
 
   const successToast = (message: string) => {
-    // console.log("Inside successToast", message); // Add this line for debugging
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 4000,

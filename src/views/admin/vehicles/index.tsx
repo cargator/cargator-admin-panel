@@ -30,7 +30,6 @@ import { vehicleNumberFormat } from "helper/commonFunction";
 const Vehicles: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentPage = useRef<number>(1);
-  const navigate = useNavigate();
   const [limit, setLimit] = useState<number>(10);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalState, setModalState] = useState(true);

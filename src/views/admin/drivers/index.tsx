@@ -1,54 +1,54 @@
 import { useEffect, useRef, useState } from "react";
-import ColumnsTable from "./components/ColumnsTable";
+import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import {
-  getPaginatedDriverDataApi,
-  searchDriverApi,
-  updateDriverStatusApi,
   //   options,
   deleteDriverHandleApi,
+  getPaginatedDriverDataApi,
   searchDriversApi,
+  updateDriverStatusApi,
 } from "../../../services/customAPI";
-import ReactPaginate from "react-paginate";
+import ColumnsTable from "./components/ColumnsTable";
 // import "./rides.css";
-import Loader from "components/loader/loader";
-import { statusOptions } from "utils/constants";
 import { useDisclosure } from "@chakra-ui/hooks";
 import {
   Modal,
   ModalBody,
-  ModalCloseButton,
   ModalContent,
   ModalFooter,
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/modal";
 import { Button, ChakraProvider } from "@chakra-ui/react";
-import deleteIcon from "../../../assets/svg/deleteIcon.svg";
-import blockIcon from "../../../assets/svg/blockIcon.svg";
-import "./driverlist.css";
-import Navbar from "../../../components/navbar";
-import { toast } from "react-toastify";
-import { getS3SignUrlApi } from "../../../services/customAPI";
+import Loader from "components/loader/loader";
 import { vehicleNumberFormat } from "helper/commonFunction";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import blockIcon from "../../../assets/svg/blockIcon.svg";
+import deleteIcon from "../../../assets/svg/deleteIcon.svg";
+import Navbar from "../../../components/navbar";
+import { getSocketInstance } from "../../../config/socket";
+import { getS3SignUrlApi } from "../../../services/customAPI";
+import "./driverlist.css";
 
 const Drivers = () => {
+  const socketInstance = useRef<any>(undefined);
+  const token = useSelector((store: any) => store.auth.token);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentPage = useRef<number>();
   const navigate = useNavigate();
   const [limit, setLimit] = useState(10);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalState, setModalState] = useState(true);
-  const [visibleModal, setVisibleModal] = useState(false);
   const [pageCount, setPageCount] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [driverData, setDriverData] = useState([]);
+  const driverDataRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
-
   const parser = new DOMParser();
 
   const successToast = (message: string) => {
@@ -118,9 +118,11 @@ const Drivers = () => {
       }
       setLoading(false);
     } catch (error: any) {
-      const doc = parser.parseFromString(error.response?.data, 'text/html');
-      const errorElement = doc.querySelector('pre');
-      const errorText = errorElement ? errorElement.textContent : 'Unknown Error';
+      const doc = parser.parseFromString(error.response?.data, "text/html");
+      const errorElement = doc.querySelector("pre");
+      const errorText = errorElement
+        ? errorElement.textContent
+        : "Unknown Error";
       errorToast(errorText);
       console.log("error :>> ", error.response.data.message);
       setLoading(false);
@@ -139,11 +141,12 @@ const Drivers = () => {
       return response;
     } catch (error: any) {
       setDriverData([]);
+      driverDataRef.current = [];
       setPageCount(1);
       console.log(error.response.data.message);
       setNoData(error.response.data.success);
     } finally {
-      setLoading(false);      
+      setLoading(false);
     }
   };
 
@@ -158,9 +161,13 @@ const Drivers = () => {
       const pathArr = await convertToUsableDriverArray(response?.data[0].data);
       const arr: any = convertToDriverArray(response?.data[0].data, pathArr);
       setDriverData(arr);
-      setPageItemRange(currentPage.current, response?.data[0].count[0]?.totalcount);
+      driverDataRef.current = arr;
+      setPageItemRange(
+        currentPage.current,
+        response?.data[0].count[0]?.totalcount
+      );
     } catch (error) {
-      console.log("search driver error:", error)
+      console.log("search driver error:", error);
     } finally {
       setLoading(false);
     }
@@ -190,7 +197,6 @@ const Drivers = () => {
   const getPaginatedDriverData = async () => {
     try {
       setLoading(true);
-      console.log("???????????", currentPage.current, limit)
       const response: any = await getPaginatedDriverDataApi({
         page: currentPage.current,
         limit: limit,
@@ -199,6 +205,7 @@ const Drivers = () => {
       const pathArr = await convertToUsableDriverArray(response?.data);
       const arr: any = convertToDriverArray(response?.data, pathArr);
       setDriverData(arr);
+      driverDataRef.current = arr;
       setPageItemRange(currentPage.current, response.totalDrivers);
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -233,7 +240,7 @@ const Drivers = () => {
           path: path,
         },
         mobileNumber: driver.mobileNumber,
-        vehicleNumber:`${vehicleNumberFormat(driver?.vehicleNumber)}`,
+        vehicleNumber: `${vehicleNumberFormat(driver?.vehicleNumber)}`,
         vehicleType: driver.vehicleType,
         status: driver.rideStatus,
         action: {
@@ -315,9 +322,44 @@ const Drivers = () => {
     setLoading(false);
   };
 
+  const parseSocketMessage = (message: any) => {
+    try {
+      return JSON.parse(message);
+    } catch (error) {
+      console.log(`parseSocketMessage error :>> `, error);
+    }
+  };
+
+  const getSocketConnection = async () => {
+    try {
+      socketInstance.current = await getSocketInstance(token);
+      socketInstance.current.on("driver-status-update", (message: any) => {
+        const data = parseSocketMessage(message);
+        driverDataRef.current = driverDataRef.current.map((element: any) => {
+          if (
+            element.action.id.toString() ===
+            data.riderStatusDetails.riderId.toString()
+          ) {
+            element["status"] = data.riderStatusDetails["riderStaus"];
+          }
+          return element;
+        });
+        setDriverData(driverDataRef.current);
+      });
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   useEffect(() => {
     currentPage.current = 1;
     getPaginatedDriverData();
+    getSocketConnection();
+    return () => {
+      if (socketInstance.current && socketInstance.current.connected) {
+        socketInstance.current.disconnect();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -414,9 +456,9 @@ const Drivers = () => {
                     {/* <ModalCloseButton /> */}
                     <div className="mb-2 flex justify-center">
                       {modalState ? (
-                        <img src={deleteIcon} />
+                        <img alt="" src={deleteIcon} />
                       ) : (
-                        <img src={blockIcon} />
+                        <img alt="" src={blockIcon} />
                       )}
                     </div>
                     {modalState ? (
@@ -426,7 +468,7 @@ const Drivers = () => {
                       </ModalBody>
                     ) : (
                       <ModalBody className="text-center">
-                        {selectedItem.action.driverStatus == "active"
+                        {selectedItem.action.driverStatus === "active"
                           ? "Are you sure you want to Unassign ?"
                           : "Are you sure you want to Assign ?"}
                         <br />
@@ -465,7 +507,7 @@ const Drivers = () => {
                             updateDriverStatus(selectedItem.action.id)
                           }
                         >
-                          {selectedItem.action.driverStatus == "active"
+                          {selectedItem.action.driverStatus === "active"
                             ? "Unassign"
                             : "Assign"}
                         </Button>
