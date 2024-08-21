@@ -5,6 +5,7 @@ export const dashboardDataApi = () => {
 };
 
 export const handleLoginApi = (data) => {
+  console.log("handleLoginApi called>>>>>>", data);
   return customAxios.post("/admin-login", data);
 };
 
