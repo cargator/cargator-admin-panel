@@ -12,6 +12,10 @@ export const handleRegisterApi = (data) => {
   return customAxios.post("/admin-register", data);
 };
 
+export const getAllAdminsData = (data) => {
+  return customAxios.get(`/get-all-admins?page=${data.page}&limit=${data.limit}`)
+}
+
 export const handleChangePasswordApi = (data) => {
   return customAxios.post("/change-password", data);
 };

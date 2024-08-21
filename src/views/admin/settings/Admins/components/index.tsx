@@ -47,11 +47,11 @@ function ColumnsTableAdmins(props: {
       id: "name",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Admin Name")}
+          {t("User Name")}
         </p>
       ),
       cell: (info: any) => (
-        <p
+        <div
           className="text-sm font-bold text-navy-700"
           style={{ display: "flex", alignItems: "center" }}
         >
@@ -85,14 +85,14 @@ function ColumnsTableAdmins(props: {
                 height: "40px",
                 borderRadius: "4px",
                 display: "inline-block",
-                marginRight: "6px",
+                // marginRight: "6px",
                 alignItems: "center",
               }}
             ></div>
           )}
 
           <span className="dark:text-white">{info.getValue()}</span>
-        </p>
+        </div>
       ),
     }),
 
@@ -124,44 +124,44 @@ function ColumnsTableAdmins(props: {
       ),
     }),
 
-    columnHelper.accessor("action", {
-      id: "action",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t(superAdmin ? "Actions" : "Status")}
-        </p>
-      ),
-      cell: (info) =>
-        superAdmin && (
-          <div className="flex items-center">
-            <img
-              src={ButtonEdit}
-              className="button-edit me-2"
-              onClick={() =>
-                // updateAdmin(info.row.original)
-                navigate(`/admin/admins/adminform/${info.getValue()?.id}`)
-              }
-              height={30}
-              width={30}
-            />
-            <img
-              src={deleteIcon}
-              className="button-delete"
-              onClick={() => handleClickForDeleteModal(info.row.original)}
-              height={30}
-              width={30}
-            />
-            <img
-              src={admin}
-              className="button-delete"
-              onClick={() => makeSuperAdmin(info.row.original)}
-              height={30}
-              width={30}
-              style={{ marginLeft: "1rem" }}
-            />
-          </div>
-        ),
-    }),
+    // columnHelper.accessor("action", {
+    //   id: "action",
+    //   header: () => (
+    //     <p className="text-sm font-bold text-gray-600 dark:text-white">
+    //       {t(superAdmin ? "Actions" : "Status")}
+    //     </p>
+    //   ),
+    //   cell: (info) =>
+    //     superAdmin && (
+    //       <div className="flex items-center">
+    //         <img
+    //           src={ButtonEdit}
+    //           className="button-edit me-2"
+    //           onClick={() =>
+    //             // updateAdmin(info.row.original)
+    //             navigate(`/admin/admins/adminform/${info.getValue()?.id}`)
+    //           }
+    //           height={30}
+    //           width={30}
+    //         />
+    //         <img
+    //           src={deleteIcon}
+    //           className="button-delete"
+    //           onClick={() => handleClickForDeleteModal(info.row.original)}
+    //           height={30}
+    //           width={30}
+    //         />
+    //         <img
+    //           src={admin}
+    //           className="button-delete"
+    //           onClick={() => makeSuperAdmin(info.row.original)}
+    //           height={30}
+    //           width={30}
+    //           style={{ marginLeft: "1rem" }}
+    //         />
+    //       </div>
+    //     ),
+    // }),
   ]; // eslint-disable-next-line
   const [data, setData] = React.useState([...tableData]);
   const table = useReactTable({
@@ -176,11 +176,6 @@ function ColumnsTableAdmins(props: {
     debugTable: true,
   });
 
-  const logs = (a: any) => {
-    console.log(a);
-    return true;
-  };
-
   useEffect(() => {
     setData([...tableData]);
   }, [tableData]);
@@ -191,9 +186,18 @@ function ColumnsTableAdmins(props: {
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
-          {t("Admins")}
+          {t("Users")}
         </div>
-        ``
+        <div>
+          <button
+            className="mt-1 rounded-lg bg-[#1d3469] px-2 py-1 text-white"
+            onClick={() => {
+              navigate("create");
+            }}
+          >
+            Create User
+          </button>
+        </div>
       </header>
 
       <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">

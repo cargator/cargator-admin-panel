@@ -1,4 +1,4 @@
-// routes.ts 
+// routes.ts
 
 import React from "react";
 import Dashboard from "views/admin/dashboard";
@@ -19,7 +19,14 @@ import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import DriverForm from "views/admin/drivers/driverForm";
 import RideView from "views/admin/rides/rideview";
 import VehicleForm from "views/admin/vehicles/vehicleform";
-import { MdHome, MdBarChart, MdFastfood, MdOutlineShoppingCart, MdPerson, MdTwoWheeler } from "react-icons/md";
+import {
+  MdHome,
+  MdBarChart,
+  MdFastfood,
+  MdOutlineShoppingCart,
+  MdPerson,
+  MdTwoWheeler,
+} from "react-icons/md";
 import { HiLocationMarker } from "react-icons/hi";
 import { BsChatLeftText } from "react-icons/bs";
 import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
@@ -28,6 +35,7 @@ import Orders from "views/admin/orders";
 import CreateOrder from "views/admin/orders/components/createOrder";
 import OrderView from "views/admin/orders/components/orderView";
 import Admins from "views/admin/settings/Admins";
+import CreateUsers from "views/admin/settings/Admins/createUsers";
 
 export interface RoutesType {
   name: string;
@@ -121,10 +129,18 @@ const authenticatedRoutes: RoutesType[] = [
   {
     name: "Settings",
     layout: "/admin",
-    path: "settings/admins",
+    path: "settings/users",
     component: <Admins />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
+  },
+  {
+    name: "Settings",
+    layout: "/admin",
+    path: "settings/users/create",
+    component: <CreateUsers />,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
+    secondary: false,
   },
   {
     name: "Settings",
@@ -234,7 +250,7 @@ const authenticatedRoutes: RoutesType[] = [
     path: "settings/countrycode-form",
     icon: <MdPerson className="h-6 w-6" />,
     component: <CountryCodeForm />,
-    secondary: true
+    secondary: true,
   },
   {
     name: "Flows-Form",
@@ -242,7 +258,7 @@ const authenticatedRoutes: RoutesType[] = [
     path: "settings/flow-form",
     icon: <MdPerson className="h-6 w-6" />,
     component: <FlowsForm />,
-    secondary: true
+    secondary: true,
   },
   {
     name: "Flows-Form ID",
@@ -250,7 +266,7 @@ const authenticatedRoutes: RoutesType[] = [
     path: "settings/flow-form/:id",
     icon: <MdPerson className="h-6 w-6" />,
     component: <FlowsForm />,
-    secondary: true
+    secondary: true,
   },
 ];
 

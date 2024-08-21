@@ -4,6 +4,7 @@ import Loader from "components/loader/loader";
 import ReactPaginate from "react-paginate";
 import ColumnsTableAdmins from "./components";
 import Navbar from "components/navbar";
+import { getAllAdminsData } from "services/customAPI";
 
 export default function Admins() {
   const currentPage = useRef<number>(1);
@@ -39,30 +40,32 @@ export default function Admins() {
   };
 
   const getAllAdmin = async () => {
-    // try {
-    //   setLoading(true);
-    //   const response: any = await getAllAdminsData({
-    //     page: currentPage.current,
-    //     limit: limit,
-    //   });
-    //   // Validate response.totalDrivers and ensure it's a number
-    //   const totalAdmins = Number(response.totalAdmin);
-    //   if (isNaN(totalAdmins)) {
-    //     console.error("Invalid totalDrivers value:", response.totalAdmins);
-    //     return;
-    //   }
-    //   // Calculate page count
-    //   const calculatedPageCount = Math.ceil(totalAdmins / limit);
-    //   setPageCount(calculatedPageCount);
-    //   // Update data and page item range
-    //   const arr = response.data;
-    //   setAdminData(arr);
-    //   setPageItemRange(currentPage.current, totalAdmins);
-    // } catch (error: any) {
-    //   console.error(error);
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      setLoading(true);
+      const response = await getAllAdminsData({
+        page: currentPage.current,
+        limit: limit,
+      });
+      console.log("response==> ", response);
+
+      // Validate response.totalDrivers and ensure it's a number
+      const count = Number(response.data.count[0].totalCount);
+      if (isNaN(count)) {
+        console.error("Invalid totalDrivers value:", response.data.admins);
+        return;
+      }
+      // Calculate page count
+      const calculatedPageCount = Math.ceil(count / limit);
+      setPageCount(calculatedPageCount);
+      // Update data and page item range
+      const arr = response.data.admins;
+      setAdminData(arr);
+      setPageItemRange(currentPage.current, count);
+    } catch (error: any) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handlePageClick = async (e: { selected: number }) => {

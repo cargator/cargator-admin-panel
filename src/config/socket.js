@@ -5,7 +5,7 @@ let socketDetails = { status: "disconnected" };
 
 function socketConnection(token) {
   return new Promise((resolve, reject) => {
-    socket = io.connect(`http://localhost:3001?token=${token}`, {
+    socket = io.connect(`https://sukam-api.cargator.org?token=${token}`, {
       transports: ["websocket"],
       forceNew: true,
       jsonp: true,

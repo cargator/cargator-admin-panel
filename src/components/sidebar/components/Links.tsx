@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import DashIcon from "components/icons/DashIcon";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 import { RoutesType } from "routes"; // Adjust the path as per your project structure
 
 export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
@@ -77,10 +77,10 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                   </Link>
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
-                    to={`${route.layout}/settings/admins`}
+                    to={`${route.layout}/settings/users`}
                   >
                     <div>
-                      <span>{t("Admins")}</span>
+                      <span>{t("Users")}</span>
                     </div>
                   </Link>
                   <Link
