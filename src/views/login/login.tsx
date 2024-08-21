@@ -70,7 +70,6 @@ export default function SignIn() {
       };
       const loginRes = await handleLoginApi(data);
       if (!loginRes) {
-        console.log("hiiiiiiiiiii>>>>>>>>>>>>>");
         console.log("Invalid mobile_Number or password !");
         errorToast("Invalid mobile_Number or password !");
       }
