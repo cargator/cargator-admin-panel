@@ -9,7 +9,7 @@ import { handleLoginApi } from "services/customAPI";
 import { toast } from "react-toastify";
 
 export type loginCred = {
-  email: string;
+  mobile_Number: number;
   password: string;
 };
 
@@ -20,7 +20,8 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loginSchema = Yup.object().shape({
-    email: Yup.string().required("Email is required").email("Invalid email"),
+    // email: Yup.string().required("Email is required").email("Invalid email"),
+    mobile_Number:Yup.string().min(10,"Invalid Mobile Number").max(10,"Invalid Mobile Number").required("Mobile number is required"),
 
     password: Yup.string()
       .min(4, "Too short !")
@@ -64,13 +65,13 @@ export default function SignIn() {
     try {
       setIsLoading(true);
       const data = {
-        email: formValues.email,
+        mobile_Number: formValues.mobile_Number,
         password: formValues.password,
       };
       const loginRes = await handleLoginApi(data);
       if (!loginRes) {
-        console.log("Invalid email or password !");
-        errorToast("Invalid email or password !");
+        console.log("Invalid mobile_Number or password !");
+        errorToast("Invalid mobile_Number or password !");
       }
       console.log("loginRes :>> ", loginRes);
       dispatch(setToken(loginRes.data.token));
@@ -95,7 +96,7 @@ export default function SignIn() {
       {isLoading && <Loader size={40} />}
       <Formik
         enableReinitialize={true}
-        initialValues={{ email: "hello@gmail.com", password: "00000000" }}
+        initialValues={{ mobile_Number: 1234567890, password: "7890" }}
         onSubmit={(values, { setSubmitting }) => (
           console.log("first"), handleLogin(values, setSubmitting)
         )}
@@ -112,19 +113,19 @@ export default function SignIn() {
           <form about="form" onSubmit={handleSubmit}>
             <div className="mb-16 mt-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center">
               <div className="mt-[10vh] w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-                <p className="text-medium-emphasis">Email</p>
-                {errors.email && touched.email ? (
-                  <div className="error-input text-danger">{errors.email}</div>
+                <p className="text-medium-emphasis">Mobile Number</p>
+                {errors.mobile_Number && touched.mobile_Number ? (
+                  <div className="error-input text-danger">{errors.mobile_Number}</div>
                 ) : null}
                 <input
                   className="mt-2 flex h-12 w-full items-center justify-center rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                  id="email"
+                  id="mobile_Number"
                   type="text"
-                  placeholder="Email"
-                  autoComplete="email"
+                  placeholder="Mobile Number"
+                  autoComplete="mobile_Number"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.email}
+                  value={values.mobile_Number}
                 />
                 {/* Password */}
                 <p className="text-medium-emphasis">Password</p>
@@ -155,7 +156,7 @@ export default function SignIn() {
                 <button className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
                   Log In
                 </button>
-                {/* <div className="mt-4">
+                <div className="mt-4">
                   <span className=" text-sm font-medium text-navy-700 dark:text-gray-600">
                     Not registered yet?
                   </span>
@@ -165,7 +166,7 @@ export default function SignIn() {
                   >
                     Create an account
                   </a>
-                </div> */}
+                </div>
               </div>
             </div>
           </form>
