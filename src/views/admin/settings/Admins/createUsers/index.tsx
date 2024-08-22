@@ -8,7 +8,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
-import { createCountryCodeApi, createUsersApi, getCountryCodesById, handleCreateCountryCodeApi,  } from 'services/customAPI';
+import { createCountryCodeApi, createUsersApi, getCountryCodesById, getUsersById, handleCreateCountryCodeApi, updateUsersApi,  } from 'services/customAPI';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
 
@@ -29,6 +29,30 @@ function CreateUsers() {
     fullName: Yup.string().required(t("Name  is required")),
     mobileNumber: Yup.string().min(10,"Invalid Mobile Number").max(10,"Invalid Mobile Number").required("Mobile number is required"),
   });
+
+
+  React.useEffect(() => {
+    if (params.id) {
+      console.log("id", params.id)
+      getData(params.id);
+    }
+  }, [params]);
+
+  const getData = async (id: any) => {
+    console.log("get data called for update:>> ");
+    setIsLoading(true);
+    try {
+      const res = await getUsersById(id);
+      setInitialFormValues({
+        fullName: res.data.name,
+        mobileNumber: res.data.mobile_Number,
+      });
+      setIsLoading(false);
+    } catch (error: any) {
+      errorToast(error.response.data.message);
+      setIsLoading(false);
+    }
+  };
 
 
   const successToast = (message: string) => {
@@ -62,6 +86,20 @@ function CreateUsers() {
   const handleCreateUsers = async (values: any) => {
     setIsLoading(true);
     try {
+      if (params.id) {
+        const result: any = await updateUsersApi(params.id, {
+          fullName: values.fullName,
+          mobileNumber: values.mobileNumber,
+        });
+
+        if (result.message) {
+          successToast("User Updated Successfully");
+          navigate("/admin/settings/users")
+          setIsLoading(false);
+        } else {
+          errorToast("Something went wrong");
+        }
+      } else {
         const result: any = await createUsersApi({
           fullName: values.fullName,
           mobileNumber: values.mobileNumber,
@@ -74,6 +112,7 @@ function CreateUsers() {
         } else {
           errorToast("Something went wrong");
         }
+      }
       // }
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -86,7 +125,7 @@ function CreateUsers() {
     <>
       <Navbar flag={false} brandText="CreateUserForm" />
       <Link
-        to="/admin/settings/createUser"
+        to="/admin/settings/users"
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
       >
         <FaArrowLeft />

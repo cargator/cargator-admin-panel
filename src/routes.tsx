@@ -261,6 +261,14 @@ const authenticatedRoutes: RoutesType[] = [
     secondary: true,
   },
   {
+    name: "user-Form ID",
+    layout: "/admin",
+    path: "settings/user-form/:id",
+    icon: <MdPerson className="h-6 w-6" />,
+    component: <CreateUsers />,
+    secondary: true,
+  },
+  {
     name: "Flows-Form ID",
     layout: "/admin",
     path: "settings/flow-form/:id",

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Card from "components/card";
 import deleteIcon from "../../../../../assets/svg/deleteIcon.svg";
 import ButtonEdit from "../../../../../assets/svg/ButtonEdit.svg";
+import block from "../../../../../assets/svg/block.svg";
+import unblock from "../../../../../assets/svg/unblock.svg";
 import admin from "../../../../../assets/svg/admin-icon.svg";
 
 import { useTranslation } from "react-i18next";
@@ -22,6 +24,7 @@ type RowObj = {
   name: string;
   mobile_Number: string;
   email: string;
+  status: string;
   action: customFieldType2;
 };
 type customFieldType2 = {
@@ -32,11 +35,15 @@ type customFieldType2 = {
 function ColumnsTableAdmins(props: {
   tableData: any;
   handleClickForDeleteModal: (data: any) => void;
-  makeSuperAdmin: (data: any) => void;
-  updateAdmin: (data: any) => void;
+  handleToggleForStatusMOdal: (data: any) => void;
+  handleUpdate: (data: any) => void;
 }) {
-  const { tableData, handleClickForDeleteModal, makeSuperAdmin, updateAdmin } =
-    props;
+  const {
+    tableData,
+    handleClickForDeleteModal,
+    handleToggleForStatusMOdal,
+    handleUpdate,
+  } = props;
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const { t } = useTranslation();
@@ -100,7 +107,7 @@ function ColumnsTableAdmins(props: {
       id: "mobile_Number",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("mobile_Number")}
+          {t("Mobile Number")}
         </p>
       ),
       cell: (info) => (
@@ -124,44 +131,55 @@ function ColumnsTableAdmins(props: {
     //   ),
     // }),
 
-    // columnHelper.accessor("action", {
-    //   id: "action",
-    //   header: () => (
-    //     <p className="text-sm font-bold text-gray-600 dark:text-white">
-    //       {t(superAdmin ? "Actions" : "Status")}
-    //     </p>
-    //   ),
-    //   cell: (info) =>
-    //     superAdmin && (
-    //       <div className="flex items-center">
-    //         <img
-    //           src={ButtonEdit}
-    //           className="button-edit me-2"
-    //           onClick={() =>
-    //             // updateAdmin(info.row.original)
-    //             navigate(`/admin/admins/adminform/${info.getValue()?.id}`)
-    //           }
-    //           height={30}
-    //           width={30}
-    //         />
-    //         <img
-    //           src={deleteIcon}
-    //           className="button-delete"
-    //           onClick={() => handleClickForDeleteModal(info.row.original)}
-    //           height={30}
-    //           width={30}
-    //         />
-    //         <img
-    //           src={admin}
-    //           className="button-delete"
-    //           onClick={() => makeSuperAdmin(info.row.original)}
-    //           height={30}
-    //           width={30}
-    //           style={{ marginLeft: "1rem" }}
-    //         />
-    //       </div>
-    //     ),
-    // }),
+    columnHelper.accessor("action", {
+      id: "action",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Action")}
+        </p>
+      ),
+      cell: (info) => (
+        <div className="flex items-center">
+          {info.row.original.status === "active" ? (
+            <div className="cursor-pointer">
+              <img
+                style={{ marginRight: "8px", marginLeft: "5px" }}
+                src={unblock}
+                onClick={() => {
+                  handleToggleForStatusMOdal(info.row.original);
+                }}
+              />
+            </div>
+          ) : (
+            <div className="cursor-pointer">
+              <img
+                style={{ marginRight: "8px", marginLeft: "5px" }}
+                src={block}
+                onClick={() => {
+                  handleToggleForStatusMOdal(info.row.original);
+                }}
+              />
+            </div>
+          )}
+          <div className="cursor-pointer">
+            <img
+              src={ButtonEdit}
+              style={{ marginRight: "8px" }}
+              onClick={() =>
+                // navigate(`/admin/settings/users-form/${info.getValue()?.id}`)
+                handleUpdate(info.row.original)
+              }
+            />
+          </div>
+          <div className="cursor-pointer">
+            <img
+              src={deleteIcon}
+              onClick={() => handleClickForDeleteModal(info.row.original)}
+            />
+          </div>
+        </div>
+      ),
+    }),
   ]; // eslint-disable-next-line
   const [data, setData] = React.useState([...tableData]);
   const table = useReactTable({
@@ -190,7 +208,7 @@ function ColumnsTableAdmins(props: {
         </div>
         <div>
           <button
-            className="mt-1 rounded-lg bg-[#1d3469] px-2 py-1 text-white"
+            className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
             onClick={() => navigate("/admin/settings/users-form")}
           >
             Create User

@@ -246,7 +246,6 @@ export const getFlow = () => {
 };
 
 export const updateAppFlowAPI = (id, data) => {
-  console.log("123456789098765432", id, data);
   return customAxios.patch(`/update-app-flow/${id}`, data);
 };
 
@@ -270,7 +269,6 @@ export const getSpotsListVehicle = () => {
 };
 
 export const deleteSpot = (id) => {
-  console.log("deleteSpotApi");
   return customAxios.delete(`/delete-spot/${id}`);
 };
 
@@ -283,8 +281,27 @@ export const createCountryCodeApi = (data) => {
   return customAxios.post("/create-country-code", data);
 };
 
+// admin users API's
 export const createUsersApi = (data) => {
   return customAxios.post("/create-admin", data);
+};
+
+export const deleteUserAPI = (id) => {
+  console.log("deleteusesrss>>>>deleteBreakPoints>", id)
+  return customAxios.delete(`/delete-user/${id}`);
+};
+
+export const getUsersById = (id) => {
+  return customAxios.get(`/get-users/${id}`);
+};
+
+export const updateUsersApi = (id, data) => {
+  console.log("updateUsersApi called", id, data);
+  return customAxios.patch(`/update-user/${id}`, data);
+};
+
+export const updateAdminUserStatus = (id) => {
+  return customAxios.patch(`/update-user-status/${id}`);
 };
 
 export const handleCreateCountryCodeApi = (id, data) => {

@@ -1,22 +1,140 @@
 import { useEffect, useState, useRef } from "react";
-import { useDisclosure } from "@chakra-ui/react";
+import {
+  Button,
+  ChakraProvider,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  useDisclosure,
+} from "@chakra-ui/react";
 import Loader from "components/loader/loader";
 import ReactPaginate from "react-paginate";
 import ColumnsTableAdmins from "./components";
 import Navbar from "components/navbar";
-import { getAllAdminsData } from "services/customAPI";
+import {
+  deleteUserAPI,
+  getAllAdminsData,
+  updateAdminUserStatus,
+} from "services/customAPI";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import deleteIcon from "../../../../assets/svg/deleteIcon.svg";
+import blockIcon from "../../../../assets/svg/blockIcon.svg";
 
 export default function Admins() {
+  const navigate = useNavigate();
+
   const currentPage = useRef<number>(1);
-  const [modalState, setModalState] = useState(true);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [adminData, setAdminData] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [modalState, setModalState] = useState(true);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [limit, setLimit] = useState(5);
   const [pageCount, setPageCount] = useState(1);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
+
+  const parser = new DOMParser();
+
+  const successToast = (message: any) => {
+    toast.success(`${message}`, {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const errorToast = (message: any) => {
+    toast.error(`${message}`, {
+      position: "top-right",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const handleUpdate = (data: any) => {
+    const id = data._id;
+    // console.log("selectedItem?.action", id);
+    navigate(`/admin/settings/user-form/${id}`);
+  };
+
+  const handleClickForDeleteModal = (data: any) => {
+    setLoading(true);
+    setModalState(true);
+    setSelectedItem(data);
+    onOpen();
+    setLoading(false);
+  };
+
+  const handleToggleForStatusMOdal = (data: any) => {
+    setLoading(true);
+    setModalState(false);
+    setSelectedItem(data);
+    onOpen();
+    setLoading(false);
+  };
+
+  const deleteHandle = async (info: any) => {
+    setLoading(true);
+    onClose();
+    try {
+      const result: any = await deleteUserAPI(info);
+      getAllAdmin();
+      if (result.message) {
+        successToast("User deleted successfully");
+        setLoading(false);
+      } else {
+        setLoading(false);
+        errorToast("Something went wrong");
+      }
+    } catch (error: any) {
+      setLoading(false);
+      const doc = parser.parseFromString(error.response?.data, "text/html");
+      const errorElement = doc.querySelector("pre");
+      const errorText = errorElement
+        ? errorElement.textContent
+        : "Unknown Error";
+      errorToast(errorText);
+      console.log("error :>> ", error.response.data.message);
+    }
+  };
+
+  const handleUserStatus = async (id: string) => {
+    setLoading(true);
+    try {
+      onClose();
+      const result: any = await updateAdminUserStatus(id);
+      console.log("result :>> ", result?.message);
+      if (result?.message) {
+        successToast("User status updated Successfully");
+        getAllAdmin();
+        navigate("/admin/settings/users");
+      } else {
+        errorToast("Something went wrong");
+      }
+      setLoading(false);
+    } catch (error: any) {
+      console.log("error :>> ", error.response.data.message);
+      errorToast(error.response.data.message);
+      setLoading(false);
+    }
+  };
 
   const setPageItemRange = (page: number, maxItemRange: number) => {
     let startNumber = page * limit - limit + 1;
@@ -86,15 +204,9 @@ export default function Admins() {
           <div className="mt-4">
             <ColumnsTableAdmins
               tableData={adminData}
-              handleClickForDeleteModal={function (data: any): void {
-                throw new Error("Function not implemented.");
-              }}
-              makeSuperAdmin={function (data: any): void {
-                throw new Error("Function not implemented.");
-              }}
-              updateAdmin={function (data: any): void {
-                throw new Error("Function not implemented.");
-              }}
+              handleClickForDeleteModal={handleClickForDeleteModal}
+              handleToggleForStatusMOdal={handleToggleForStatusMOdal}
+              handleUpdate={handleUpdate}
             />
 
             <div
@@ -134,6 +246,82 @@ export default function Admins() {
               </div>
             </div>
           </div>
+          <>
+            {isOpen && (
+              <ChakraProvider>
+                <Modal
+                  isCentered={true}
+                  isOpen={isOpen}
+                  onClose={onClose}
+                  size="xs"
+                >
+                  <ModalOverlay />
+                  <ModalContent>
+                    <ModalHeader></ModalHeader>
+                    {/* <ModalCloseButton /> */}
+                    <div className="mb-2 flex justify-center">
+                      {modalState ? (
+                        <img alt="" src={deleteIcon} />
+                      ) : (
+                        <img alt="" src={blockIcon} />
+                      )}
+                    </div>
+                    {modalState ? (
+                      <ModalBody className="text-center">
+                        Are you sure you want to Delete? <br />
+                        {'"' + selectedItem.name + '"'}
+                      </ModalBody>
+                    ) : (
+                      <ModalBody className="text-center">
+                        {selectedItem.status === "active"
+                          ? "Are you sure you want to block ?"
+                          : "Are you sure you want to unblock ?"}
+                        <br />
+                        {'"' + selectedItem.name + '"'}
+                      </ModalBody>
+                    )}
+
+                    <div className="mt-3 flex justify-center">
+                      {modalState ? (
+                        <Button
+                          // style={{backgroundColor: 'red'}}
+                          className="cancel-delete-modal-button mx-2"
+                          onClick={onClose}
+                        >
+                          Cancel
+                        </Button>
+                      ) : (
+                        <Button
+                          className="cancel-block-modal-button mx-2"
+                          onClick={onClose}
+                        >
+                          Cancel
+                        </Button>
+                      )}
+                      {modalState ? (
+                        <Button
+                          className="delete-modal-button mx-2"
+                          onClick={() => deleteHandle(selectedItem._id)}
+                        >
+                          Delete
+                        </Button>
+                      ) : (
+                        <Button
+                          className="block-modal-button mx-2"
+                          onClick={() => handleUserStatus(selectedItem._id)}
+                        >
+                          {selectedItem.status === "active"
+                            ? "Block"
+                            : "Unblock"}
+                        </Button>
+                      )}
+                    </div>
+                    <ModalFooter></ModalFooter>
+                  </ModalContent>
+                </Modal>
+              </ChakraProvider>
+            )}
+          </>
         </>
       )}
     </>

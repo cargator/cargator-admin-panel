@@ -123,7 +123,6 @@ const Flows = () => {
     //   setVisibleModal(true);
     onOpen();
     setLoading(false);
-
   };
 
   const deleteHandle = async (info) => {
