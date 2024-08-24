@@ -274,8 +274,8 @@ export default function Admins() {
                     ) : (
                       <ModalBody className="text-center">
                         {selectedItem.status === "active"
-                          ? "Are you sure you want to block ?"
-                          : "Are you sure you want to unblock ?"}
+                          ? "Are you sure you want to Pause ?"
+                          : "Are you sure you want to Continue ?"}
                         <br />
                         {'"' + selectedItem.name + '"'}
                       </ModalBody>
@@ -311,8 +311,8 @@ export default function Admins() {
                           onClick={() => handleUserStatus(selectedItem._id)}
                         >
                           {selectedItem.status === "active"
-                            ? "Block"
-                            : "Unblock"}
+                            ? "Pause"
+                            : "Continue"}
                         </Button>
                       )}
                     </div>

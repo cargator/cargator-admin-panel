@@ -203,9 +203,9 @@ const LoginPage = () => {
   const firstPhoneInputRef = useRef<HTMLInputElement>(null);
   const firstPasswordInputRef = useRef<HTMLInputElement>(null);
 
-  // useEffect(() => {
-  //   firstPhoneInputRef.current?.focus();
-  // }, []);
+  useEffect(() => {
+    firstPhoneInputRef.current?.focus();
+  }, []);
 
   const handleCountryCodeChange = (e: any) => {
     setSelectedCountryCode(e.target.value);
