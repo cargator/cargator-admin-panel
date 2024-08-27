@@ -176,16 +176,13 @@
 //   );
 // }
 
-
-
-
-
 import React, { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleLoginApi } from "services/customAPI";
 import { setToken } from "redux/reducers/authReducer";
 import { toast } from "react-toastify";
+import logo from "../../assets/images/sukam-logo 1.png";
 
 const countryCodes = ["+91", "+61", "+81"];
 
@@ -211,52 +208,95 @@ const LoginPage = () => {
     setSelectedCountryCode(e.target.value);
   };
 
+  // const handlePhoneNumberChange = (index: number, e: any) => {
+  //   const newPhoneNumber = [...phoneNumber];
+
+  //   if (e.target.value) {
+  //     newPhoneNumber[index] = e.target.value.slice(-1);
+  //     setPhoneNumber(newPhoneNumber);
+
+  //     if (index < 9) {
+  //       document.getElementById(`phone-input-${index + 1}`)?.focus();
+  //     }
+  //   } else {
+  //     if (index > 0 || newPhoneNumber[index]) {
+  //       newPhoneNumber[index] = "";
+  //       setPhoneNumber(newPhoneNumber);
+  //       if (index > 0) {
+  //         document.getElementById(`phone-input-${index - 1}`)?.focus();
+  //       }
+  //     }
+  //   }
+  // };
+
+  // const handlePasswordChange = (index: number, e: any) => {
+  //   const newPassword = [...password];
+
+  //   if (e.target.value) {
+  //     newPassword[index] = e.target.value.slice(-1);
+  //     setPassword(newPassword);
+
+  //     if (index < 3) {
+  //       document.getElementById(`password-input-${index + 1}`)?.focus();
+  //     }
+  //   } else {
+  //     if (index > 0 || newPassword[index]) {
+  //       newPassword[index] = "";
+  //       setPassword(newPassword);
+  //       if (index > 0) {
+  //         document.getElementById(`password-input-${index - 1}`)?.focus();
+  //       }
+  //     }
+  //   }
+  // };
+
   const handlePhoneNumberChange = (index: number, e: any) => {
     const newPhoneNumber = [...phoneNumber];
+    const key = e.key;
 
-    if (e.target.value) {
-      newPhoneNumber[index] = e.target.value.slice(-1);
+    if (key === "Backspace") {
+      // If backspace is pressed
+      newPhoneNumber[index] = ""; // Clearing the current input box
+      setPhoneNumber(newPhoneNumber);
+
+      if (index > 0) {
+        document.getElementById(`phone-input-${index - 1}`)?.focus();
+      }
+    } else if (/^[0-9]$/.test(key)) {
+      // If a number key is pressed
+      newPhoneNumber[index] = key;
       setPhoneNumber(newPhoneNumber);
 
       if (index < 9) {
         document.getElementById(`phone-input-${index + 1}`)?.focus();
-      }
-    } else {
-      if (index > 0 || newPhoneNumber[index]) {
-        newPhoneNumber[index] = "";
-        setPhoneNumber(newPhoneNumber);
-        if (index > 0) {
-          document.getElementById(`phone-input-${index - 1}`)?.focus();
-        }
       }
     }
   };
 
   const handlePasswordChange = (index: number, e: any) => {
     const newPassword = [...password];
+    const key = e.key;
 
-    if (e.target.value) {
-      newPassword[index] = e.target.value.slice(-1);
+    if (key === "Backspace") {
+      // If backspace is pressed
+      newPassword[index] = ""; // Clearing the current input box
+      setPassword(newPassword);
+
+      if (index > 0) {
+        document.getElementById(`password-input-${index - 1}`)?.focus();
+      }
+    } else if (/^[a-zA-Z0-9]$/.test(key)) {
+      // If an alphanumeric key is pressed
+      newPassword[index] = key;
       setPassword(newPassword);
 
       if (index < 3) {
         document.getElementById(`password-input-${index + 1}`)?.focus();
       }
-    } else {
-      if (index > 0 || newPassword[index]) {
-        newPassword[index] = "";
-        setPassword(newPassword);
-        if (index > 0) {
-          document.getElementById(`password-input-${index - 1}`)?.focus();
-        }
-      }
     }
   };
 
-
-
   const successToast = (message: string) => {
-    // console.log("Inside successToast", message); // Add this line for debugging
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 4000,
@@ -284,7 +324,6 @@ const LoginPage = () => {
     });
   };
 
-
   const handleLogin = async (e: any) => {
     e.preventDefault();
     try {
@@ -302,6 +341,7 @@ const LoginPage = () => {
         console.log("Invalid mobile_Number or password !");
         errorToast("Invalid mobile_Number or password !");
       }
+      successToast(`Welcome to sukam-express, ${loginRes.data.fullName}!`);
       console.log("loginRes :>> ", loginRes);
       dispatch(setToken(loginRes.data.token));
       navigate("/admin/default");
@@ -313,7 +353,7 @@ const LoginPage = () => {
     }
   };
 
-    useEffect(() => {
+  useEffect(() => {
     if (token) {
       navigate("/");
     }
@@ -322,6 +362,11 @@ const LoginPage = () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-100">
       <div className="w-full max-w-2xl rounded-lg bg-white p-8 shadow-md">
+        <img
+          src={logo}
+          alt="Sukam Express Logo"
+          className="mx-auto mb-6 h-16 w-25"
+        />
         <h2 className="mb-6 text-center text-3xl font-semibold">Login</h2>
 
         <form onSubmit={handleLogin} className="space-y-6">
@@ -348,7 +393,7 @@ const LoginPage = () => {
                   ref={index === 0 ? firstPhoneInputRef : null}
                   type="number"
                   value={value}
-                  onChange={(e) => handlePhoneNumberChange(index, e)}
+                  onKeyDown={(e) => handlePhoneNumberChange(index, e)}
                   maxLength={1}
                   className="m-1 h-12 w-12 rounded-md border border-gray-300 p-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoComplete="off"
@@ -359,7 +404,7 @@ const LoginPage = () => {
 
           <div>
             <label className="mb-2 block font-semibold text-gray-700">
-              Password:
+              OTP:
             </label>
             <div className="">
               {password.map((value, index) => (
@@ -369,8 +414,7 @@ const LoginPage = () => {
                   ref={index === 0 ? firstPasswordInputRef : null}
                   type="password"
                   value={value}
-                  placeholder={value}
-                  onChange={(e) => handlePasswordChange(index, e)}
+                  onKeyDown={(e) => handlePasswordChange(index, e)}
                   maxLength={1}
                   className="m-1 h-12 w-12 rounded-md border border-gray-300 p-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoComplete="off"
