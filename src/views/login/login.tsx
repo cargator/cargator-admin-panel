@@ -365,7 +365,7 @@ const LoginPage = () => {
         <img
           src={logo}
           alt="Sukam Express Logo"
-          className="mx-auto mb-6 h-16 w-25"
+          className="w-25 mx-auto mb-6 h-16"
         />
         <h2 className="mb-6 text-center text-3xl font-semibold">Login</h2>
 

@@ -40,6 +40,7 @@ const OrderView = () => {
   const params = useParams();
   const [ride, setRide] = useState(null);
   const [path, setPath] = useState<any[]>([]);
+  const [realPath, setRealPath] = useState<any[]>([]);
   const [driverLocation, setDriverLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [driverImagePath, setDriverImagePath] = useState("");
@@ -119,6 +120,8 @@ const OrderView = () => {
 
       const combinedPath = [...order?.riderPathToPickUp, ...order.pickupToDrop];
       setPath(convertPath(combinedPath));
+      console.log("realpath >>>>>>", order?.realPath);
+      setRealPath(convertPath(order?.realPath))
 
       setPickUp(order?.pickup_details?.address);
       setDrop(order?.drop_details?.address);
@@ -373,6 +376,10 @@ const OrderView = () => {
                   <Polyline
                     path={path}
                     options={{ strokeColor: "blue", strokeWeight: 4 }}
+                  />
+                  <Polyline
+                    path={realPath}
+                    options={{ strokeColor: "green", strokeWeight: 4 }}
                   />
                 </GoogleMap>
               )}
