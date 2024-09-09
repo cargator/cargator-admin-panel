@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   GoogleMap,
   Marker,
@@ -22,7 +22,7 @@ import {
   orderById,
 } from "services/customAPI";
 
-const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
+let center = { lat: 28.496265, lng: 77.089844 };
 
 const ImageWithFallback: React.FC<{
   src: string;
@@ -56,6 +56,7 @@ const OrderView = () => {
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
   const [orderDetails, setOrderDetails] = useState(null);
+  const orderCurrentLatLong = useRef<any>()
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -117,7 +118,7 @@ const OrderView = () => {
       const res = await orderById(params.id);
       const order = res.data;
       setOrderDetails(order);
-
+      orderCurrentLatLong.current = {lat: order?.pickup_details.latitude, lng: order?.pickup_details.longitude }
       const combinedPath = [...order?.riderPathToPickUp, ...order.pickupToDrop];
       setPath(convertPath(combinedPath));
       console.log("realpath >>>>>>", order?.realPath);
@@ -344,7 +345,7 @@ const OrderView = () => {
                     borderTopRightRadius: "10px",
                     borderBottomRightRadius: "10px",
                   }}
-                  center={center}
+                  center={orderCurrentLatLong.current}
                   zoom={10}
                 >
                   {path.length !== 0 && (

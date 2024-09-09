@@ -16,7 +16,7 @@
     "@react-google-maps/api": "^2.19.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@sentry/cli": "^2.35.0",
-    "@sentry/react": "^8.28.0",
+    "@sentry/react": "^8.29.0",
     "@tanstack/react-table": "^8.7.9",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",

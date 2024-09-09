@@ -15,7 +15,7 @@ import Loader from "components/loader/loader";
 import Card from "components/card";
 import { Link, useNavigate } from "react-router-dom";
 
-const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
+const center = { lat: 28.458684, lng: 77.035790 };
 
 interface LoaderProps {
   size?: number;
@@ -138,7 +138,6 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar flag={false} brandText="Dashboard" />
-      return <button onClick={() => methodDoesNotExist()}>Break the world</button>;
       {isLoading ? (
         <Loader />
       ) : (
