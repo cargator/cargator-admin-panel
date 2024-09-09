@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from "@react-google-maps/api";
+import React, { useEffect, useRef, useState } from "react";
+// import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from "@react-google-maps/api";
 import car from "../../../assets/images/car.svg";
 import RidesIcon from "../../../assets/svg/RidesIcon.svg";
 import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
 import VehiclesIcon from "../../../assets/svg/VehiclesIcon.svg";
 import { isEmpty as _isEmpty } from "lodash";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next";
 import {
   dashboardDataApi,
   onlineDriversApi,
@@ -14,6 +14,9 @@ import Navbar from "components/navbar";
 import Loader from "components/loader/loader";
 import Card from "components/card";
 import { Link, useNavigate } from "react-router-dom";
+import maplibregl from 'maplibre-gl';
+import { Map as MapLibreMap, NavigationControl, Marker, Popup  } from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 
 const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
 
@@ -49,12 +52,15 @@ const Dashboard = () => {
   const [totalDriver, setTotalDriver] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [driverPosition, setDriverPosition] = useState(null);
+  const mapContainerRef = useRef<any>(null);
+  const [mapReady, setMapReady] = useState(false);
+  const mapRef = useRef<any>(null);
 
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
-    // googleMapsApiKey: "",
-  });
+  // const { isLoaded } = useJsApiLoader({
+  //   id: "google-map-script",
+  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
+  //   // googleMapsApiKey: "",
+  // });
 
   // const getAllDrivers = async () => {
   //   try {
@@ -100,21 +106,129 @@ const Dashboard = () => {
   };
 
   const handleNavigation = () => {
-    navigate('/admin/order?data=ongoing-rides');
+    navigate("/admin/order?data=ongoing-rides");
   };
 
   const handleNavigationCompleteRide = () => {
-    navigate('/admin/order?data=completed');
+    navigate("/admin/order?data=completed");
   };
 
   const showDriversDetails = (driver: any, position: any) => {
     console.log(driver);
-    
+
     setSelectedDriver(driver);
     setDriverPosition(position);
   };
 
   useEffect(() => {
+    if (!mapReady || !mapContainerRef.current) return;
+
+    // Initialize the map
+    mapRef.current = new MapLibreMap({
+      container: mapContainerRef.current,
+      center: [78.9629, 20.5937], // Center on India
+      zoom: 6,
+      style:
+        "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
+      transformRequest: (url: any, resourceType: any) => {
+        if (url.includes("?")) {
+          url = url + "&api_key=TOdgiRkGxUBs1rpogCUwnqX0vSUtDcRnQaMWzBoR";
+        } else {
+          url = url + "?api_key=TOdgiRkGxUBs1rpogCUwnqX0vSUtDcRnQaMWzBoR";
+        }
+        return { url, resourceType };
+      },
+    });
+
+    // Add navigation controls
+    const nav = new NavigationControl({
+      visualizePitch: true,
+    });
+    mapRef.current.addControl(nav, "top-left");
+
+    return () => {
+      mapRef.current.remove();
+    }; // Clean up map on unmount
+  }, [mapReady]);
+
+  useEffect(() => {
+    if (!mapRef.current || !allOnlineDrivers || allOnlineDrivers.length === 0)
+      return;
+
+    // Update markers after the map is loaded
+    if (mapRef.current.loaded()) {
+      updateMarkers();
+    } else {
+      // mapRef.current.on("load", () => {
+      //   updateMarkers();
+      // });
+    }
+
+    function updateMarkers() {
+
+      allOnlineDrivers.forEach((driver) => {
+        if (!driver.liveLocation || driver.liveLocation.length < 2) {
+          console.error("Invalid driver location", driver);
+          return;
+        }
+
+        const position = {
+          lng: driver.liveLocation[1],
+          lat: driver.liveLocation[0],
+        };
+        console.log("Adding marker at", position);
+
+        // Create a custom car icon marker
+        const carIcon = document.createElement("img");
+        carIcon.src = car; 
+        carIcon.style.cursor = "pointer";
+
+        if (mapRef.current && position.lng && position.lat) {
+          const marker = new Marker({
+            element: carIcon,
+            anchor: "center",
+          })
+            .setLngLat([position.lng, position.lat])
+            .addTo(mapRef.current);
+
+            const popup = new Popup({ offset: 25 }).setHTML(
+              `<div>
+                <p>Rider Name: ${driver.name}</p>
+                <p>Mobile: ${driver.mobile}</p>
+              </div>`
+            );
+      
+            // Add a click event listener to show the popup
+            marker.getElement().addEventListener('click', () => {
+              popup.setLngLat([position.lng, position.lat]).addTo(mapRef.current);
+            });
+
+            // carIcon.addEventListener("click", () => {
+            //   // Create a yourCallback with rider's information
+            //   const popup = new maplibregl.Popup({ offset: 25 }) // Use maplibre's Popup
+            //     .setLngLat([position.lng, position.lat]) // Set popup position
+            //     .setHTML(`
+            //       <div>
+            //         <strong>Rider Name:</strong> ${driver.name}<br>
+            //         <strong>Mobile:</strong> ${driver.mobile}<br>
+            //       </div>
+            //     `)
+            //     .addTo(mapRef.current); // Add popup to the map
+    
+            //   // Ensure the popup closes on another marker click
+            //   // mapRef.current.once("click", () => {
+            //   //   popup.remove();
+            //   // });
+            // });
+        } else {
+          console.error("Error adding marker", mapRef.current, position);
+        }
+      });
+    }
+  }, [allOnlineDrivers]);
+
+  useEffect(() => {
+    setMapReady(true); 
     getAllOnlineDrivers();
     // getAllDrivers()
     getDashboardData();
@@ -189,7 +303,16 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> :  <span style={{fontSize:33, cursor: "pointer"}} onClick={handleNavigation}>{ongoingRidesCount}</span>}
+                    {isSpinner ? (
+                      <CustomSpinner />
+                    ) : (
+                      <span
+                        style={{ fontSize: 33, cursor: "pointer" }}
+                        onClick={handleNavigation}
+                      >
+                        {ongoingRidesCount}
+                      </span>
+                    )}
                   </h3>
                 </div>
               </Card>
@@ -254,7 +377,13 @@ const Dashboard = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        {isSpinner ? <CustomSpinner /> : <Link style={{fontSize:32}} to="/admin/drivers">{totalDriver}</Link>}
+                        {isSpinner ? (
+                          <CustomSpinner />
+                        ) : (
+                          <Link style={{ fontSize: 32 }} to="/admin/drivers">
+                            {totalDriver}
+                          </Link>
+                        )}
                       </h4>
                     </div>
 
@@ -278,7 +407,13 @@ const Dashboard = () => {
                           marginLeft: "10px",
                         }}
                       >
-                        {isSpinner ? <CustomSpinner /> : <Link style={{fontSize:32}} to="/admin/drivers">{onlineDriversCount}</Link>}
+                        {isSpinner ? (
+                          <CustomSpinner />
+                        ) : (
+                          <Link style={{ fontSize: 32 }} to="/admin/drivers">
+                            {onlineDriversCount}
+                          </Link>
+                        )}
                       </h4>
                     </div>
                   </div>
@@ -320,7 +455,16 @@ const Dashboard = () => {
                     </h1>
                   </div>
                   <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? <CustomSpinner /> : <span style={{fontSize:33, cursor: "pointer"}} onClick={handleNavigationCompleteRide}>{completeRidesCount}</span>}
+                    {isSpinner ? (
+                      <CustomSpinner />
+                    ) : (
+                      <span
+                        style={{ fontSize: 33, cursor: "pointer" }}
+                        onClick={handleNavigationCompleteRide}
+                      >
+                        {completeRidesCount}
+                      </span>
+                    )}
                   </h3>
                 </div>
               </Card>
@@ -352,7 +496,14 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <div className="h-100 w-100  bg-info">
+            <div
+              className="h-100 w-100 bg-info"
+              style={{ width: "100vw", height: "100vh", overflow: "hidden" }}
+              ref={mapContainerRef}
+              id="central-map"
+            />
+
+            {/* <div className="h-100 w-100  bg-info">
               {!isLoaded ? (
                 <h1>Loading...</h1>
               ) : (
@@ -388,19 +539,17 @@ const Dashboard = () => {
                         <p style={{display:'flex',fontWeight:'400'}}><p>Name:</p> <p>{selectedDriver?.firstName}{"  "} {selectedDriver?.lastName}</p></p>
                         <p style={{display:'flex',fontWeight:'400'}}><p> Mobile No.:</p><p> {selectedDriver?.mobileNumber}</p></p>
                         <p style={{display:'flex',fontWeight:'400'}}><p>Vehical Number.:</p><p> {selectedDriver?.vehicleNumber}</p></p>
-                        {/* Add more driver details as needed */}
                       </div>
                     </InfoWindow>
                   )}
                 </GoogleMap>
               )}
-            </div>           
+            </div> */}
           </Card>
         </>
       )}
     </div>
   );
 };
-
 
 export default Dashboard;
