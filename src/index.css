@@ -27,3 +27,15 @@ input.defaultCheckbox::before {
 input:checked.defaultCheckbox::before { 
 	opacity: 1;
 }
+._1MGIk {
+	font-weight: bold; /* Customize key font weight */
+	color: rgb(37, 102, 54) !important; /* Customize key color */
+  }
+  
+  ._vGjyY {
+	color: black; /* Customize value color */
+  }
+
+._2bkNM{
+	margin-bottom: .5rem !important;
+}

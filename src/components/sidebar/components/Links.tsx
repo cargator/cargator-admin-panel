@@ -27,8 +27,8 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
       ) {
         if (!route.secondary) {
           return (
-            <div key={index}>
-              <div className="relative mb-3 flex hover:cursor-pointer">
+            <div key={index} className="h-full">
+              <div className="relative mb-3 hover:cursor-pointer">
                 <li
                   className="my-[3px] flex cursor-pointer items-center px-8"
                   onClick={() => {
@@ -109,6 +109,14 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                   </Link>
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
+                    to={`${route.layout}/settings/activity`}
+                  >
+                    <div>
+                      <span>{t("Activity")}</span>
+                    </div>
+                  </Link>
+                  <Link
+                    className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={`${route.layout}/settings/privacyPolicy`}
                   >
                     <div>
@@ -133,7 +141,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
     });
   };
 
-  return <>{createLinks(routes)}</>; // Render generated links
+  return <div className="overflow-y-auto">{createLinks(routes)}</div>; // Render generated links
 };
 
 export default SidebarLinks;
