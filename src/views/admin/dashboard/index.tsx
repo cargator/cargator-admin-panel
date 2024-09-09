@@ -14,9 +14,13 @@ import Navbar from "components/navbar";
 import Loader from "components/loader/loader";
 import Card from "components/card";
 import { Link, useNavigate } from "react-router-dom";
-import maplibregl from 'maplibre-gl';
-import { Map as MapLibreMap, NavigationControl, Marker, Popup  } from "maplibre-gl";
+import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+// import { Map as MapLibreMap, NavigationControl, Marker, Popup  } from "maplibre-gl";
+const MapLibreMap = maplibregl.Map;
+const NavigationControl = maplibregl.NavigationControl;
+const Marker = maplibregl.Marker;
+const markers = new Map();
 
 const center = { lat: 19.118830203528184, lng: 72.88509654051545 };
 
@@ -126,8 +130,8 @@ const Dashboard = () => {
     // Initialize the map
     mapRef.current = new MapLibreMap({
       container: mapContainerRef.current,
-      center: [78.9629, 20.5937], // Center on India
-      zoom: 6,
+      center: [77.2201, 28.631605], // Center on India
+      zoom: 9,
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
       transformRequest: (url: any, resourceType: any) => {
@@ -155,17 +159,23 @@ const Dashboard = () => {
     if (!mapRef.current || !allOnlineDrivers || allOnlineDrivers.length === 0)
       return;
 
+    // Clear previous markers before adding new ones
+    clearMarkers();
+
     // Update markers after the map is loaded
     if (mapRef.current.loaded()) {
       updateMarkers();
-    } else {
-      // mapRef.current.on("load", () => {
-      //   updateMarkers();
-      // });
+    }
+
+    function clearMarkers() {
+      // Remove all existing markers from the map
+      markers.forEach((marker) => {
+        marker.remove(); // Remove the marker from the map
+      });
+      markers.clear(); // Clear the marker map
     }
 
     function updateMarkers() {
-
       allOnlineDrivers.forEach((driver) => {
         if (!driver.liveLocation || driver.liveLocation.length < 2) {
           console.error("Invalid driver location", driver);
@@ -176,12 +186,31 @@ const Dashboard = () => {
           lng: driver.liveLocation[1],
           lat: driver.liveLocation[0],
         };
+
         console.log("Adding marker at", position);
 
         // Create a custom car icon marker
         const carIcon = document.createElement("img");
-        carIcon.src = car; 
+        carIcon.src = car;
         carIcon.style.cursor = "pointer";
+
+        const popup = new maplibregl.Popup({
+          offset: [0, -30],
+          anchor: "bottom",
+        }).setHTML(`<div class="w-100 h-48 p-0 text-gray-800">
+    <div class="text-2xl font-bold mb-2">
+      Rider Info
+    </div>
+    <div class="text-xl">
+      <strong>Name:</strong> ${driver.firstName}
+    </div>
+    <div class="text-xl">
+      <strong>Mobile:</strong> ${driver.mobileNumber}
+    </div>
+    <div class="text-xl">
+      <strong>Vehicle Number:</strong> ${driver.vehicleNumber}
+    </div>
+  </div>`);
 
         if (mapRef.current && position.lng && position.lat) {
           const marker = new Marker({
@@ -189,37 +218,11 @@ const Dashboard = () => {
             anchor: "center",
           })
             .setLngLat([position.lng, position.lat])
+            .setPopup(popup)
             .addTo(mapRef.current);
 
-            const popup = new Popup({ offset: 25 }).setHTML(
-              `<div>
-                <p>Rider Name: ${driver.name}</p>
-                <p>Mobile: ${driver.mobile}</p>
-              </div>`
-            );
-      
-            // Add a click event listener to show the popup
-            marker.getElement().addEventListener('click', () => {
-              popup.setLngLat([position.lng, position.lat]).addTo(mapRef.current);
-            });
-
-            // carIcon.addEventListener("click", () => {
-            //   // Create a yourCallback with rider's information
-            //   const popup = new maplibregl.Popup({ offset: 25 }) // Use maplibre's Popup
-            //     .setLngLat([position.lng, position.lat]) // Set popup position
-            //     .setHTML(`
-            //       <div>
-            //         <strong>Rider Name:</strong> ${driver.name}<br>
-            //         <strong>Mobile:</strong> ${driver.mobile}<br>
-            //       </div>
-            //     `)
-            //     .addTo(mapRef.current); // Add popup to the map
-    
-            //   // Ensure the popup closes on another marker click
-            //   // mapRef.current.once("click", () => {
-            //   //   popup.remove();
-            //   // });
-            // });
+          // Store the marker in the map by driver ID
+          markers.set(driver._id, marker);
         } else {
           console.error("Error adding marker", mapRef.current, position);
         }
@@ -228,7 +231,7 @@ const Dashboard = () => {
   }, [allOnlineDrivers]);
 
   useEffect(() => {
-    setMapReady(true); 
+    setMapReady(true);
     getAllOnlineDrivers();
     // getAllDrivers()
     getDashboardData();
@@ -498,7 +501,7 @@ const Dashboard = () => {
 
             <div
               className="h-100 w-100 bg-info"
-              style={{ width: "100vw", height: "100vh", overflow: "hidden" }}
+              style={{ width: "81.5vw", height: "100vh", overflow: "hidden" }}
               ref={mapContainerRef}
               id="central-map"
             />
