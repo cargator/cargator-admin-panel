@@ -138,6 +138,7 @@ const Dashboard = () => {
   return (
     <div>
       <Navbar flag={false} brandText="Dashboard" />
+      return <button onClick={() => methodDoesNotExist()}>Break the world</button>;
       {isLoading ? (
         <Loader />
       ) : (
