@@ -45,7 +45,7 @@ const Sidebar: React.FC<{
 
   return (
     <div
-      className={`sm:none duration-175 linear fixed !z-50 flex min-h-full flex-col bg-white pb-10 shadow-2xl shadow-white/5 transition-all dark:bg-navy-800 dark:text-white md:!z-50 lg:!z-50 xl:!z-0 ${
+      className={`sm:none duration-175 linear fixed !z-50 flex h-screen min-h-full flex-col bg-white pb-10 shadow-2xl shadow-white/5 transition-all dark:bg-navy-800 dark:text-white md:!z-50 lg:!z-50 xl:!z-0 ${
         sidebarFlag ? "translate-x-0" : "-translate-x-96"
       }`}
     >
@@ -57,13 +57,17 @@ const Sidebar: React.FC<{
       </span>
 
       <div className={`mx-[90px] mt-[100px] flex items-center`}>
-        <div style={{widows:'1px'}}>
-          <img src={logo} alt="Logo" style={{ width: '80px',height: 'auto',margin:'0%'}}/>
+        <div style={{ widows: "1px" }}>
+          <img
+            src={logo}
+            alt="Logo"
+            style={{ width: "80px", height: "auto", margin: "0%" }}
+          />
         </div>
       </div>
       <div className="mb-7 mt-[58px] h-px " />
 
-      <ul className="mb-auto pt-1">
+      <ul className="mb-auto overflow-y-auto pt-1">
         <Links routes={[...authenticatedRoutes, ...publicRoutes]} />
       </ul>
 
