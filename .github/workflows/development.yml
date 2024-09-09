@@ -1,0 +1,65 @@
+# This workflow will build and push a build folder on s3 bucket and invaldates cache
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - sukum-dev
+
+name: Development - Deploy to Amazon S3 bucket
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Make envfile
+        uses: SpicyPizza/create-envfile@v1
+        with:
+          envkey_REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
+          envkey_REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY_DEV }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set up Node.js (if your build uses Node.js)
+        uses: actions/setup-node@v2
+        with:
+          node-version: "18"
+
+      - name: Cache node modules
+        id: cache-node-modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: build project
+        env:
+          CI: false
+        run: |
+          npm run build  # Modify this command based on your build process
+
+      - name: Deploy to S3
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          S3_DEPLOYED_BUCKET_NAME: ${{ secrets.S3_DEPLOYED_BUCKET_NAME }}
+        run: |
+          aws s3 sync ./build s3://$S3_DEPLOYED_BUCKET_NAME/dev --delete
+      # --delete - It deletes any files in the destination that are not present in the source
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID_DEV }} --paths "/*"
