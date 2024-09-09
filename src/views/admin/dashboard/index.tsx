@@ -500,8 +500,8 @@ const Dashboard = () => {
             </div>
 
             <div
-              className="h-100 w-100 bg-info"
-              style={{ width: "81.5vw", height: "100vh", overflow: "hidden" }}
+              // className="h-100 w-100 bg-info"
+              style={{ width: "79vw", height: "80vh", overflow: "hidden" }}
               ref={mapContainerRef}
               id="central-map"
             />
