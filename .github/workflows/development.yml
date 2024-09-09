@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - sukum-dev
+      - sukam-dev
 
 name: Development - Deploy to Amazon S3 bucket
 
