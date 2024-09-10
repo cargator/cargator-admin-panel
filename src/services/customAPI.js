@@ -250,6 +250,20 @@ export const getFlow = () => {
 
 export const updateAppFlowAPI = (id, data) => {
   return customAxios.patch(`/update-app-flow/${id}`, data);
+  };
+  
+  // Maps Api for change update and get
+
+export const createMapFLow = (data) => {
+  return customAxios.post("/create-map-flow", data);
+};
+
+export const getCurrentMap = () => {
+  return customAxios.get("/get-current-map");
+};
+
+export const updateCurrentMap = (id, data) => {
+  return customAxios.patch(`/update-current-map/${id}`, data);
 };
 
 //spots

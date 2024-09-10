@@ -19,6 +19,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import Loader from "components/loader/loader";
+import {
+  createMapFLow,
+  getCurrentMap,
+  updateCurrentMap,
+} from "services/customAPI";
+import { toast } from "react-toastify";
 
 type RowObj = {
   name: string;
@@ -46,9 +53,78 @@ function ColumnsTableAdmins(props: {
   } = props;
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [selectedMapOption, setSelectedMapOption] = useState("default");
+  const [isLoading, setIsLoading] = useState(false);
+  const [currentMapID, setCurrentMapID] = useState();
+  const [isDisabled, setIsDisabled] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const superAdmin = useSelector((store: any) => store.auth.super_Admin);
+
+  const successToast = (message: any) => {
+    toast.success(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const errorToast = (message: any) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const handleOptionChange = (event: any) => {
+    setSelectedMapOption(event.target.value);
+    console.log("event.target.value", event.target.value);
+    // createApplicationFlow(event.target.value);
+  };
+
+  // APi to create Apllication flow for Driver
+  const handleSelectedMap = async () => {
+    setIsLoading(true);
+    try {
+      if (currentMapID) {
+        const data = { selectedMapOption };
+        const res = await updateCurrentMap(currentMapID, data);
+        console.log("respone:>>>>", res);
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  };
+
+  const getCurrentMapFLow = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getCurrentMap();
+      setCurrentMapID(res.data?._id);
+      setSelectedMapOption(res.data?.currentMap);
+      console.log("respones:>>>>", res.data);
+      setIsLoading(false);
+    } catch (error: any) {
+      errorToast(error?.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  };
+
   const columns = [
     columnHelper.accessor("name", {
       id: "name",
@@ -198,10 +274,53 @@ function ColumnsTableAdmins(props: {
     setData([...tableData]);
   }, [tableData]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getCurrentMapFLow();
+  }, []);
 
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="mb-5">
+          <label htmlFor="flow" className="input-custom-label dark:text-white">
+            Choose Map
+          </label>
+          <div className="w-full justify-between  gap-5">
+            <label htmlFor="default" className="mr-8 ">
+              <input
+                type="radio"
+                id="google"
+                name="option"
+                value="google"
+                checked={selectedMapOption === "google"}
+                onChange={handleOptionChange}
+                // disabled={isDisabled}
+              />
+              <label className="ml-2">Google</label>
+            </label>
+            <label htmlFor="custom" className="mr-8">
+              <input
+                type="radio"
+                id="olaMap"
+                name="option"
+                value="olaMap"
+                checked={selectedMapOption === "olaMap"}
+                onChange={handleOptionChange}
+                // disabled={isDisabled}
+              />
+              <label className="ml-2">OlaMap</label>
+            </label>
+            <button
+              onClick={() => handleSelectedMap()}
+              className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      )}
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
           {t("Users")}
