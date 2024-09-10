@@ -1,9 +1,9 @@
 # This workflow will build and push a build folder on s3 bucket and invaldates cache
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 name: Cargator Production - Deploy to Amazon S3 bucket
 
