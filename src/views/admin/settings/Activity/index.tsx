@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import ReactPaginate from "react-paginate";
 import ColumnsTableActivity from "./components";
 import { getActivities } from "services/customAPI";
+// @ts-ignore
 import { allExpanded, defaultStyles, JsonView } from "react-json-view-lite";
 import "react-json-view-lite/dist/index.css";
 import { toast } from "react-toastify";
@@ -45,7 +46,7 @@ const Activity = () => {
 
   const fetchActivities = async () => {
     try {
-      const res = await getActivities({ page: currentPage, limit });
+      const res = await getActivities({ page: currentPage.current, limit });
       setPageCount(res.data.count[0].totalCount / limit);
       setActivityData(res.data.activity);
     } catch (error: any) {

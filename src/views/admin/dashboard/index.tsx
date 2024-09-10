@@ -58,7 +58,7 @@ const Dashboard = () => {
   const [totalDriver, setTotalDriver] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [driverPosition, setDriverPosition] = useState(null);
-  const [currentMap, setcurrentMap] = useState<any>("google");
+  const [currentMap, setcurrentMap] = useState<any>("olaMap");
   const mapContainerRef = useRef<any>(null);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<any>(null);
@@ -92,7 +92,7 @@ const Dashboard = () => {
   };
 
   const getCurrentMapFLow = async () => {
-    setIsLoading(true);
+    setIsLoading(true);  
     try {
       const res = await getCurrentMap();
       setcurrentMap(res.data?.currentMap);
@@ -234,17 +234,17 @@ const Dashboard = () => {
         const popup = new maplibregl.Popup({
           offset: [0, -30],
           anchor: "bottom",
-        }).setHTML(`<div class="w-100 h-48 p-0 text-gray-800">
-    <div class="text-2xl font-bold mb-2">
+        }).setHTML(`<div class="w-100 h-30 p-0 text-gray-800">
+    <div class="text-xl font-bold mb-2">
       Rider Info
     </div>
-    <div class="text-xl">
+    <div class="text-md">
       <strong>Name:</strong> ${driver.firstName}
     </div>
-    <div class="text-xl">
+    <div class="text-md">
       <strong>Mobile:</strong> ${driver.mobileNumber}
     </div>
-    <div class="text-xl">
+    <div class="text-md">
       <strong>Vehicle Number:</strong> ${driver.vehicleNumber}
     </div>
   </div>`);
@@ -540,7 +540,7 @@ const Dashboard = () => {
             )} 
             {currentMap == 'google' && (
               <div className="h-100 w-100  bg-info">
-                {isLoading ? (
+                {!isLoaded ? (
                   <h1>Loading...</h1>
                 ) : (
                   <GoogleMap
@@ -576,7 +576,7 @@ const Dashboard = () => {
                         <div style={{ width: "100%" }}>
                           <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
                           <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p>ID:</p> <p> {selectedDriver?.driverId}</p>
+                            {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
                           </p>
                           <p style={{ display: "flex", fontWeight: "400" }}>
                             <p>Name:</p>{" "}
@@ -586,7 +586,7 @@ const Dashboard = () => {
                             </p>
                           </p>
                           <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p> Mobile No.:</p>
+                            <p> Mobile Number:</p>
                             <p> {selectedDriver?.mobileNumber}</p>
                           </p>
                           <p style={{ display: "flex", fontWeight: "400" }}>
