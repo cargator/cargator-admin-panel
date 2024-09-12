@@ -172,10 +172,11 @@ const Dashboard = () => {
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
       transformRequest: (url: any, resourceType: any) => {
+        const apiKey = process.env.REACT_APP_OLAMAP_API_KEY;
         if (url.includes("?")) {
-          url = url + "&api_key=TOdgiRkGxUBs1rpogCUwnqX0vSUtDcRnQaMWzBoR";
+          url = url + `&api_key=${apiKey}`;
         } else {
-          url = url + "?api_key=TOdgiRkGxUBs1rpogCUwnqX0vSUtDcRnQaMWzBoR";
+          url = url + `?api_key=${apiKey}`;
         }
         return { url, resourceType };
       },
@@ -533,7 +534,7 @@ const Dashboard = () => {
             {currentMap == "olaMap" && (
               <div
               // className="h-100 w-100 bg-info"
-                style={{ width: "79vw", height: "80vh", overflow: "hidden" }}
+                style={{ width: "79vw", height: "60vh", overflow: "hidden" }}
                 ref={mapContainerRef}
                 id="central-map"
               />

@@ -5,6 +5,7 @@ import {
   Polyline,
   useJsApiLoader,
 } from "@react-google-maps/api";
+import car from "../../../../assets/images/car.svg";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../../../../components/navbar";
 import Loader from "../../../../components/loader/loader";
@@ -17,10 +18,18 @@ import dummyCar from "../../../../assets/svg/dummyCar.svg";
 import dummyProfile from "../../../../assets/svg/dummyProfile.svg";
 import { FaArrowLeft } from "react-icons/fa";
 import {
+  getCurrentMap,
   getDriverLocationApi,
   getS3SignUrlApi,
   orderById,
 } from "services/customAPI";
+import { toast } from "react-toastify";
+import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
+const MapLibreMap = maplibregl.Map;
+const NavigationControl = maplibregl.NavigationControl;
+const olaMarker = maplibregl.Marker;
+const markers = new Map();
 
 let center = { lat: 28.496265, lng: 77.089844 };
 
@@ -33,38 +42,82 @@ const ImageWithFallback: React.FC<{
     event.currentTarget.src = fallbackSrc;
   };
 
-  return <img src={src} alt={alt} onError={handleImageError} width={70} height={70} />;
+  return (
+    <img
+      src={src}
+      alt={alt}
+      onError={handleImageError}
+      width={70}
+      height={70}
+    />
+  );
 };
 
 const OrderView = () => {
   const params = useParams();
   const [ride, setRide] = useState(null);
   const [path, setPath] = useState<any[]>([]);
+  const pathCoords = useRef<any[]>([]);
   const [realPath, setRealPath] = useState<any[]>([]);
+  const realPathCoords = useRef<any[]>([]);
   const [driverLocation, setDriverLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [driverImagePath, setDriverImagePath] = useState("");
   const [vehicleImagePath, setVehicleImagePath] = useState("");
-  
   const [dateTimeCreatedAt, setDateTimeCreatedAt] = useState("");
   const [pickUp, setPickUp] = useState("");
   const [drop, setDrop] = useState("");
   const [orderPrice, setOrderPrice] = useState(0);
+  const [customerName, setCustomerName] = useState("");
+  const [customerMobileNumber, setCustomerMobileNumber] = useState(0);
   const [driverName, setDriverName] = useState("");
   const [driverMobileNumber, setDriverMobileNumber] = useState(0);
   const [vehicleName, setVehicleName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
   const [orderDetails, setOrderDetails] = useState(null);
-  const orderCurrentLatLong = useRef<any>()
+  const [updatedStatus, setUpdatedStatus] = useState([]);
+  const [currentMap, setcurrentMap] = useState<any>("olaMap");
+  const mapContainerRef = useRef<any>(null);
+  const [mapReady, setMapReady] = useState(false);
+  const mapRef = useRef<any>(null);
+  const orderCurrentLatLong = useRef<any>();
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
+  const errorToast = (message: any) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
+
+  const getCurrentMapFLow = async () => {
+    setIsLoading(true);
+    try {
+      const res = await getCurrentMap();
+      setcurrentMap(res.data?.currentMap);
+    } catch (error: any) {
+      errorToast(error?.response?.data?.message || "Something went wrong");
+    }
+    setIsLoading(false);
+  };
+
   const convertPath = (coords: any) => {
-    return coords.map((ele: any) => ({ lat: ele.latitude, lng: ele.longitude }));
+    return coords.map((ele: any) => ({
+      lat: ele.latitude,
+      lng: ele.longitude,
+    }));
   };
 
   const getDriverLocation = async (id: string) => {
@@ -118,31 +171,159 @@ const OrderView = () => {
       const res = await orderById(params.id);
       const order = res.data;
       setOrderDetails(order);
-      orderCurrentLatLong.current = {lat: order?.pickup_details.latitude, lng: order?.pickup_details.longitude }
+      orderCurrentLatLong.current = {
+        lat: order?.pickup_details.latitude,
+        lng: order?.pickup_details.longitude,
+      };
+
       const combinedPath = [...order?.riderPathToPickUp, ...order.pickupToDrop];
       setPath(convertPath(combinedPath));
-      console.log("realpath >>>>>>", order?.realPath);
-      setRealPath(convertPath(order?.realPath))
-
+      pathCoords.current = convertPath(combinedPath);
+      setRealPath(convertPath(order?.realPath));
+      realPathCoords.current = convertPath(order?.realPath);
       setPickUp(order?.pickup_details?.address);
       setDrop(order?.drop_details?.address);
       setOrderPrice(order?.order_details?.order_total);
+      setCustomerName(order?.drop_details?.name);
+      setCustomerMobileNumber(order?.drop_details?.contact_number);
       setDriverName(order?.driver_details?.name);
       setDriverMobileNumber(order?.driver_details?.contact);
       setVehicleName(order?.vehicleName);
       setVehicleNumber(order?.vehicleNumber);
+      setUpdatedStatus(order?.statusUpdates);
       setOrderStatus(order?.status);
-      setDateTimeCreatedAt(convertUtcToIst(order?.createdAt));
-      
+      if (order?.status === "ACCEPTED") {
+        setDateTimeCreatedAt(convertUtcToIst(order?.createdAt));
+      } else {
+        setDateTimeCreatedAt(convertUtcToIst(order?.updatedAt));
+      }
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
     }
+    setMapReady(true);
   };
 
   useEffect(() => {
     getData();
+    getCurrentMapFLow();
   }, []);
+
+  useEffect(() => {
+    if (!mapReady || !mapContainerRef.current) return;
+    console.log("orderCurrentLatLong.current:", orderCurrentLatLong.current);
+
+    // Initialize the map
+    mapRef.current = new MapLibreMap({
+      container: mapContainerRef.current,
+      center: [
+        orderCurrentLatLong.current.lng,
+        orderCurrentLatLong.current.lat,
+      ],
+      zoom: 12.5,
+      style:
+        "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
+      transformRequest: (url: any, resourceType: any) => {
+        const apiKey = process.env.REACT_APP_OLAMAP_API_KEY;
+        if (url.includes("?")) {
+          url = url + `&api_key=${apiKey}`;
+        } else {
+          url = url + `?api_key=${apiKey}`;
+        }
+        return { url, resourceType };
+      },
+    });
+
+    // Add navigation controls
+    const nav = new NavigationControl({
+      visualizePitch: true,
+    });
+    mapRef.current.addControl(nav, "top-left");
+
+    mapRef.current.on("load", () => {
+      // Convert array of coordinate objects to GeoJSON
+      mapRef.current.addLayer({
+        id: "path-layer1",
+        type: "line",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "LineString",
+                  coordinates: pathCoords.current.map(({ lng, lat }) => [
+                    lng,
+                    lat,
+                  ]),
+                },
+                properties: {},
+              },
+            ],
+          },
+        },
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#00308F",
+          "line-width": 4,
+        },
+      });
+
+      mapRef.current.addLayer({
+        id: "path-layer2",
+        type: "line",
+        source: {
+          type: "geojson",
+          data: {
+            type: "FeatureCollection",
+            features: [
+              {
+                type: "Feature",
+                geometry: {
+                  type: "LineString",
+                  coordinates: realPathCoords.current.map(({ lng, lat }) => [
+                    lng,
+                    lat,
+                  ]),
+                },
+                properties: {},
+              },
+            ],
+          },
+        },
+        layout: {
+          "line-join": "round",
+          "line-cap": "round",
+        },
+        paint: {
+          "line-color": "#018749",
+          "line-width": 4,
+        },
+      });
+
+      var olaIcon = document.createElement("img");
+      olaIcon.src = car;
+
+      const marker = new olaMarker({
+        element: olaIcon,
+        anchor: "center",
+      })
+        .setLngLat([
+          orderCurrentLatLong.current.lng,
+          orderCurrentLatLong.current.lat,
+        ])
+        .addTo(mapRef.current);
+    });
+    return () => {
+      mapRef.current.remove();
+    }; // Clean up map on unmount
+  }, [mapReady]);
 
   return (
     <>
@@ -154,186 +335,334 @@ const OrderView = () => {
         <FaArrowLeft />
         <div>Back</div>
       </Link>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <>
-          <Card
-            extra={
-              "w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4"
-            }
-          >
-            <div className="col-span-5">
-              <div
+      {isLoading && (
+        <div className="absolute z-10 flex h-full w-3/4 items-center justify-center">
+          <Loader />
+        </div>
+      )}
+      <>
+        <Card
+          extra={
+            "w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4"
+          }
+        >
+          <div className="col-span-5">
+            <div
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                paddingBottom: "10px",
+                paddingTop: "14px",
+              }}
+            >
+              Order Details
+            </div>
+            <div
+              style={{
+                fontSize: "12px",
+                fontWeight: "500",
+                paddingBottom: "18px",
+              }}
+            >
+              <img
+                src={date}
+                width={16}
+                height={16}
+                style={{ display: "inline-block", marginRight: "2px" }}
+              />
+              <span className="pe-5">
+                {" "}
+                {dateTimeCreatedAt?.substring(0, 10)}
+              </span>
+              <img
+                src={time}
+                width={16}
+                height={16}
+                style={{ display: "inline-block", marginRight: "2px" }}
+              />
+              <span className="pe-5">
+                {" "}
+                {dateTimeCreatedAt?.substring(11, 16)}
+              </span>
+              <span
+                className={
+                  orderStatus === "DELIVERED"
+                    ? "completedClass"
+                    : orderStatus === "CANCELLED"
+                    ? "cancelledClass"
+                    : "ongoingClass"
+                }
+              >
+                {orderStatus || "NA"}
+              </span>
+            </div>
+            <div className="m-1 w-1/4 rounded-[4px] p-3 dark:bg-white">
+              <span
                 style={{
-                  fontSize: "20px",
+                  fontSize: "14px",
                   fontWeight: "600",
-                  paddingBottom: "10px",
-                  paddingTop: "14px",
+                  color: "#464E5F",
                 }}
               >
-                Order Details
+                Order Price:{" "}
+              </span>
+              <span
+                style={{
+                  fontSize: "18px",
+                  fontWeight: "600",
+                  color: "#212121",
+                }}
+              >
+                ₹{orderPrice}
+              </span>
+            </div>
+            <hr style={{ color: "#E1E2F1" }} />
+            {/* Customer Details */}
+            <div className="mt-2 grid grid-cols-8 gap-3 pb-3">
+              <div className="col-span-1 mt-4">
+                <img src={ridePickDest} width={200} height={180} />
               </div>
               <div
+                className="col-span-7"
                 style={{
-                  fontSize: "12px",
-                  fontWeight: "500",
-                  paddingBottom: "18px",
+                  width: "70%",
                 }}
               >
-                <img
-                  src={date}
-                  width={16}
-                  height={16}
-                  style={{ display: "inline-block", marginRight: "2px" }}
-                />
-                <span className="pe-5">
-                  {" "}
-                  {dateTimeCreatedAt?.substring(0, 10)}
-                </span>
-                <img
-                  src={time}
-                  width={16}
-                  height={16}
-                  style={{ display: "inline-block", marginRight: "2px" }}
-                />
-                <span className="pe-5">
-                  {" "}
-                  {dateTimeCreatedAt?.substring(11, 16)}
-                </span>
-                <span
-                  className={
-                    ride?.status === "completed"
-                      ? "completedClass"
-                      : ride?.status === "cancelled" ||
-                        ride?.status === "Failed"
-                      ? "cancelledClass"
-                      : "ongoingClass"
-                  }
-                >
-                  {orderStatus || "NA"}
-                </span>
-              </div>
-              <div className="grid grid-cols-8 gap-2 pb-3">
-                <div className="col-span-1">
-                  <img src={ridePickDest} width={20} height={88} />
-                </div>
                 <div
-                  className="col-span-7"
-                  style={{ fontSize: "12px", fontWeight: "400", width: "70%" }}
-                >
-                  <div style={{ paddingBottom: "30px" }}>{pickUp}</div>
-                  <div>{drop}</div>
-                </div>
-              </div>
-              <div className="m-1 w-1/4 rounded-[4px] p-3 dark:bg-white">
-                <span
+                  className="pt-3"
                   style={{
-                    fontSize: "14px",
+                    fontSize: "20px",
                     fontWeight: "600",
-                    color: "#464E5F",
+                    paddingBottom: "8px",
                   }}
                 >
-                  Order Price:{" "}
-                </span>
-                <span
+                  Rider
+                </div>
+                <div className="">
+                  <div className="mb-3 grid grid-cols-8">
+                    {" "}
+                    <div className="">
+                      {driverImagePath ? (
+                        <ImageWithFallback
+                          src={driverImagePath}
+                          alt={"profile image"}
+                          fallbackSrc={dummyProfile}
+                        />
+                      ) : (
+                        <img src={dummyProfile} width={30} height={30} />
+                      )}
+                    </div>
+                    <div className="col-span-6">
+                      {" "}
+                      <div
+                        style={{
+                          fontSize: "18px",
+                          fontWeight: "500",
+                          paddingBottom: "10px",
+                        }}
+                      >
+                        {driverName || "NA"}
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            fontWeight: "600",
+                            marginLeft: "5px",
+                          }}
+                        >
+                          {`(${driverMobileNumber})` || "NA"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="ml-11">
+                    <div
+                      className="col-span-7"
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "400",
+                        width: "70%",
+                      }}
+                    >
+                      <div style={{ paddingBottom: "30px" }}>{drop}</div>
+                    </div>
+                  </div>
+                </div>
+                <hr style={{ color: "#E1E2F1" }} />
+                <div
+                  className="pt-3"
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "600",
+                    paddingBottom: "8px",
+                  }}
+                >
+                  Customer
+                </div>
+                <div className="grid grid-cols-8 pb-3">
+                  <div className="">
+                    {driverImagePath ? (
+                      <ImageWithFallback
+                        src={driverImagePath}
+                        alt={"profile image"}
+                        fallbackSrc={dummyProfile}
+                      />
+                    ) : (
+                      <img src={dummyProfile} width={30} height={30} />
+                    )}
+                  </div>
+                  <div className="col-span-7">
+                    <div
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "500",
+                        paddingBottom: "10px",
+                      }}
+                    >
+                      {customerName || "NA"}
+                      <span
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: "600",
+                          marginLeft: "5px",
+                        }}
+                      >
+                        {`(${customerMobileNumber})` || "NA"}
+                      </span>
+                    </div>
+                    <div style={{ fontSize: "12px" }}>{pickUp}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr style={{ color: "#E1E2F1" }} />
+
+            <div
+              className="pt-3"
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                paddingBottom: "8px",
+              }}
+            >
+              Vehicle
+            </div>
+            <div className="grid grid-cols-8 gap-2 pb-3">
+              <div className="col-span-2">
+                {vehicleImagePath ? (
+                  <ImageWithFallback
+                    src={vehicleImagePath}
+                    alt={"profile image"}
+                    fallbackSrc={dummyCar}
+                  />
+                ) : (
+                  <img src={dummyCar} width={70} height={70} />
+                )}
+              </div>
+              <div className="col-span-6">
+                <div
                   style={{
                     fontSize: "18px",
-                    fontWeight: "600",
-                    color: "#212121",
+                    fontWeight: "500",
+                    paddingBottom: "10px",
                   }}
                 >
-                  ₹{orderPrice}
-                </span>
-              </div>
-              <hr style={{ color: "#E1E2F1" }} />
-              <div
-                className="pt-3"
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "600",
-                  paddingBottom: "8px",
-                }}
-              >
-                Rider
-              </div>
-              <div className="grid grid-cols-8 gap-2 pb-3">
-                <div className="col-span-2">
-                  {driverImagePath ? (
-                    <ImageWithFallback
-                      src={driverImagePath}
-                      alt={"profile image"}
-                      fallbackSrc={dummyProfile}
-                    />
-                  ) : (
-                    <img src={dummyProfile} width={70} height={70} />
-                  )}
+                  {vehicleName || "NA"}
                 </div>
-                <div className="col-span-6">
+                <div>
+                  <span style={{ fontSize: "12px", fontWeight: "600" }}>
+                    {vehicleNumber || "NA"}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <hr style={{ color: "#E1E2F1" }} />
+            {/* Order status History */}
+            <div
+              style={{
+                fontSize: "20px",
+                fontWeight: "600",
+                paddingBottom: "10px",
+                paddingTop: "14px",
+              }}
+            >
+              Order Status History
+            </div>
+            <div>
+              {updatedStatus.map((statusItem) => {
+                // Convert the UTC time to IST
+                const utcDate = new Date(statusItem.time);
+                const istDate = new Date(
+                  utcDate.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
+                );
+
+                // Extract the IST date and time in 'YYYY-MM-DD' and 'HH:MM' format
+                const istDateString = istDate.toISOString().substring(0, 10);
+                const istTimeString = istDate.toISOString().substring(11, 16);
+
+                return (
                   <div
+                    key={statusItem._id}
                     style={{
-                      fontSize: "18px",
+                      fontSize: "12px",
                       fontWeight: "500",
-                      paddingBottom: "10px",
+                      paddingBottom: "18px",
                     }}
                   >
-                    {driverName || "NA"}
-                  </div>
-                  <div>
+                    {/* Date Icon and Date */}
                     <img
-                      src={call}
+                      src={date}
                       width={16}
                       height={16}
                       style={{ display: "inline-block", marginRight: "2px" }}
-                    />{" "}
-                    <span style={{ fontSize: "12px", fontWeight: "600" }}>
-                      {driverMobileNumber || "NA"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <hr style={{ color: "#E1E2F1" }} />
-              <div
-                className="pt-3"
-                style={{
-                  fontSize: "20px",
-                  fontWeight: "600",
-                  paddingBottom: "8px",
-                }}
-              >
-                Vehicle
-              </div>
-              <div className="grid grid-cols-8 gap-2 pb-3">
-                <div className="col-span-2">
-                  {vehicleImagePath ? (
-                    <ImageWithFallback
-                      src={vehicleImagePath}
-                      alt={"profile image"}
-                      fallbackSrc={dummyCar}
+                      alt="date icon"
                     />
-                  ) : (
-                    <img src={dummyCar} width={70} height={70} />
-                  )}
-                </div>
-                <div className="col-span-6">
-                  <div
-                    style={{
-                      fontSize: "18px",
-                      fontWeight: "500",
-                      paddingBottom: "10px",
-                    }}
-                  >
-                    {vehicleName || "NA"}
-                  </div>
-                  <div>
-                    <span style={{ fontSize: "12px", fontWeight: "600" }}>
-                      {vehicleNumber || "NA"}
+                    <span className="pe-5">{istDateString}</span>
+
+                    {/* Time Icon and Time */}
+                    <img
+                      src={time}
+                      width={16}
+                      height={16}
+                      style={{ display: "inline-block", marginRight: "2px" }}
+                      alt="time icon"
+                    />
+                    <span className="pe-5">{istTimeString}</span>
+
+                    <span
+                      className={
+                        statusItem.status === "ACCEPTED"
+                          ? "pendingClass"
+                          : statusItem.status === "DELIVERED"
+                          ? "completedClass"
+                          : statusItem.status === "CANCELLED"
+                          ? "cancelledClass"
+                          : statusItem.status === "ARRIVED_CUSTOMER_DOORSTEP" ||
+                            statusItem.status === "ALLOTTED" ||
+                            statusItem.status === "ARRIVED" ||
+                            statusItem.status === "DISPATCHED"
+                          ? "ongoingClass"
+                          : "pendingClass"
+                      }
+                    >
+                      {statusItem.status}
                     </span>
                   </div>
-                </div>
-              </div>
-              <hr style={{ color: "#E1E2F1" }} />
+                );
+              })}
             </div>
+          </div>
+
+          {currentMap == "olaMap" && (
+            <div
+              className="col-span-7"
+              style={{ width: "50vw", height: "80vh", overflow: "hidden" }}
+              ref={mapContainerRef}
+              id="central-map"
+            />
+          )}
+
+          {currentMap == "google" && (
             <div className="col-span-7">
               {!isLoaded ? (
                 <h1>Loading...</h1>
@@ -346,7 +675,7 @@ const OrderView = () => {
                     borderBottomRightRadius: "10px",
                   }}
                   center={orderCurrentLatLong.current}
-                  zoom={10}
+                  zoom={13}
                 >
                   {path.length !== 0 && (
                     <Marker
@@ -385,9 +714,9 @@ const OrderView = () => {
                 </GoogleMap>
               )}
             </div>
-          </Card>
-        </>
-      )}
+          )}
+        </Card>
+      </>
     </>
   );
 };
