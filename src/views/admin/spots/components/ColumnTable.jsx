@@ -5,7 +5,7 @@ import 'leaflet-draw/dist/leaflet.draw.css'
 import { useTranslation } from 'react-i18next'
 import React, { useEffect, useState, ReactNode } from "react";
 import Card from "components/card";
-import { deleteSpot } from 'services/customAPI';
+import { deleteSpot, getCurrentMap } from 'services/customAPI';
 import deleteIcon from '../../../../assets/svg/deleteIcon.svg'
 import ButtonEdit from '../../../../assets/svg/ButtonEdit.svg'
 import { toast } from 'react-toastify'
@@ -57,10 +57,26 @@ function ColumnsTable(props) {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [position, setPosition] = useState([19.07, 72.87]);
+  const [currentMap, setcurrentMap] = useState("olaMap");
+
 
   const parser = new DOMParser();
+
+  const errorToast = (message) => {
+    toast.error(`${message}`, {
+      position: toast.POSITION.TOP_RIGHT,
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      style: { borderRadius: "15px" },
+    });
+  };
 
   const customIcon = (number) => {
     return L.divIcon({
@@ -123,24 +139,32 @@ function ColumnsTable(props) {
     }),
   ]; // eslint-disable-next-line
 
+  const getCurrentMapFLow = async () => {
+    setIsLoading(true);  
+    try {
+      const res = await getCurrentMap();
+      setcurrentMap(res.data?.currentMap);
+      console.log("respones:>>>>", res.data);
+    } catch (error) {
+      errorToast(error?.response?.data?.message || "Something went wrong");
+      }
+    setIsLoading(false);
+  };
 
   const setPositionForMap = (marker) => {
     // console.log("data", marker)
     const bounds = marker.bounds;
-
     // Create an object representing the center point
     const centerPoint = [bounds[0].lat, bounds[0].lng];
-
-    setPosition(centerPoint)
-
-  }
+    setPosition(centerPoint);
+  };
 
   useEffect(() => {
-    // console.log("po", position)
+    getCurrentMapFLow();
+  }, [])
+
+  useEffect(() => {
   }, [position])
-
-
-
 
   const [data, setData] = useState([...tableData]);
 
@@ -159,9 +183,6 @@ function ColumnsTable(props) {
   useEffect(() => {
     setData([...tableData]);
   }, [tableData]);
-
-
-
 
 
   return (
