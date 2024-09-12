@@ -99,7 +99,7 @@ export const deleteDriverHandleApi = (info) => {
 
 export const getPaginatedDriverDataApi = (data) => {
   return customAxios.get(
-    `/paginatedDriverData?page=${data.page}&limit=${data.limit}`
+    `/paginatedDriverData?page=${data.page}&limit=${data.limit}&status=${data.status}`
   );
 };
 
@@ -265,6 +265,11 @@ export const getCurrentMap = () => {
 export const updateCurrentMap = (id, data) => {
   return customAxios.patch(`/update-current-map/${id}`, data);
 };
+
+export const updateAppImage = (id, data) => {
+  return customAxios.patch(`/update-app-image/${id}`, data);
+};
+
 
 //spots
 

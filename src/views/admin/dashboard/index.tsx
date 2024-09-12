@@ -1,5 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { GoogleMap, InfoWindow, Marker, useJsApiLoader } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  InfoWindow,
+  Marker,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import car from "../../../assets/images/car.svg";
 import RidesIcon from "../../../assets/svg/RidesIcon.svg";
 import RevenueIcon from "../../../assets/svg/RevenueIcon.svg";
@@ -24,7 +29,7 @@ const NavigationControl = maplibregl.NavigationControl;
 const olaMarker = maplibregl.Marker;
 const markers = new Map();
 
-const center = { lat: 28.458684, lng: 77.035790 };
+const center = { lat: 28.458684, lng: 77.03579 };
 
 interface LoaderProps {
   size?: number;
@@ -54,7 +59,7 @@ const Dashboard = () => {
   const [isSpinner, setIsSpinner] = useState(true);
   const [ongoingRidesCount, setOngoingRidesCount] = useState([]);
   const [completeRidesCount, setCompleteRidesCount] = useState([]);
-  const [onlineDriversCount, setOnlineDriversCount] = useState([]);
+  const [onlineDriversCount, setOnlineDriversCount] = useState();
   const [totalDriver, setTotalDriver] = useState([]);
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [driverPosition, setDriverPosition] = useState(null);
@@ -92,14 +97,14 @@ const Dashboard = () => {
   };
 
   const getCurrentMapFLow = async () => {
-    setIsLoading(true);  
+    setIsLoading(true);
     try {
       const res = await getCurrentMap();
       setcurrentMap(res.data?.currentMap);
       console.log("respones:>>>>", res.data);
     } catch (error: any) {
       errorToast(error?.response?.data?.message || "Something went wrong");
-      }
+    }
     setIsLoading(false);
   };
 
@@ -126,6 +131,7 @@ const Dashboard = () => {
         // setIsSpinner(true)
         const response: any = await onlineDriversApi();
         setAllOnlineDrivers(response);
+        setOnlineDriversCount(response.length);
         console.log("All online drivers", allOnlineDrivers);
         // const dashboardDataResponse = await customAxios.get(`/dashboard-data`)
         // setDashboardData(dashboardDataResponse.data)
@@ -274,7 +280,6 @@ const Dashboard = () => {
     getDashboardData();
   }, []);
 
-
   useEffect(() => {
     return () => {
       if (intervalState) {
@@ -287,235 +292,241 @@ const Dashboard = () => {
     <div>
       <Navbar flag={false} brandText="Dashboard" />
       {isLoading && (
-        <div className="absolute z-10 w-3/4 items-center h-full flex justify-center">
-        <Loader />
+        <div className="absolute z-10 flex h-full w-3/4 items-center justify-center">
+          <Loader />
         </div>
       )}
-        <>
-          <Card extra={"w-full pb-10 p-4 h-full"}>
-            <div
+      <>
+        <Card extra={"w-full pb-10 p-4 h-full"}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              fontSize: "25px",
+            }}
+          >
+            <Card
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                fontSize: "25px",
+                flex: 1,
+                border: "1px dashed #A3A3B7",
+                borderRadius: "15px",
+                marginRight: "10px",
               }}
             >
-              <Card
+              <div
+                className="m-5"
                 style={{
-                  flex: 1,
-                  border: "1px dashed #A3A3B7",
-                  borderRadius: "15px",
-                  marginRight: "10px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
               >
-                <div
-                  className="m-5"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
-                  <div>
-                    <img
-                      src={RevenueIcon}
-                      width={40}
-                      height={40}
-                      style={{
-                        display: "inline-block",
-                        verticalAlign: "middle",
-                      }}
-                    />
-                    <h1
-                      style={{
-                        display: "inline-block",
-                        verticalAlign: "middle",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      {t("Ongoing")}
-                    </h1>
-                  </div>
-                  <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? (
-                      <CustomSpinner />
-                    ) : (
-                      <span
-                        style={{ fontSize: 33, cursor: "pointer" }}
-                        onClick={handleNavigation}
-                      >
-                        {ongoingRidesCount}
-                      </span>
-                    )}
-                  </h3>
-                </div>
-              </Card>
-              <Card
-                style={{
-                  flex: 1,
-                  border: "1px dashed #A3A3B7",
-                  borderRadius: "15px",
-                  marginRight: "10px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                  className="m-5"
-                >
-                  <div className="d-flex align-items-center mb-3 gap-3">
-                    <img
-                      src={VehiclesIcon}
-                      width={40}
-                      height={40}
-                      style={{
-                        display: "inline-block",
-                        verticalAlign: "middle",
-                      }}
-                    />
-                    <h1
-                      style={{
-                        display: "inline-block",
-                        verticalAlign: "middle",
-                        marginLeft: "10px",
-                      }}
-                    >
-                      {t("Riders")}
-                    </h1>
-                  </div>
-
-                  <div
-                    className="mt-9"
-                    style={{ display: "flex", justifyContent: "space-between" }}
+                <div>
+                  <img
+                    src={RevenueIcon}
+                    width={40}
+                    height={40}
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                    }}
+                  />
+                  <h1
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginLeft: "10px",
+                    }}
                   >
-                    <div className="d-flex gap-2">
-                      <h4
-                        className="dark:text-white"
-                        style={{
-                          // color: "#000000",
-                          display: "inline-block",
-                          verticalAlign: "middle",
-                        }}
-                      >
-                        {t("Total:")}
-                      </h4>
-                      <h4
-                        className=""
-                        style={{
-                          color: "#2BB180",
-                          display: "inline-block",
-                          verticalAlign: "middle",
-                          marginLeft: "10px",
-                        }}
-                      >
-                        {isSpinner ? (
-                          <CustomSpinner />
-                        ) : (
-                          <Link style={{ fontSize: 32 }} to="/admin/drivers">
-                            {totalDriver}
-                          </Link>
-                        )}
-                      </h4>
-                    </div>
-
-                    <div className="d-flex gap-2">
-                      <h4
-                        className="dark:text-white"
-                        style={{
-                          // color: "#000000",
-                          display: "inline-block",
-                          verticalAlign: "middle",
-                        }}
-                      >
-                        {t("Online:")}
-                      </h4>
-                      <h4
-                        className=""
-                        style={{
-                          color: "#2BB180",
-                          display: "inline-block",
-                          verticalAlign: "middle",
-                          marginLeft: "10px",
-                        }}
-                      >
-                        {isSpinner ? (
-                          <CustomSpinner />
-                        ) : (
-                          <Link style={{ fontSize: 32 }} to="/admin/drivers">
-                            {onlineDriversCount}
-                          </Link>
-                        )}
-                      </h4>
-                    </div>
-                  </div>
+                    {t("Ongoing")}
+                  </h1>
                 </div>
-              </Card>
-              <Card
+                <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
+                  {isSpinner ? (
+                    <CustomSpinner />
+                  ) : (
+                    <span
+                      style={{ fontSize: 33, cursor: "pointer" }}
+                      onClick={handleNavigation}
+                    >
+                      {ongoingRidesCount}
+                    </span>
+                  )}
+                </h3>
+              </div>
+            </Card>
+            <Card
+              style={{
+                flex: 1,
+                border: "1px dashed #A3A3B7",
+                borderRadius: "15px",
+                marginRight: "10px",
+              }}
+            >
+              <div
                 style={{
-                  flex: 1,
-                  border: "1px dashed #A3A3B7",
-                  borderRadius: "15px",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
                 }}
+                className="m-5"
               >
+                <div className="d-flex align-items-center mb-3 gap-3">
+                  <img
+                    src={VehiclesIcon}
+                    width={40}
+                    height={40}
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                    }}
+                  />
+                  <h1
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {t("Riders")}
+                  </h1>
+                </div>
+
                 <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                  className="m-5"
+                  className="mt-9"
+                  style={{ display: "flex", justifyContent: "space-between" }}
                 >
-                  <div>
-                    <img
-                      src={RidesIcon}
-                      width={40}
-                      height={40}
+                  <div className="d-flex gap-2">
+                    <h4
+                      className="dark:text-white"
                       style={{
+                        // color: "#000000",
                         display: "inline-block",
                         verticalAlign: "middle",
                       }}
-                    />
-                    <h1
+                    >
+                      {t("Total:")}
+                    </h4>
+                    <h4
+                      className=""
                       style={{
+                        color: "#2BB180",
                         display: "inline-block",
                         verticalAlign: "middle",
                         marginLeft: "10px",
                       }}
                     >
-                      {t("Completed")}
-                    </h1>
+                      {isSpinner ? (
+                        <CustomSpinner />
+                      ) : (
+                        <Link
+                          style={{ fontSize: 32 }}
+                          to="/admin/drivers?status=all"
+                        >
+                          {totalDriver}
+                        </Link>
+                      )}
+                    </h4>
                   </div>
-                  <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
-                    {isSpinner ? (
-                      <CustomSpinner />
-                    ) : (
-                      <span
-                        style={{ fontSize: 33, cursor: "pointer" }}
-                        onClick={handleNavigationCompleteRide}
-                      >
-                        {completeRidesCount}
-                      </span>
-                    )}
-                  </h3>
-                </div>
-              </Card>
-            </div>
 
-            <div className="mb-2 mt-8">
-              <div>
-                <h4
-                  id="traffic"
-                  className="card-title mb-2"
-                  style={{ fontSize: "25px" }}
-                >
-                  {t("Active Riders:")}
-                </h4>
+                  <div className="d-flex gap-2">
+                    <h4
+                      className="dark:text-white"
+                      style={{
+                        // color: "#000000",
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      {t("Online:")}
+                    </h4>
+                    <h4
+                      className=""
+                      style={{
+                        color: "#2BB180",
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                        marginLeft: "10px",
+                      }}
+                    >
+                      {isSpinner ? (
+                        <CustomSpinner />
+                      ) : (
+                        <Link
+                          style={{ fontSize: 32 }}
+                          to="/admin/drivers?status=online"
+                        >
+                          {onlineDriversCount}
+                        </Link>
+                      )}
+                    </h4>
+                  </div>
+                </div>
               </div>
-              <div className="d-none d-md-block">
-                {/* <CButtonGroup className="float-end me-3">
+            </Card>
+            <Card
+              style={{
+                flex: 1,
+                border: "1px dashed #A3A3B7",
+                borderRadius: "15px",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                }}
+                className="m-5"
+              >
+                <div>
+                  <img
+                    src={RidesIcon}
+                    width={40}
+                    height={40}
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                    }}
+                  />
+                  <h1
+                    style={{
+                      display: "inline-block",
+                      verticalAlign: "middle",
+                      marginLeft: "10px",
+                    }}
+                  >
+                    {t("Completed")}
+                  </h1>
+                </div>
+                <h3 className="mt-12 text-end" style={{ color: "#2BB180" }}>
+                  {isSpinner ? (
+                    <CustomSpinner />
+                  ) : (
+                    <span
+                      style={{ fontSize: 33, cursor: "pointer" }}
+                      onClick={handleNavigationCompleteRide}
+                    >
+                      {completeRidesCount}
+                    </span>
+                  )}
+                </h3>
+              </div>
+            </Card>
+          </div>
+
+          <div className="mb-2 mt-8">
+            <div>
+              <h4
+                id="traffic"
+                className="card-title mb-2"
+                style={{ fontSize: "25px" }}
+              >
+                {t("Active Riders:")}
+              </h4>
+            </div>
+            <div className="d-none d-md-block">
+              {/* <CButtonGroup className="float-end me-3">
                     {['Map', 'Satellite'].map((value) => (
                       <CButton
                         color="outline-secondary"
@@ -527,82 +538,77 @@ const Dashboard = () => {
                       </CButton>
                     ))}
                   </CButtonGroup> */}
-              </div>
             </div>
+          </div>
 
-            {currentMap == "olaMap" && (
-              <div
+          {currentMap == "olaMap" && (
+            <div
               // className="h-100 w-100 bg-info"
-                style={{ width: "79vw", height: "80vh", overflow: "hidden" }}
-                ref={mapContainerRef}
-                id="central-map"
-              />
-            )} 
-            {currentMap == 'google' && (
-              <div className="h-100 w-100  bg-info">
-                {!isLoaded ? (
-                  <h1>Loading...</h1>
-                ) : (
-                  <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "500px" }}
-                    center={center}
-                    zoom={10}
-                  >
-                    {allOnlineDrivers &&
-                      allOnlineDrivers.length > 0 &&
-                      allOnlineDrivers.map((driverId) => {
-                        const position = {
-                          lng:
-                            driverId.liveLocation && driverId.liveLocation[1],
-                          lat:
-                            driverId.liveLocation && driverId.liveLocation[0],
-                        };
-                        return (
-                          <Marker
-                            key={driverId}
-                            position={position}
-                            icon={car}
-                            onClick={() =>
-                              showDriversDetails(driverId, position)
-                            }
-                          />
-                        );
-                      })}
-                    {selectedDriver && driverPosition && (
-                      <InfoWindow
-                        position={driverPosition}
-                        onCloseClick={() => setSelectedDriver(null)}
-                      >
-                        <div style={{ width: "100%" }}>
-                          <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
+              style={{ width: "79vw", height: "80vh", overflow: "hidden" }}
+              ref={mapContainerRef}
+              id="central-map"
+            />
+          )}
+          {currentMap == "google" && (
+            <div className="h-100 w-100  bg-info">
+              {!isLoaded ? (
+                <h1>Loading...</h1>
+              ) : (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "500px" }}
+                  center={center}
+                  zoom={10}
+                >
+                  {allOnlineDrivers &&
+                    allOnlineDrivers.length > 0 &&
+                    allOnlineDrivers.map((driverId) => {
+                      const position = {
+                        lng: driverId.liveLocation && driverId.liveLocation[1],
+                        lat: driverId.liveLocation && driverId.liveLocation[0],
+                      };
+                      return (
+                        <Marker
+                          key={driverId}
+                          position={position}
+                          icon={car}
+                          onClick={() => showDriversDetails(driverId, position)}
+                        />
+                      );
+                    })}
+                  {selectedDriver && driverPosition && (
+                    <InfoWindow
+                      position={driverPosition}
+                      onCloseClick={() => setSelectedDriver(null)}
+                    >
+                      <div style={{ width: "100%" }}>
+                        <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Name:</p>{" "}
+                          <p>
+                            {selectedDriver?.firstName}
+                            {"  "} {selectedDriver?.lastName}
                           </p>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p>Name:</p>{" "}
-                            <p>
-                              {selectedDriver?.firstName}
-                              {"  "} {selectedDriver?.lastName}
-                            </p>
-                          </p>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p> Mobile Number:</p>
-                            <p> {selectedDriver?.mobileNumber}</p>
-                          </p>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p>Vehical Number.:</p>
-                            <p> {selectedDriver?.vehicleNumber}</p>
-                          </p>
-                        </div>
-                      </InfoWindow>
-                    )}
-                  </GoogleMap>
-                )}
-              </div>
-            )}
-          </Card>
-        </>
-      
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p> Mobile Number:</p>
+                          <p> {selectedDriver?.mobileNumber}</p>
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Vehical Number.:</p>
+                          <p> {selectedDriver?.vehicleNumber}</p>
+                        </p>
+                      </div>
+                    </InfoWindow>
+                  )}
+                </GoogleMap>
+              )}
+            </div>
+          )}
+        </Card>
+      </>
     </div>
   );
 };

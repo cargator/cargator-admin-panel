@@ -10,11 +10,13 @@ import ReactPaginate from "react-paginate";
 function Orders() {
   const location = useLocation();
   const data = new URLSearchParams(location.search).get("data");
+  console.log("data===>", data);
+
   const displayValue =
     data === "completed"
       ? "completed"
       : data === "ongoing-rides"
-      ? "current-rides"
+      ? "current-order"
       : "all";
 
   const [loading, setLoading] = useState(false);
@@ -61,10 +63,10 @@ function Orders() {
   function convertToOrders(orders: any) {
     const response = orders.map((order: any) => {
       console.log(order);
-      
+
       let dateTime = convertUtcToIst(order.createdAt);
       return {
-        orderId:order.order_details.vendor_order_id,
+        orderId: order.order_details.vendor_order_id,
         orderDate: dateTime.substring(0, 10),
         orderTime: dateTime.substring(11, 16),
         customerMobileNum: order?.drop_details?.contact_number
@@ -111,7 +113,7 @@ function Orders() {
       console.log("limits shows", {
         page: page,
         limit: limit,
-        filter
+        filter,
       });
 
       const response: any = await findOrders({
@@ -142,7 +144,7 @@ function Orders() {
         response = await getAllOrders(currentPage, limit, status);
       } else if (status === "current-order") {
         console.log("hey am here~~~");
-        
+
         response = await getAllOrders(currentPage, limit, status);
       } else if (status === "completed") {
         response = await getAllOrders(currentPage, limit, status);
@@ -188,18 +190,18 @@ function Orders() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true);
-      await getAllOrders(currentPage, 10);
-      setLoading(false);
+      await getAllOrders(currentPage, 10, orderStatus);
     };
     fetchData();
   }, [currentPage]);
 
   useEffect(() => {
-
-    
     const handleStatusChange = async () => {
-      console.log("useeffect call after change", orderStatus, firstRender.current);
+      console.log(
+        "useeffect call after change",
+        orderStatus,
+        firstRender.current
+      );
       // setLoading(true);
       if (!firstRender.current) {
         await handleOrderStatusSelect(orderStatus);

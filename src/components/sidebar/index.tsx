@@ -15,6 +15,7 @@ const Sidebar: React.FC<{
   open: boolean;
   onClose: React.MouseEventHandler<HTMLSpanElement>;
 }> = ({ open, onClose }) => {
+  const appImageUrl = useSelector((store: any) => store.app.sukam?.appImageUrl);
   const sidebarFlag = useSelector((store: any) => {
     if (
       window.innerWidth > 1200 &&
@@ -59,7 +60,7 @@ const Sidebar: React.FC<{
       <div className={`mx-[90px] mt-[100px] flex items-center`}>
         <div style={{ widows: "1px" }}>
           <img
-            src={logo}
+            src={appImageUrl ? appImageUrl : logo}
             alt="Logo"
             style={{ width: "80px", height: "auto", margin: "0%" }}
           />

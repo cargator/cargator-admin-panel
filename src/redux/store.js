@@ -3,10 +3,12 @@ import authReducer from "./reducers/authReducer";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import sideBarReducer from "./reducers/sideBarReducer";
+import appDataReducer from "./reducers/appDataReducer";
 
 const reducers = combineReducers({
   auth: authReducer,
   sideBarStateChange: sideBarReducer,
+  app:appDataReducer
 });
 
 const persistConfig = {

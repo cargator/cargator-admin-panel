@@ -2,7 +2,9 @@ import React, { useEffect } from "react";
 import Card from "components/card";
 import ButtonEdit from "../../../../assets/svg/ButtonEdit.svg";
 import "./ColumnsTable.css";
-import { useTranslation } from 'react-i18next'
+import Select from "react-select";
+import { useTranslation } from "react-i18next";
+import arrow_down from "../../../../assets/svg/arrow_down.svg";
 
 import {
   createColumnHelper,
@@ -38,14 +40,40 @@ type customFieldType2 = {
 
 function ColumnsTable(props: {
   tableData: any;
+  status: String;
   handleClickForDeleteModal: (data: any) => void;
   handleToggleForStatusMOdal: (data: any) => void;
 }) {
-  const { tableData } =
-    props;
+  const { tableData, status } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const { t } = useTranslation(); 
+  const { t } = useTranslation();
+  const arrowdown = () => (
+    <div
+      className="flex items-center justify-between"
+      style={{ cursor: "pointer" }}
+    >
+      <img
+        src={arrow_down}
+        className="mr-3"
+        height={15}
+        width={15}
+        alt="Arrow Down"
+      />
+    </div>
+  );
   const navigate = useNavigate();
+  const statusOptions = [
+    { label: "All", value: "all" },
+    { label: "Online", value: "online" },
+    { label: "Offline", value: "offline" },
+  ];
+  const getDefaultStatus = () => {
+    let filterStatus = statusOptions.filter((val) => val.value === status);
+    if (filterStatus.length === 0) {
+      filterStatus = [statusOptions[0]];
+    }
+    return filterStatus[0];
+  };
   const columns = [
     columnHelper.accessor("fullName", {
       id: "fullName",
@@ -184,28 +212,6 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <div className="flex items-center">
-          {/* {info.getValue()?.driverStatus === "active" ? (
-            <div className="cursor-pointer">
-              <img
-                style={{ marginRight: "8px", marginLeft: "5px" }}
-                src={unblock}
-                onClick={() => {
-                  handleToggleForStatusMOdal(info.row.original);
-                }}
-              />
-            </div>
-          ) : (
-            <div className="cursor-pointer">
-              <img
-                style={{ marginRight: "8px", marginLeft: "5px" }}
-                src={block}
-                onClick={() => {
-                  handleToggleForStatusMOdal(info.row.original);
-                }}
-              />
-            </div>
-          )} */}
-
           <div className="cursor-pointer">
             <img
               src={ButtonEdit}
@@ -215,12 +221,6 @@ function ColumnsTable(props: {
               }
             />
           </div>
-          {/* <div className="cursor-pointer">
-            <img
-              src={deleteIcon}
-              onClick={() => handleClickForDeleteModal(info.row.original)}
-            />
-          </div> */}
         </div>
       ),
     }),
@@ -242,15 +242,29 @@ function ColumnsTable(props: {
     setData([...tableData]);
   }, [tableData]);
 
-  useEffect(() => {}, []);
-
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
           {t("Riders")}
         </div>
-        <div>
+        <div className="flex items-center">
+          {/* <CardMenu /> */}
+          <Select
+            isSearchable={false}
+            defaultValue={getDefaultStatus()}
+            options={[
+              { label: "All", value: "all" },
+              { label: "Online", value: "online" },
+              { label: "Offline", value: "offline" },
+            ]}
+            onChange={(e) => navigate(`?status=${e.value}`)}
+            className="custom-select mr-2"
+            components={{
+              DropdownIndicator: arrowdown,
+              IndicatorSeparator: () => null,
+            }}
+          />
           <button
             className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400"
             type="submit"
@@ -259,7 +273,6 @@ function ColumnsTable(props: {
             {t("Add Rider")}
           </button>
         </div>
-        {/* <CardMenu /> */}
       </header>
 
       <div className="mt-4 overflow-x-scroll xl:overflow-x-hidden">
@@ -275,7 +288,7 @@ function ColumnsTable(props: {
                       onClick={header.column.getToggleSortingHandler()}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
-                      <div className="flex gap-4 text-xs text-gray-200 text-left">
+                      <div className="flex gap-4 text-left text-xs text-gray-200">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
@@ -283,12 +296,21 @@ function ColumnsTable(props: {
                         {
                           <>
                             {header.column.getIsSorted() === "asc" ? (
-                              <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
+                              <FaCaretUp
+                                className="mr-[-6] font-bold text-gray-600"
+                                size={20}
+                              />
                             ) : header.column.getIsSorted() === "desc" ? (
-                              <FaCaretDown size={20} className="text-gray-600 font-bold"/>
+                              <FaCaretDown
+                                size={20}
+                                className="font-bold text-gray-600"
+                              />
                             ) : (
-                              <div className="flex mr-[-6]">
-                               <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                              <div className="mr-[-6] flex">
+                                <FaCaretDown
+                                  size={20}
+                                  className="font-bold text-gray-600"
+                                />
                               </div>
                             )}
                           </>

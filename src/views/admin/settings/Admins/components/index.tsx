@@ -53,9 +53,6 @@ function ColumnsTableAdmins(props: {
   } = props;
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [selectedMapOption, setSelectedMapOption] = useState("default");
-  const [isLoading, setIsLoading] = useState(false);
-  const [currentMapID, setCurrentMapID] = useState();
   const [isDisabled, setIsDisabled] = useState(true);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -87,42 +84,6 @@ function ColumnsTableAdmins(props: {
       theme: "light",
       style: { borderRadius: "15px" },
     });
-  };
-
-  const handleOptionChange = (event: any) => {
-    setSelectedMapOption(event.target.value);
-    console.log("event.target.value", event.target.value);
-    // createApplicationFlow(event.target.value);
-  };
-
-  // APi to create Apllication flow for Driver
-  const handleSelectedMap = async () => {
-    setIsLoading(true);
-    try {
-      if (currentMapID) {
-        const data = { selectedMapOption };
-        const res = await updateCurrentMap(currentMapID, data);
-        console.log("respone:>>>>", res);
-        setIsLoading(false);
-      }
-    } catch (error: any) {
-      errorToast(error.response?.data?.message || "Something went wrong");
-      setIsLoading(false);
-    }
-  };
-
-  const getCurrentMapFLow = async () => {
-    setIsLoading(true);
-    try {
-      const res = await getCurrentMap();
-      setCurrentMapID(res.data?._id);
-      setSelectedMapOption(res.data?.currentMap);
-      console.log("respones:>>>>", res.data);
-      setIsLoading(false);
-    } catch (error: any) {
-      errorToast(error?.response?.data?.message || "Something went wrong");
-      setIsLoading(false);
-    }
   };
 
   const columns = [
@@ -274,53 +235,8 @@ function ColumnsTableAdmins(props: {
     setData([...tableData]);
   }, [tableData]);
 
-  useEffect(() => {
-    getCurrentMapFLow();
-  }, []);
-
   return (
     <Card extra={"w-full pb-10 p-4 h-full"}>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div className="mb-5">
-          <label htmlFor="flow" className="input-custom-label dark:text-white">
-            Choose Map
-          </label>
-          <div className="w-full justify-between  gap-5">
-            <label htmlFor="default" className="mr-8 ">
-              <input
-                type="radio"
-                id="google"
-                name="option"
-                value="google"
-                checked={selectedMapOption === "google"}
-                onChange={handleOptionChange}
-                // disabled={isDisabled}
-              />
-              <label className="ml-2">Google</label>
-            </label>
-            <label htmlFor="custom" className="mr-8">
-              <input
-                type="radio"
-                id="olaMap"
-                name="option"
-                value="olaMap"
-                checked={selectedMapOption === "olaMap"}
-                onChange={handleOptionChange}
-                // disabled={isDisabled}
-              />
-              <label className="ml-2">OlaMap</label>
-            </label>
-            <button
-              onClick={() => handleSelectedMap()}
-              className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
-            >
-              Save
-            </button>
-          </div>
-        </div>
-      )}
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
           {t("Users")}

@@ -21,9 +21,8 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 
-
 type RowObj = {
-  orderId:string;
+  orderId: string;
   orderDate: string;
   orderTime: string;
   customerMobileNum: string;
@@ -46,7 +45,6 @@ const Tooltip = ({ children, text }: { children: ReactNode; text: string }) => (
     <span className="tooltip-text">{text}</span>
   </div>
 );
-
 
 function ColumnsOrderTable(props: {
   tableData: any;
@@ -82,9 +80,9 @@ function ColumnsOrderTable(props: {
       ),
       cell: (info: any) => (
         <Tooltip text={info.getValue()}>
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue().slice(-6)}
-        </p>
+          <p className="text-sm font-bold text-navy-700 dark:text-white">
+            {info.getValue().slice(-6)}
+          </p>
         </Tooltip>
       ),
     }),
@@ -167,7 +165,7 @@ function ColumnsOrderTable(props: {
         </Tooltip>
       ),
     }),
-    
+
     columnHelper.accessor("pickUpLocation", {
       id: "pickUpLocation",
       header: () => (
@@ -177,9 +175,9 @@ function ColumnsOrderTable(props: {
       ),
       cell: (info) => (
         <Tooltip text={info.getValue()}>
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()?.slice(0, 15)}...
-        </p>
+          <p className="text-sm font-bold text-navy-700 dark:text-white">
+            {info.getValue()?.slice(0, 15)}...
+          </p>
         </Tooltip>
       ),
     }),
@@ -192,9 +190,9 @@ function ColumnsOrderTable(props: {
       ),
       cell: (info) => (
         <Tooltip text={info.getValue()}>
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()?.slice(0, 15)}...
-        </p>
+          <p className="text-sm font-bold text-navy-700 dark:text-white">
+            {info.getValue()?.slice(0, 15)}...
+          </p>
         </Tooltip>
       ),
     }),
@@ -212,7 +210,9 @@ function ColumnsOrderTable(props: {
             height={30}
             width={30}
             style={{ cursor: "pointer" }}
-            onClick={() => navigate(`/admin/orders/orderDetails/${info.getValue()}`)}
+            onClick={() =>
+              navigate(`/admin/orders/orderDetails/${info.getValue()}`)
+            }
             alt="View"
           />
         </div>
@@ -239,7 +239,13 @@ function ColumnsOrderTable(props: {
       style={{ cursor: "pointer" }}
       {...props}
     >
-      <img src={filterIcon} className="ml-3" height={20} width={20} alt="Filter" />
+      <img
+        src={filterIcon}
+        className="ml-3"
+        height={20}
+        width={20}
+        alt="Filter"
+      />
       {children}
     </div>
   );
@@ -249,7 +255,13 @@ function ColumnsOrderTable(props: {
       className="flex items-center justify-between"
       style={{ cursor: "pointer" }}
     >
-      <img src={arrow_down} className="mr-3" height={15} width={15} alt="Arrow Down" />
+      <img
+        src={arrow_down}
+        className="mr-3"
+        height={15}
+        width={15}
+        alt="Arrow Down"
+      />
     </div>
   );
 
@@ -265,16 +277,16 @@ function ColumnsOrderTable(props: {
             Orders
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             <button
-              className={`rounded-md bg-[rgba(43,122,11,1)] px-6 py-2 text-lg text-white `}
+              className={`mr-2 rounded-md bg-[rgba(43,122,11,1)] px-6 py-2 text-lg text-white`}
               onClick={() => {
                 navigate("/admin/order/add");
               }}
             >
               Add Order
             </button>
-            <div style={{ width: "200px", paddingLeft: "10%" }}>
+            <div>
               <Select
                 isSearchable={false}
                 className="custom-select"
@@ -285,7 +297,9 @@ function ColumnsOrderTable(props: {
                 onChange={(e: any) => {
                   setOrderStatus(e.value);
                 }}
-                value={statusOptions.filter((option: any) => option.value === orderStatus)}
+                value={statusOptions.filter(
+                  (option: any) => option.value === orderStatus
+                )}
                 styles={{
                   menu: (provided: any) => ({ ...provided, zIndex: 9999 }),
                   option: (provided: any, state: any) => ({

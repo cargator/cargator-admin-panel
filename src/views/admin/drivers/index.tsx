@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import ReactPaginate from "react-paginate";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   //   options,
   deleteDriverHandleApi,
@@ -33,6 +33,8 @@ import "./driverlist.css";
 
 const Drivers = () => {
   const socketInstance = useRef<any>(undefined);
+  const location = useLocation();
+  const status = new URLSearchParams(location.search).get("status") || "all";
   const token = useSelector((store: any) => store.auth.token);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const currentPage = useRef<number>();
@@ -200,6 +202,7 @@ const Drivers = () => {
       const response: any = await getPaginatedDriverDataApi({
         page: currentPage.current,
         limit: limit,
+        status: status,
       });
       setPageCount(Math.ceil(response.totalDrivers / limit));
       const pathArr = await convertToUsableDriverArray(response?.data);
@@ -372,7 +375,7 @@ const Drivers = () => {
         getPaginatedDriverData();
       }
     }
-  }, [searchText]);
+  }, [searchText, status]);
 
   return (
     <div>
@@ -398,6 +401,7 @@ const Drivers = () => {
           <>
             <div className="mt-4">
               <ColumnsTable
+                status={status}
                 tableData={driverData}
                 handleClickForDeleteModal={handleClickForDeleteModal}
                 handleToggleForStatusMOdal={handleToggleForStatusMOdal}

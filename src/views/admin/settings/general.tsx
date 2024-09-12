@@ -1,5 +1,5 @@
 import Navbar from "components/navbar";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Card from "components/card";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@chakra-ui/react";
@@ -13,19 +13,21 @@ import {
   createAppNameAndImageApi,
   deleteObjectFromS3Api,
   getAppNameAndImage,
+  getCurrentMap,
   getFlow,
   getS3SignUrlApi,
   handleCreateAppNameAndImageApi,
   updateAppFlowAPI,
+  updateAppImage,
+  updateCurrentMap,
 } from "services/customAPI";
 import Loader from "components/loader/loader";
 import uploadCloud from "../../../assets/svg/upload-cloud.svg";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 type formvalues = {
-  name: string;
-  image: any;
-  fare: string;
+  appImage: File;
 };
 
 type profImage = {
@@ -35,47 +37,53 @@ type profImage = {
 };
 
 function General() {
-  const params = useParams();
+  const appStoreData = useSelector((store: any) => store.app.sukam);
   const navigate = useNavigate();
-  const [check, setCheck] = useState(false);
   const anchorImageRef = useRef(null);
-  const [finalProfileImage, setFinalProfileImage] = useState<profImage>();
-  const [initialProfileImage, setInitialProfileImage] = useState<profImage>();
-  const [imagePreview, setImagePreview] = useState(null);
-  const [id, setId] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<formvalues>({
-    name: "",
-    image: {},
-    fare: "",
-  });
-  const [isProfileImage, setIsProfileImage] = useState(
-    params.id ? false : true
+  const [selectedMapOption, setSelectedMapOption] = useState(
+    appStoreData.currentMap || "OlaMap"
   );
+  const [imagePreview, setImagePreview] = useState(appStoreData.appImageUrl);
+  const [isLoading, setIsLoading] = useState(false);
+  const initialFormValues = {
+    appImage: null as File,
+  };
 
-  const FILE_SIZE = 1024 * 1024;
+  const handleOptionChange = (event: any) => {
+    setSelectedMapOption(event.target.value);
+    console.log("event.target.value", event.target.value);
+  };
+
+  const handleSelectedMap = async () => {
+    setIsLoading(true);
+    try {
+      if (appStoreData.utilId) {
+        const data = { selectedMapOption };
+        const res = await updateCurrentMap(appStoreData.utilId, data);
+        console.log("respone:>>>>", res);
+        setIsLoading(false);
+      }
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  };
+
+  const FILE_SIZE = 1024 * 6024;
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
   const appSchema = Yup.object().shape({
-    name: Yup.string().min(1).required("App Name is required"),
-    image: isProfileImage
-      ? Yup.mixed()
-        // .nullable()
-        .required("A file is required")
-        .test(
-          "fileSize",
-          "Please upload file below 1 MB size",
-          (value: any) => {
-            return value && value.size <= FILE_SIZE;
-          }
-        )
-        .test(
-          "fileFormat",
-          "Unsupported Format",
-          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-        )
-      : Yup.mixed(),
-    fare: Yup.string().min(1).required("Fare is required"),
+    appImage: Yup.mixed()
+      // .nullable()
+      .required("A file is required")
+      .test("fileSize", "Please upload file below 1 MB size", (value: any) => {
+        return value && value.size <= FILE_SIZE;
+      })
+      .test(
+        "fileFormat",
+        "Unsupported Format",
+        (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+      ),
   });
 
   const successToast = (message: string) => {
@@ -113,9 +121,8 @@ function General() {
   };
 
   React.useEffect(() => {
-    getData();
+    // getData();
   }, []);
-
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {
     try {
@@ -128,123 +135,31 @@ function General() {
         },
         { headers }
       );
-      return response;
+      console.log("response", response);
+
+      return response.url;
     } catch (error: any) {
       errorToast(error.response.data.message);
       console.log(error);
     }
   }
 
-  async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
-    try {
-      const response = await axios.put(presignedUrl, uploadPhoto);
-      return response;
-    } catch (error: any) {
-      errorToast(error.response.data.message);
-    }
-  }
-
-  const handleCreateApp = async (values: any) => {
+  const handleUpdateAppImage = async (values: formvalues) => {
     setIsLoading(true);
     try {
-      if (params.id) {
-        let res
-        if (finalProfileImage.url === "") {
-          {
-            const key = finalProfileImage.key;
-            const contentType = "image/*";
-            const type = "put";
-            const data: any = await getS3SignUrl(key, contentType, type);
-            if (data.url) {
-              res = await pushProfilePhotoToS3(
-                data.url,
-                finalProfileImage.file
-              );
-            }
-            if (initialProfileImage) {
-              const response = deleteObjectFromS3Api({
-                key: initialProfileImage?.key,
-              });
-            }
-          }
-        }
-
-        const result: any = await handleCreateAppNameAndImageApi(params.id, {
-          name: values.name,
-          profileImageKey: finalProfileImage.key,
-        });
-
-        if (result.message) {
-          successToast("app Updated Successfully");
-          // navigate("/admin/vehicles");
-          setIsLoading(false);
-        } else {
-          errorToast("Something went wrong");
-        }
-      } else {
-        let res;
-        {
-          const key = finalProfileImage.key;
-          const contentType = "image/*";
-          const type = "put";
-          const data: any = await getS3SignUrl(key, contentType, type);
-
-          if (data.url) {
-            res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
-          }
-        }
-
-        const result: any = await createAppNameAndImageApi({
-          name: values.name,
-          profileImageKey: finalProfileImage.key,
-        });
-        if (result.message) {
-          successToast("App Created Successfully");
-          // navigate("/admin/vehicles");
-          setIsLoading(false);
-        } else {
-          errorToast("Something went wrong");
-        }
-      }
-    } catch (error: any) {
-      errorToast(error.response.data.message);
-      console.log(error);
-      setIsLoading(false);
-    }
-  };
-
-  const getData = async () => {
-    // console.log("get data called :>> ", id);
-    setIsLoading(true);
-    try {
-      const res: any = await getAppNameAndImage();
-
-      console.log("res  :>> ", res);
-
-      setInitialFormValues({
-        name: res?.data.name,
-        image: {},
-        fare: res?.data.fare,
+      const key = `sukam/logo-${values.appImage.name}.png`;
+      const presignedUrl = await getS3SignUrl(key, "image/png", "put");
+      console.log("presignedUrl", presignedUrl);
+      await axios.put(presignedUrl, values.appImage);
+      const response = await updateAppImage(appStoreData.utilId, {
+        appImageKey: key,
       });
-      // setVehicleTypes(res.data.vehicleType);
-
-      const key = res.data?.profileImageKey;
-      if (key) {
-        {
-          const contentType = "image/png";
-          const type = "get";
-          const data: any = await getS3SignUrl(key, contentType, type);
-          setInitialProfileImage({ key: key, url: data.url });
-          setFinalProfileImage({ key: key, url: data.url });
-          setImagePreview(data.url);
-        }
-      }
-
-      setIsLoading(false);
+      successToast("Image Updated Successfuly");
     } catch (error: any) {
-      errorToast(error.response?.data?.message || "Something went wrong");
-      setIsLoading(false);
+      errorToast(error.response.data.message);
+      console.log(error);
     }
+    setIsLoading(false);
   };
   return (
     <div>
@@ -254,34 +169,23 @@ function General() {
       ) : (
         <Card extra={"w-50 mt-4 pb-10 h-full"}>
           <header className="relative flex items-center justify-between p-10">
-            {/* {params.id ? (
-            <div className="text-xl font-bold text-navy-700 dark:text-white">
-              Edit Fare
-            </div>
-          ) : ( */}
             <div className="text-xl font-bold text-navy-700 dark:text-white">
               General
             </div>
-            {/* )} */}
           </header>
-          <div className="pb-5 pe-20 ps-20" style={{ width: '50%' }}>
+          <div className="pb-5 pe-20 ps-20" style={{ width: "50%" }}>
             <Formik
               enableReinitialize={true}
               initialValues={initialFormValues}
-              onSubmit={(values) => handleCreateApp(values)}
+              onSubmit={(values) => {
+                console.log("hitt submit");
+                handleUpdateAppImage(values);
+              }}
               validationSchema={appSchema}
             >
-              {({
-                values,
-                errors,
-                touched,
-                handleChange,
-                handleBlur,
-                handleSubmit,
-                setFieldValue,
-              }) => (
+              {({ handleBlur, handleSubmit, setFieldValue }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="flex flex-col justify-between gap-4 w-full">
+                  <div className="flex w-full flex-col justify-between gap-4">
                     <div className="mb-3 w-full">
                       <label
                         htmlFor="image"
@@ -329,7 +233,7 @@ function General() {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
-                          className="mt-2 h-15 rounded-xl border bg-white/0 p-3 text-sm outline-none w-full"
+                          className="h-15 mt-2 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
                         >
                           <label>
                             <div
@@ -346,9 +250,7 @@ function General() {
                                 />
                               </div>
                               <div className="mb-2 mt-2 text-center">
-                                {!params.id
-                                  ? "Click here to upload your app image"
-                                  : "Click here to update your app image"}
+                                Click here to upload your app image
                                 <br />
                                 (file size below 1MB)
                               </div>
@@ -361,17 +263,15 @@ function General() {
                                 display: "none",
                               }}
                               className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                              name="image"
+                              name="appImage"
                               type="file"
-                              id="image"
+                              id="appImage"
                               onChange={(event) => {
-                                setFieldValue("image", event.target.files[0]);
+                                setFieldValue(
+                                  "appImage",
+                                  event.target.files[0]
+                                );
                                 const file = event.target.files[0];
-                                setFinalProfileImage({
-                                  key: `app/appImage/${uuidv4()}.png`,
-                                  url: "",
-                                  file: file,
-                                });
                                 if (file) {
                                   const reader = new FileReader();
                                   reader.onload = (e) => {
@@ -380,9 +280,6 @@ function General() {
                                   reader.readAsDataURL(file);
                                 } else {
                                   setImagePreview(null);
-                                }
-                                if (event.target.files[0]) {
-                                  setIsProfileImage(true);
                                 }
                               }}
                               onBlur={handleBlur}
@@ -394,58 +291,6 @@ function General() {
                           component="div"
                           className="error-input"
                         />
-                      </div>
-                    </div>
-                    <div className="mb-3 w-full">
-                      <label
-                        htmlFor="name"
-                        className="input-custom-label dark:text-white"
-                      >
-                        App Name
-                      </label>
-                      <input
-                        required
-                        style={{
-                          backgroundColor: "rgba(242, 242, 242, 0.5)",
-                        }}
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="name"
-                        type="text"
-                        id="name"
-                        placeholder="Enter app name here"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.name}
-
-                      />
-                      <div className="error-input">
-                        {errors.name && touched.name ? errors.name : null}
-                      </div>
-                    </div>
-                    <div className="mb-3 w-full">
-                      <label
-                        htmlFor="fare"
-                        className="input-custom-label dark:text-white"
-                      >
-                        Set Fare for per KM
-                      </label>
-                      <input
-                        required
-                        style={{
-                          backgroundColor: "rgba(242, 242, 242, 0.5)",
-                        }}
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="fare"
-                        type="text"
-                        id="fare"
-                        placeholder="Enter fare here"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.fare}
-
-                      />
-                      <div className="error-input">
-                        {errors.fare && touched.fare ? errors.fare : null}
                       </div>
                     </div>
                   </div>
@@ -466,9 +311,52 @@ function General() {
                 </form>
               )}
             </Formik>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <div className="mb-5">
+                <label
+                  htmlFor="flow"
+                  className="input-custom-label dark:text-white"
+                >
+                  Choose Map
+                </label>
+                <div className="w-full justify-between  gap-5">
+                  <label htmlFor="default" className="mr-8 ">
+                    <input
+                      type="radio"
+                      id="google"
+                      name="option"
+                      value="google"
+                      checked={selectedMapOption === "google"}
+                      onChange={handleOptionChange}
+                      // disabled={isDisabled}
+                    />
+                    <label className="ml-2">Google</label>
+                  </label>
+                  <label htmlFor="custom" className="mr-8">
+                    <input
+                      type="radio"
+                      id="olaMap"
+                      name="option"
+                      value="olaMap"
+                      checked={selectedMapOption === "olaMap"}
+                      onChange={handleOptionChange}
+                      // disabled={isDisabled}
+                    />
+                    <label className="ml-2">OlaMap</label>
+                  </label>
+                  <button
+                    onClick={() => handleSelectedMap()}
+                    className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </Card>
-
       )}
     </div>
   );
