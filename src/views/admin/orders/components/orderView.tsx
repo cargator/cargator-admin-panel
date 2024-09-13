@@ -749,7 +749,60 @@ const OrderView = () => {
                   center={orderCurrentLatLong.current}
                   zoom={13}
                 >
-                  {path.length !== 0 && (
+                  {updatedStatus &&
+                    updatedStatus.length > 0 &&
+                    updatedStatus.slice(1).map((orderStatus) => {
+                      if (
+                        !orderStatus.location ||
+                        !Array.isArray(orderStatus.location) ||
+                        orderStatus.location.length < 2
+                      ) {
+                        console.error(
+                          "Invalid location data:",
+                          orderStatus.location
+                        );
+                        return null;
+                      }
+
+                      const position = {
+                        lng: orderStatus.location[1],
+                        lat: orderStatus.location[0],
+                      };
+                      let icon: any;
+                      switch (orderStatus.status) {
+                        case "ALLOTTED":
+                          icon = orderAccepted;
+                          break;
+
+                        case "ARRIVED":
+                          icon = ArrivedPickLoc;
+                          break;
+
+                        case "DISPATCHED":
+                          icon = orderDisp;
+                          break;
+
+                        case "ARRIVED_CUSTOMER_DOORSTEP":
+                          icon = ArrivedCustLoc;
+                          break;
+
+                        case "DELIVERED":
+                          icon = Delivered;
+                          break;
+
+                        default:
+                          return null;
+                      }
+                      return (
+                        <Marker
+                          key={orderStatus}
+                          position={position}
+                          icon={icon}
+                        />
+                      );
+                    })}
+
+                  {/* {path.length !== 0 && (
                     <Marker
                       position={{
                         lat: orderDetails?.riderPathToPickUp[0]?.latitude,
@@ -771,7 +824,7 @@ const OrderView = () => {
                       lng: orderDetails?.drop_details?.longitude,
                     }}
                     label="D"
-                  />
+                  /> */}
                   {driverLocation && (
                     <Marker position={driverLocation} label="DR" />
                   )}
