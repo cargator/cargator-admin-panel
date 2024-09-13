@@ -420,7 +420,7 @@ const OrderView = () => {
             {/* Customer Details */}
             <div className="mt-2 grid grid-cols-8 gap-3 pb-3">
               <div className="col-span-1 mt-4">
-                <img src={ridePickDest} width={200} height={180} />
+                <img src={ridePickDest} width={45} height={80} />
               </div>
               <div
                 className="col-span-7"
@@ -656,7 +656,7 @@ const OrderView = () => {
           {currentMap == "olaMap" && (
             <div
               className="col-span-7"
-              style={{ width: "50vw", height: "80vh", overflow: "hidden" }}
+              style={{ width: "45.3vw", height: "80vh", overflow: "hidden" }}
               ref={mapContainerRef}
               id="central-map"
             />

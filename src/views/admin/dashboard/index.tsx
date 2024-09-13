@@ -534,7 +534,7 @@ const Dashboard = () => {
             {currentMap == "olaMap" && (
               <div
               // className="h-100 w-100 bg-info"
-                style={{ width: "79vw", height: "60vh", overflow: "hidden" }}
+                style={{ width: "77.5vw", height: "60vh", overflow: "hidden" }}
                 ref={mapContainerRef}
                 id="central-map"
               />
