@@ -21,6 +21,7 @@ jobs:
         with:
           envkey_REACT_APP_BASE_URL: ${{ secrets.REACT_APP_BASE_URL_DEV }}
           envkey_REACT_APP_GOOGLE_API_KEY: ${{ secrets.REACT_APP_GOOGLE_API_KEY_DEV }}
+          envkey_REACT_APP_OLAMAP_API_KEY: ${{ secrets.REACT_APP_OLAMAP_API_KEY_DEV }}
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2

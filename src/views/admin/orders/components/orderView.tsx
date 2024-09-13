@@ -6,6 +6,11 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import car from "../../../../assets/images/car.svg";
+import orderAccepted from "../../../../assets/images/orderAccepted.svg";
+import ArrivedPickLoc from "../../../../assets/images/ArrivedPickLoc.svg";
+import orderDisp from "../../../../assets/images/orderDisp...svg";
+import ArrivedCustLoc from "../../../../assets/images/ArrivedCustLoc.svg";
+import Delivered from "../../../../assets/images/Delivered.svg";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "../../../../components/navbar";
 import Loader from "../../../../components/loader/loader";
@@ -212,8 +217,6 @@ const OrderView = () => {
 
   useEffect(() => {
     if (!mapReady || !mapContainerRef.current) return;
-    console.log("orderCurrentLatLong.current:", orderCurrentLatLong.current);
-
     // Initialize the map
     mapRef.current = new MapLibreMap({
       container: mapContainerRef.current,
@@ -242,7 +245,6 @@ const OrderView = () => {
     mapRef.current.addControl(nav, "top-left");
 
     mapRef.current.on("load", () => {
-      // Convert array of coordinate objects to GeoJSON
       mapRef.current.addLayer({
         id: "path-layer1",
         type: "line",
@@ -306,24 +308,94 @@ const OrderView = () => {
           "line-width": 4,
         },
       });
-
-      var olaIcon = document.createElement("img");
-      olaIcon.src = car;
-
-      const marker = new olaMarker({
-        element: olaIcon,
-        anchor: "center",
-      })
-        .setLngLat([
-          orderCurrentLatLong.current.lng,
-          orderCurrentLatLong.current.lat,
-        ])
-        .addTo(mapRef.current);
     });
     return () => {
       mapRef.current.remove();
     }; // Clean up map on unmount
   }, [mapReady]);
+
+  useEffect(() => {
+    if (!mapRef.current || !updatedStatus || updatedStatus.length === 0) return;
+
+    clearMarkers();
+
+    if (!mapRef.current.loaded()) {
+      mapRef.current.on("load", () => {
+        console.log("Map has loaded");
+        updateMarkers();
+      });
+    } else {
+      updateMarkers();
+    }
+
+    function clearMarkers() {
+      markers.forEach((marker) => {
+        marker.remove();
+      });
+      markers.clear();
+    }
+
+    function updateMarkers() {
+      updatedStatus.slice(1).forEach((orderStatus) => {
+        if (!orderStatus.location || orderStatus.location.length < 2) {
+          console.error("Invalid driver location", orderStatus);
+          return;
+        }
+
+        const position = {
+          lng: orderStatus.location[1],
+          lat: orderStatus.location[0],
+        };
+
+        let icon: any;
+        switch (orderStatus.status) {
+          case "ALLOTTED":
+            icon = document.createElement("img");
+            icon.src = orderAccepted;
+            break;
+
+          case "ARRIVED":
+            icon = document.createElement("img");
+            icon.src = ArrivedPickLoc;
+            break;
+
+          case "DISPATCHED":
+            icon = document.createElement("img");
+            icon.src = orderDisp;
+            break;
+
+          case "ARRIVED_CUSTOMER_DOORSTEP":
+            icon = document.createElement("img");
+            icon.src = ArrivedCustLoc;
+            break;
+
+          case "DELIVERED":
+            icon = document.createElement("img");
+            icon.src = Delivered;
+            break;
+
+          default:
+            return "cancelledClass";
+        }
+
+        console.log("Adding marker at", orderStatus.location);
+
+        if (mapRef.current && position.lng && position.lat) {
+          const marker = new olaMarker({
+            element: icon,
+            anchor: "center",
+          })
+            .setLngLat([position.lng, position.lat])
+            .addTo(mapRef.current);
+
+          // Store the marker in the map by driver ID
+          markers.set(orderStatus._id, marker);
+        } else {
+          console.error("Error adding marker", mapRef.current, position);
+        }
+      });
+    }
+  }, [updatedStatus]);
 
   return (
     <>
