@@ -119,9 +119,20 @@ function General() {
       anchorImageRef.current.click();
     }
   };
-
+  const getData = async () => {
+    // console.log("get data called :>> ", id);
+    setIsLoading(true);
+    try {
+      const res: any = await getCurrentMap();
+      setSelectedMapOption(res.data?.currentMap);
+      setIsLoading(false);
+    } catch (error: any) {
+      errorToast(error.response?.data?.message || "Something went wrong");
+      setIsLoading(false);
+    }
+  };
   React.useEffect(() => {
-    // getData();
+    getData();
   }, []);
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {

@@ -37,6 +37,7 @@ import OrderView from "views/admin/orders/components/orderView";
 import Admins from "views/admin/settings/Admins";
 import CreateUsers from "views/admin/settings/Admins/createUsers";
 import Activity from "views/admin/settings/Activity";
+import ActivityDetails from "views/admin/settings/Activity/ActivityDetails";
 
 export interface RoutesType {
   name: string;
@@ -250,6 +251,14 @@ const authenticatedRoutes: RoutesType[] = [
     layout: "/admin",
     path: "settings/activity",
     component: <Activity />,
+    icon: <IoSettingsOutline className="h-6 w-6" />,
+    secondary: true,
+  },
+  {
+    name: "Activity detail",
+    layout: "/admin",
+    path: "settings/activity/:id",
+    component: <ActivityDetails />,
     icon: <IoSettingsOutline className="h-6 w-6" />,
     secondary: true,
   },

@@ -32,15 +32,9 @@ type customFieldType2 = {
   status: string;
 };
 
-function ColumnsTableActivity(props: {
-  tableData: any;
-  // handleClickForDeleteModal: (data: any) => void;
-  setIsOpen: (data: any) => void;
-  // handleUpdate: (data: any) => void;
-}) {
+function ColumnsTableActivity(props: { tableData: any }) {
   const {
     tableData,
-    setIsOpen,
     // handleClickForDeleteModal,
     // handleToggleForStatusMOdal,
     // handleUpdate,
@@ -105,7 +99,7 @@ function ColumnsTableActivity(props: {
               style={{ marginRight: "8px", marginLeft: "5px" }}
               src={eyeview}
               onClick={() => {
-                setIsOpen(info.row.index);
+                navigate(`${data[info.row.index]._id}`);
               }}
             />
           </div>

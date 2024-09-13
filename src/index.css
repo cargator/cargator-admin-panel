@@ -39,3 +39,8 @@ input:checked.defaultCheckbox::before {
 ._2bkNM{
 	margin-bottom: .5rem !important;
 }
+
+._2IvMF{
+	padding: 1rem;
+	border-radius: 1rem;
+}

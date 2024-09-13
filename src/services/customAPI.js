@@ -18,6 +18,9 @@ export const getAllAdminsData = (data) => {
 export const getActivities = (data) => {
   return customAxios.get(`/get-activities?page=${data.page}&limit=${data.limit}`)
 }
+export const getActivityData = (data) => {
+  return customAxios.get(`/get-activity-data/${data.id}`)
+}
 
 export const handleChangePasswordApi = (data) => {
   return customAxios.post("/change-password", data);
