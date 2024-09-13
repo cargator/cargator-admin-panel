@@ -545,71 +545,76 @@ const Dashboard = () => {
           {currentMap == "olaMap" && (
             <div
               // className="h-100 w-100 bg-info"
-              style={{ width: "79vw", height: "80vh", overflow: "hidden" }}
-              ref={mapContainerRef}
-              id="central-map"
-            />
-          )}
-          {currentMap == "google" && (
-            <div className="h-100 w-100  bg-info">
-              {!isLoaded ? (
-                <h1>Loading...</h1>
-              ) : (
-                <GoogleMap
-                  mapContainerStyle={{ width: "100%", height: "500px" }}
-                  center={center}
-                  zoom={10}
-                >
-                  {allOnlineDrivers &&
-                    allOnlineDrivers.length > 0 &&
-                    allOnlineDrivers.map((driverId) => {
-                      const position = {
-                        lng: driverId.liveLocation && driverId.liveLocation[1],
-                        lat: driverId.liveLocation && driverId.liveLocation[0],
-                      };
-                      return (
-                        <Marker
-                          key={driverId}
-                          position={position}
-                          icon={car}
-                          onClick={() => showDriversDetails(driverId, position)}
-                        />
-                      );
-                    })}
-                  {selectedDriver && driverPosition && (
-                    <InfoWindow
-                      position={driverPosition}
-                      onCloseClick={() => setSelectedDriver(null)}
-                    >
-                      <div style={{ width: "100%" }}>
-                        <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
-                        <p style={{ display: "flex", fontWeight: "400" }}>
-                          {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
-                        </p>
-                        <p style={{ display: "flex", fontWeight: "400" }}>
-                          <p>Name:</p>{" "}
-                          <p>
-                            {selectedDriver?.firstName}
-                            {"  "} {selectedDriver?.lastName}
+                style={{ width: "77.5vw", height: "60vh", overflow: "hidden" }}
+                ref={mapContainerRef}
+                id="central-map"
+              />
+            )} 
+            {currentMap == 'google' && (
+              <div className="h-100 w-100  bg-info">
+                {!isLoaded ? (
+                  <h1>Loading...</h1>
+                ) : (
+                  <GoogleMap
+                    mapContainerStyle={{ width: "100%", height: "500px" }}
+                    center={center}
+                    zoom={10}
+                  >
+                    {allOnlineDrivers &&
+                      allOnlineDrivers.length > 0 &&
+                      allOnlineDrivers.map((driverId) => {
+                        const position = {
+                          lng:
+                            driverId.liveLocation && driverId.liveLocation[1],
+                          lat:
+                            driverId.liveLocation && driverId.liveLocation[0],
+                        };
+                        return (
+                          <Marker
+                            key={driverId}
+                            position={position}
+                            icon={car}
+                            onClick={() =>
+                              showDriversDetails(driverId, position)
+                            }
+                          />
+                        );
+                      })}
+                    {selectedDriver && driverPosition && (
+                      <InfoWindow
+                        position={driverPosition}
+                        onCloseClick={() => setSelectedDriver(null)}
+                      >
+                        <div style={{ width: "100%" }}>
+                          <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
+                          <p style={{ display: "flex", fontWeight: "400" }}>
+                            {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
                           </p>
-                        </p>
-                        <p style={{ display: "flex", fontWeight: "400" }}>
-                          <p> Mobile Number:</p>
-                          <p> {selectedDriver?.mobileNumber}</p>
-                        </p>
-                        <p style={{ display: "flex", fontWeight: "400" }}>
-                          <p>Vehical Number.:</p>
-                          <p> {selectedDriver?.vehicleNumber}</p>
-                        </p>
-                      </div>
-                    </InfoWindow>
-                  )}
-                </GoogleMap>
-              )}
-            </div>
-          )}
-        </Card>
-      </>
+                          <p style={{ display: "flex", fontWeight: "400" }}>
+                            <p>Name:</p>{" "}
+                            <p>
+                              {selectedDriver?.firstName}
+                              {"  "} {selectedDriver?.lastName}
+                            </p>
+                          </p>
+                          <p style={{ display: "flex", fontWeight: "400" }}>
+                            <p> Mobile Number:</p>
+                            <p> {selectedDriver?.mobileNumber}</p>
+                          </p>
+                          <p style={{ display: "flex", fontWeight: "400" }}>
+                            <p>Vehical Number.:</p>
+                            <p> {selectedDriver?.vehicleNumber}</p>
+                          </p>
+                        </div>
+                      </InfoWindow>
+                    )}
+                  </GoogleMap>
+                )}
+              </div>
+            )}
+          </Card>
+        </>
+      
     </div>
   );
 };
