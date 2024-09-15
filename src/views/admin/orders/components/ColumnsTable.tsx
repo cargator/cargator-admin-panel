@@ -49,10 +49,9 @@ const Tooltip = ({ children, text }: { children: ReactNode; text: string }) => (
 function ColumnsOrderTable(props: {
   tableData: any;
   statusOptions: statusOption[];
-  setOrderStatus: (val: string) => void;
   orderStatus: string;
 }) {
-  const { tableData, statusOptions, setOrderStatus, orderStatus } = props;
+  const { tableData, statusOptions, orderStatus } = props;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -295,7 +294,7 @@ function ColumnsOrderTable(props: {
                   label: t(`${option.label}`),
                 }))}
                 onChange={(e: any) => {
-                  setOrderStatus(e.value);
+                  navigate(`?data=${e.value}`);
                 }}
                 value={statusOptions.filter(
                   (option: any) => option.value === orderStatus

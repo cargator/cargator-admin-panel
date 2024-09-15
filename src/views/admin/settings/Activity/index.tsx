@@ -19,7 +19,6 @@ import { toast } from "react-toastify";
 
 const Activity = () => {
   const currentPage = useRef<number>(1);
-  const [isOpen, setIsOpen] = useState(-1);
   const [activityData, setActivityData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [limit, setLimit] = useState(10);
@@ -69,13 +68,7 @@ const Activity = () => {
       ) : (
         <>
           <div className="mt-4">
-            <ColumnsTableActivity
-              setIsOpen={setIsOpen}
-              tableData={activityData}
-              // handleClickForDeleteModal={handleClickForDeleteModal}
-              // handleToggleForStatusMOdal={handleToggleForStatusMOdal}
-              // handleUpdate={handleUpdate}
-            />
+            <ColumnsTableActivity tableData={activityData} />
 
             <div
               className="mx-2 "
@@ -115,30 +108,6 @@ const Activity = () => {
               </div>
             </div>
           </div>
-          <>
-            {isOpen > -1 && (
-              <ChakraProvider>
-                <Modal
-                  isCentered={true}
-                  isOpen={isOpen > -1}
-                  onClose={() => setIsOpen(-1)}
-                >
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalBody className="w-full">
-                      {/* {JSON.stringify(activityData[isOpen], null, 4)} */}
-                      <JsonView
-                        data={activityData[isOpen]}
-                        shouldExpandNode={allExpanded}
-                        style={defaultStyles}
-                      />
-                    </ModalBody>
-                    <ModalFooter></ModalFooter>
-                  </ModalContent>
-                </Modal>
-              </ChakraProvider>
-            )}
-          </>
         </>
       )}
     </div>

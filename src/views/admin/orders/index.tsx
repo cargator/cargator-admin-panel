@@ -10,26 +10,15 @@ import ReactPaginate from "react-paginate";
 function Orders() {
   const location = useLocation();
   const data = new URLSearchParams(location.search).get("data");
-  console.log("data===>", data);
-
-  const displayValue =
-    data === "completed"
-      ? "completed"
-      : data === "ongoing-rides"
-      ? "current-order"
-      : "all";
-
   const [loading, setLoading] = useState(false);
   const [allOrders, setAllOrders] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageCount, setPageCount] = useState(1);
   const [searchText, setSearchText] = useState("");
   const [limit, setLimit] = useState(10);
-  const [orderStatus, setOrderStatus] = useState<string>(displayValue);
   const firstRender = useRef(true);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
-  console.log("orderStatus =====> ", orderStatus);
 
   const setPageItemRange = (currPageNumber: number, maxItemRange: number) => {
     let startNumber = currPageNumber * limit - limit + 1;
@@ -185,34 +174,30 @@ function Orders() {
   const handlePageClick = async (event: any) => {
     const selectedPage = event.selected + 1;
     setCurrentPage(selectedPage);
-    await getAllOrders(selectedPage, limit);
+    await getAllOrders(selectedPage, 10, data);
   };
 
   useEffect(() => {
     const fetchData = async () => {
-      await getAllOrders(currentPage, 10, orderStatus);
+      setCurrentPage(1);
+      await getAllOrders(1, 10, data);
     };
     fetchData();
-  }, [currentPage]);
+  }, [data]);
 
-  useEffect(() => {
-    const handleStatusChange = async () => {
-      console.log(
-        "useeffect call after change",
-        orderStatus,
-        firstRender.current
-      );
-      // setLoading(true);
-      if (!firstRender.current) {
-        await handleOrderStatusSelect(orderStatus);
-      } else {
-        firstRender.current = false;
-      }
-      // setLoading(false);
-    };
+  // useEffect(() => {
+  //   const handleStatusChange = async () => {
+  //     // setLoading(true);
+  //     if (!firstRender.current) {
+  //       await handleOrderStatusSelect(data);
+  //     } else {
+  //       firstRender.current = false;
+  //     }
+  //     // setLoading(false);
+  //   };
 
-    handleStatusChange();
-  }, [orderStatus]);
+  //   handleStatusChange();
+  // }, [data]);
 
   useEffect(() => {
     if (searchText.trim() === "") {
@@ -244,8 +229,7 @@ function Orders() {
             <ColumnsOrderTable
               tableData={allOrders}
               statusOptions={orderStatusOptions}
-              setOrderStatus={setOrderStatus}
-              orderStatus={orderStatus}
+              orderStatus={data}
             />
 
             <div
@@ -259,7 +243,10 @@ function Orders() {
               }}
             >
               <h5>
-                {pageItemStartNumber} - {pageItemEndNumber}
+                {allOrders.length
+                  ? (currentPage - 1) * limit + 1
+                  : allOrders.length}{" "}
+                - {(currentPage - 1) * limit + allOrders.length}
               </h5>
               <div style={{ marginTop: "1rem" }}>
                 <ReactPaginate
