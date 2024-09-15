@@ -23,6 +23,8 @@ import { Link, useNavigate } from "react-router-dom";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { toast } from "react-toastify";
+import OlaMap from "../../../assets/images/Ola_Map_logo.svg";
+import google_Map_logo from "../../../assets/images/Google_Maps_Logo.svg";
 // import { Map as MapLibreMap, NavigationControl, Marker, Popup  } from "maplibre-gl";
 const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
@@ -544,77 +546,100 @@ const Dashboard = () => {
 
           {currentMap == "olaMap" && (
             <div
-              // className="h-100 w-100 bg-info"
+              style={{ position: "relative", width: "100%", height: "100%" }}
+            >
+              <div
+                // className="h-100 w-100 bg-info"
                 style={{ width: "77.5vw", height: "60vh", overflow: "hidden" }}
                 ref={mapContainerRef}
                 id="central-map"
               />
-            )} 
-            {currentMap == 'google' && (
-              <div className="h-100 w-100  bg-info">
-                {!isLoaded ? (
-                  <h1>Loading...</h1>
-                ) : (
-                  <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "500px" }}
-                    center={center}
-                    zoom={10}
-                  >
-                    {allOnlineDrivers &&
-                      allOnlineDrivers.length > 0 &&
-                      allOnlineDrivers.map((driverId) => {
-                        const position = {
-                          lng:
-                            driverId.liveLocation && driverId.liveLocation[1],
-                          lat:
-                            driverId.liveLocation && driverId.liveLocation[0],
-                        };
-                        return (
-                          <Marker
-                            key={driverId}
-                            position={position}
-                            icon={car}
-                            onClick={() =>
-                              showDriversDetails(driverId, position)
-                            }
-                          />
-                        );
-                      })}
-                    {selectedDriver && driverPosition && (
-                      <InfoWindow
-                        position={driverPosition}
-                        onCloseClick={() => setSelectedDriver(null)}
-                      >
-                        <div style={{ width: "100%" }}>
-                          <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
+              <img
+                src={OlaMap}
+                alt="OlaMap Icon"
+                style={{
+                  position: "absolute",
+                  bottom: "10px",
+                  left: "10px",
+                  width: "70px",
+                  height: "70px",
+                  zIndex: 10,
+                }}
+              />
+            </div>
+          )}
+          {currentMap == "google" && (
+            <div className="h-100 w-100  bg-info">
+              {!isLoaded ? (
+                <h1>Loading...</h1>
+              ) : (
+                <GoogleMap
+                  mapContainerStyle={{ width: "100%", height: "500px" }}
+                  center={center}
+                  zoom={10}
+                >
+                  {/* <img
+                    src={google_Map_logo}
+                    alt="OlaMap Icon"
+                    style={{
+                      position: "absolute",
+                      bottom: "10px",
+                      left: "10px",
+                      width: "70px",
+                      height: "70px",
+                      zIndex: 10,
+                    }}
+                  /> */}
+                  {allOnlineDrivers &&
+                    allOnlineDrivers.length > 0 &&
+                    allOnlineDrivers.map((driverId) => {
+                      const position = {
+                        lng: driverId.liveLocation && driverId.liveLocation[1],
+                        lat: driverId.liveLocation && driverId.liveLocation[0],
+                      };
+                      return (
+                        <Marker
+                          key={driverId}
+                          position={position}
+                          icon={car}
+                          onClick={() => showDriversDetails(driverId, position)}
+                        />
+                      );
+                    })}
+                  {selectedDriver && driverPosition && (
+                    <InfoWindow
+                      position={driverPosition}
+                      onCloseClick={() => setSelectedDriver(null)}
+                    >
+                      <div style={{ width: "100%" }}>
+                        <h2 style={{ fontWeight: "bold" }}>Rider Details</h2>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Name:</p>{" "}
+                          <p>
+                            {selectedDriver?.firstName}
+                            {"  "} {selectedDriver?.lastName}
                           </p>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p>Name:</p>{" "}
-                            <p>
-                              {selectedDriver?.firstName}
-                              {"  "} {selectedDriver?.lastName}
-                            </p>
-                          </p>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p> Mobile Number:</p>
-                            <p> {selectedDriver?.mobileNumber}</p>
-                          </p>
-                          <p style={{ display: "flex", fontWeight: "400" }}>
-                            <p>Vehical Number.:</p>
-                            <p> {selectedDriver?.vehicleNumber}</p>
-                          </p>
-                        </div>
-                      </InfoWindow>
-                    )}
-                  </GoogleMap>
-                )}
-              </div>
-            )}
-          </Card>
-        </>
-      
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p> Mobile Number:</p>
+                          <p> {selectedDriver?.mobileNumber}</p>
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Vehical Number.:</p>
+                          <p> {selectedDriver?.vehicleNumber}</p>
+                        </p>
+                      </div>
+                    </InfoWindow>
+                  )}
+                </GoogleMap>
+              )}
+            </div>
+          )}
+        </Card>
+      </>
     </div>
   );
 };
