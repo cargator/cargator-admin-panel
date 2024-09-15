@@ -23,6 +23,8 @@ import { Link, useNavigate } from "react-router-dom";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { toast } from "react-toastify";
+import OlaMap from "../../../assets/images/Ola_Map_logo.svg";
+import google_Map_logo from "../../../assets/images/Google_Maps_Logo.svg";
 // import { Map as MapLibreMap, NavigationControl, Marker, Popup  } from "maplibre-gl";
 const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
@@ -178,10 +180,11 @@ const Dashboard = () => {
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
       transformRequest: (url: any, resourceType: any) => {
+        const apiKey = process.env.REACT_APP_OLAMAP_API_KEY;
         if (url.includes("?")) {
-          url = url + "&api_key=TOdgiRkGxUBs1rpogCUwnqX0vSUtDcRnQaMWzBoR";
+          url = url + `&api_key=${apiKey}`;
         } else {
-          url = url + "?api_key=TOdgiRkGxUBs1rpogCUwnqX0vSUtDcRnQaMWzBoR";
+          url = url + `?api_key=${apiKey}`;
         }
         return { url, resourceType };
       },
@@ -543,11 +546,27 @@ const Dashboard = () => {
 
           {currentMap == "olaMap" && (
             <div
-              // className="h-100 w-100 bg-info"
-              style={{ width: "79vw", height: "80vh", overflow: "hidden" }}
-              ref={mapContainerRef}
-              id="central-map"
-            />
+              style={{ position: "relative", width: "100%", height: "100%" }}
+            >
+              <div
+                // className="h-100 w-100 bg-info"
+                style={{ width: "77.5vw", height: "60vh", overflow: "hidden" }}
+                ref={mapContainerRef}
+                id="central-map"
+              />
+              <img
+                src={OlaMap}
+                alt="OlaMap Icon"
+                style={{
+                  position: "absolute",
+                  bottom: "10px",
+                  left: "10px",
+                  width: "70px",
+                  height: "70px",
+                  zIndex: 10,
+                }}
+              />
+            </div>
           )}
           {currentMap == "google" && (
             <div className="h-100 w-100  bg-info">
@@ -559,6 +578,18 @@ const Dashboard = () => {
                   center={center}
                   zoom={10}
                 >
+                  {/* <img
+                    src={google_Map_logo}
+                    alt="OlaMap Icon"
+                    style={{
+                      position: "absolute",
+                      bottom: "10px",
+                      left: "10px",
+                      width: "70px",
+                      height: "70px",
+                      zIndex: 10,
+                    }}
+                  /> */}
                   {allOnlineDrivers &&
                     allOnlineDrivers.length > 0 &&
                     allOnlineDrivers.map((driverId) => {

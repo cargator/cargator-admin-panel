@@ -16,7 +16,7 @@
   border-radius: 10px;
 }
 
-.completedClass {
+/* .completedClass {
   background-color: #e8fff3;
   padding-bottom: 4px;
   padding-top: 2px;
@@ -42,4 +42,45 @@
   border-radius: 6px;
   padding-left: 16px;
   padding-right: 16px;
+}
+.pendingClass {
+  background-color: #fff5f8;
+  padding-bottom: 4px;
+  padding-top: 2px;
+  color: #f1416c;
+  border-radius: 6px;
+  padding-left: 16px;
+  padding-right: 16px;
+} */
+
+.completedClass {
+  background-color: #e8f5e9; /* Light green background to match green text */
+  color: #28a745; /* Green for success */
+  padding: 2px 16px; /* Consistent padding */
+  border-radius: 6px; /* Rounded corners */
+  font-weight: 500; /* Optional: make the text bold for emphasis */
+}
+
+.ongoingClass {
+  background-color: #fff8e1; /* Light yellow background to match yellow text */
+  color: #ffc107; /* Yellow for ongoing */
+  padding: 2px 16px; /* Consistent padding */
+  border-radius: 6px; /* Rounded corners */
+  font-weight: 500; /* Optional: make the text bold for emphasis */
+}
+
+.cancelledClass {
+  background-color: #fff5f8; /* Light pink background */
+  padding: 2px 16px 4px 16px; /* Consistent padding */
+  color: #f1416c; /* Red text */
+  border-radius: 6px; /* Rounded corners */
+  font-weight: 500; /* Optional: make the text bold for emphasis */
+}
+
+.pendingClass {
+  background-color: #f1f3f5; /* Very light gray background to match gray text */
+  color: #6c757d; /* Gray for pending or unknown statuses */
+  padding: 2px 16px; /* Consistent padding */
+  border-radius: 6px; /* Rounded corners */
+  font-weight: 500; /* Optional: make the text bold for emphasis */
 }
