@@ -125,11 +125,21 @@ function General() {
     try {
       const res: any = await getCurrentMap();
       setSelectedMapOption(res.data?.currentMap);
-      setIsLoading(false);
+
+      const headers = { "Content-Type": "application/json" };
+      const response: any = await getS3SignUrlApi(
+        {
+          key: res.data?.appImageKey,
+          contentType: "image/png",
+          type: "get",
+        },
+        { headers }
+      );
+      setImagePreview(response?.url)
     } catch (error: any) {
       errorToast(error.response?.data?.message || "Something went wrong");
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
   React.useEffect(() => {
     getData();
