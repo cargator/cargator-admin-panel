@@ -44,7 +44,6 @@
 // const olaMarker = maplibregl.Marker;
 // const markers = new Map();
 
-
 import {
   MapContainer,
   TileLayer,
@@ -85,8 +84,6 @@ const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
 const olaMarker = maplibregl.Marker;
 
-
-
 const icon = L.icon({
   html: `<div class="custom-marker"><span>1</span></div>`,
   // iconUrl: LocationPin,
@@ -120,7 +117,7 @@ function ColumnsTable(props) {
   const mapContainerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
-  const [markerPosition, setMarkerPostion] = useState([])
+  const [markerPosition, setMarkerPostion] = useState([]);
 
   const parser = new DOMParser();
 
@@ -278,6 +275,25 @@ function ColumnsTable(props) {
     }; // Clean up map on unmount
   }, [mapReady]);
 
+  useEffect(() => {
+    if (!mapRef.current) return; // Add a check to ensure mapRef is initialized
+
+    mapRef.current.on("load", () => {
+      data.map((spot, i) => {
+        const bounds = spot.bounds;
+
+        console.log("latLong>>>>>>>>>>>>>>", spot, bounds[0], bounds[1]);
+
+        const marker = new olaMarker({
+          // element: customIcon(i+1),
+          anchor: "center",
+        })
+          .setLngLat([bounds[0], bounds[1]])
+          .addTo(mapRef.current);
+      });
+    });
+  }, [data]);
+
   return (
     <Card
       extra={
@@ -405,7 +421,7 @@ function ColumnsTable(props) {
                 position: "absolute",
                 bottom: "12px",
                 // left: "10px",
-                right: '10px',
+                right: "10px",
                 width: "70px",
                 height: "70px",
                 zIndex: 10,

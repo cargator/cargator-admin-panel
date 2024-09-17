@@ -317,7 +317,7 @@ const SpotForm = () => {
       window.updateInput = (event) => {
         console.log("updateInput>>>>>>>>>>",event.target.value);
         setInputs({ ...inputs, input1: event.target.value });
-        isSpotNameFilled = event.target.value.trim();
+        isSpotNameFilled = event.target.value.trim() !== ''
       };
 
       window.updateVehicleNumber = (event) => {
