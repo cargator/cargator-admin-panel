@@ -20,6 +20,7 @@ import date from "../../../../assets/svg/date.svg";
 import ridePickDest from "../../../../assets/svg/ridePickDest.svg";
 import call from "../../../../assets/svg/call.svg";
 import dummyCar from "../../../../assets/svg/dummyCar.svg";
+import bike from "../../../../assets/svg/bike.svg";
 import dummyProfile from "../../../../assets/svg/dummyProfile.svg";
 import { FaArrowLeft } from "react-icons/fa";
 import {
@@ -46,6 +47,8 @@ const ImageWithFallback: React.FC<{
   const handleImageError = (event: React.SyntheticEvent<HTMLImageElement>) => {
     event.currentTarget.src = fallbackSrc;
   };
+
+  
 
   return (
     <img
@@ -92,6 +95,16 @@ const OrderView = () => {
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
+
+  function formatNumber(num:any) {
+    const numStr = num.toString();
+
+    if (numStr.length === 12) {
+        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else {
+        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    }
+}
 
   const errorToast = (message: any) => {
     toast.error(`${message}`, {
@@ -399,7 +412,7 @@ const OrderView = () => {
 
   return (
     <>
-      <Navbar flag={false} brandText="order details" />
+      <Navbar flag={false} brandText="order details " />
       <Link
         to="/admin/order"
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
@@ -413,12 +426,12 @@ const OrderView = () => {
         </div>
       )}
       <>
-        <Card
+        <Card 
           extra={
-            "w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4"
+            "w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4 overflow-hidden"
           }
         >
-          <div className="col-span-5">
+          <div className="col-span-5 ">
             <div
               style={{
                 fontSize: "20px",
@@ -427,7 +440,7 @@ const OrderView = () => {
                 paddingTop: "14px",
               }}
             >
-              Order Details
+              Order Details 
             </div>
             <div
               style={{
@@ -468,7 +481,7 @@ const OrderView = () => {
                 {orderStatus || "NA"}
               </span>
             </div>
-            <div className="m-1 w-1/4 rounded-[4px] p-3 dark:bg-white">
+            <div className="m-1 w-1/4 rounded-[4px] p-3 dark:bg-white ">
               <span
                 style={{
                   fontSize: "14px",
@@ -490,12 +503,12 @@ const OrderView = () => {
             </div>
             <hr style={{ color: "#E1E2F1" }} />
             {/* Customer Details */}
-            <div className="mt-2 grid grid-cols-8 gap-3 pb-3">
+            <div className="mt-2 grid grid-cols-8 gap-3 pb-3 ">
               <div className="col-span-1 mt-4">
-                <img src={ridePickDest} width={45} height={80} />
+                <img src={ridePickDest} width={40} height={80} />
               </div>
               <div
-                className="col-span-7"
+                className="col-span-7 "
                 style={{
                   width: "70%",
                 }}
@@ -505,15 +518,15 @@ const OrderView = () => {
                   style={{
                     fontSize: "20px",
                     fontWeight: "600",
-                    paddingBottom: "8px",
+                    // paddingBottom: "8px",
                   }}
                 >
                   Rider
                 </div>
-                <div className="">
-                  <div className="mb-3 grid grid-cols-8">
+                <div style={{height:"100px"}}>
+                  <div id='add'className=" grid ">
                     {" "}
-                    <div className="">
+                        {/* <div className="">
                       {driverImagePath ? (
                         <ImageWithFallback
                           src={driverImagePath}
@@ -523,56 +536,56 @@ const OrderView = () => {
                       ) : (
                         <img src={dummyProfile} width={30} height={30} />
                       )}
-                    </div>
-                    <div className="col-span-6">
+                    </div> */}
+                    <div className="col-span-6  ">
                       {" "}
                       <div
                         style={{
-                          fontSize: "18px",
+                          fontSize: "14px",
                           fontWeight: "500",
-                          paddingBottom: "10px",
+                          // paddingBottom: "10px",
                         }}
                       >
                         {driverName || "NA"}
                         <span
                           style={{
-                            fontSize: "12px",
-                            fontWeight: "600",
+                            fontSize: "14px",
+                            fontWeight: "500",
                             marginLeft: "5px",
                           }}
                         >
-                          {`(${driverMobileNumber})` || "NA"}
+                          {`- +${formatNumber(driverMobileNumber)}` || "NA"}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <div className="ml-11">
+                  <div >
                     <div
                       className="col-span-7"
                       style={{
                         fontSize: "12px",
                         fontWeight: "400",
-                        width: "70%",
+                        width: "70%"
                       }}
                     >
-                      <div style={{ paddingBottom: "30px" }}>{drop}</div>
+                      <div style={{ paddingBottom: "0px " }}>{pickUp}</div>
                     </div>
                   </div>
                 </div>
-                <hr style={{ color: "#E1E2F1" }} />
+                {/* <hr style={{ color: "#E1E2F1" }} /> */}
                 <div
                   className="pt-3"
                   style={{
                     fontSize: "20px",
                     fontWeight: "600",
-                    paddingBottom: "8px",
+                    // paddingBottom: "0px",
                   }}
                 >
                   Customer
                 </div>
-                <div className="grid grid-cols-8 pb-3">
-                  <div className="">
+                <div className="grid pb-3">
+                  {/* <div className="">
                     {driverImagePath ? (
                       <ImageWithFallback
                         src={driverImagePath}
@@ -582,27 +595,27 @@ const OrderView = () => {
                     ) : (
                       <img src={dummyProfile} width={30} height={30} />
                     )}
-                  </div>
+                  </div> */}
                   <div className="col-span-7">
                     <div
                       style={{
-                        fontSize: "18px",
+                        fontSize: "14px",
                         fontWeight: "500",
-                        paddingBottom: "10px",
+                        // paddingBottom: "10px",
                       }}
                     >
                       {customerName || "NA"}
                       <span
                         style={{
-                          fontSize: "12px",
-                          fontWeight: "600",
+                          fontSize: "14px",
+                          fontWeight: "500",
                           marginLeft: "5px",
                         }}
                       >
-                        {`(${customerMobileNumber})` || "NA"}
+                        {`- +${formatNumber(customerMobileNumber)}` || "NA" }
                       </span>
                     </div>
-                    <div style={{ fontSize: "12px" }}>{pickUp}</div>
+                    <div style={{ fontSize: "12px" }}>{drop}</div>
                   </div>
                 </div>
               </div>
@@ -610,7 +623,7 @@ const OrderView = () => {
             <hr style={{ color: "#E1E2F1" }} />
 
             <div
-              className="pt-3"
+              className="pt-3 "
               style={{
                 fontSize: "20px",
                 fontWeight: "600",
@@ -619,19 +632,19 @@ const OrderView = () => {
             >
               Vehicle
             </div>
-            <div className="grid grid-cols-8 gap-2 pb-3">
+            <div className="grid grid-cols-8 gap-2 pb-3 ml-5">
               <div className="col-span-2">
                 {vehicleImagePath ? (
                   <ImageWithFallback
                     src={vehicleImagePath}
                     alt={"profile image"}
-                    fallbackSrc={dummyCar}
+                    fallbackSrc={bike}
                   />
                 ) : (
-                  <img src={dummyCar} width={70} height={70} />
+                  <img src={bike} width={70} height={70} />
                 )}
               </div>
-              <div className="col-span-6">
+              <div className="col-span-6 ">
                 <div
                   style={{
                     fontSize: "18px",
@@ -648,8 +661,8 @@ const OrderView = () => {
                 </div>
               </div>
             </div>
-            <hr style={{ color: "#E1E2F1" }} />
-            {/* Order status History */}
+            <hr style={{ color: "#E1E2F1" }} /> 
+             Order status History
             <div
               style={{
                 fontSize: "20px",
@@ -658,7 +671,7 @@ const OrderView = () => {
                 paddingTop: "14px",
               }}
             >
-              Order Status History
+            Order Status History   
             </div>
             <div>
               {updatedStatus.map((statusItem) => {
@@ -680,18 +693,18 @@ const OrderView = () => {
                       fontWeight: "500",
                       paddingBottom: "18px",
                     }}
-                  >
-                    {/* Date Icon and Date */}
-                    <img
+                  > 
+                    {/* Date Icon and Date   */}
+                     <img
                       src={date}
                       width={16}
                       height={16}
                       style={{ display: "inline-block", marginRight: "2px" }}
                       alt="date icon"
-                    />
-                    <span className="pe-5">{istDateString}</span>
+                    /> 
+                    <span className="pe-5">{istDateString}</span> 
 
-                    {/* Time Icon and Time */}
+                    {/* Time Icon and Time  */}
                     <img
                       src={time}
                       width={16}
@@ -718,17 +731,24 @@ const OrderView = () => {
                       }
                     >
                       {statusItem.status}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+                    </span> 
+
+                   </div> 
+                 ); 
+              })} 
+             </div> 
+
           </div>
 
           {currentMap == "olaMap" && (
             <div
               className="col-span-7"
-              style={{ width: "45.3vw", height: "80vh", overflow: "hidden" }}
+              style={{
+                width: "100%",
+                height: "650px",
+                borderTopRightRadius: "10px",
+                borderBottomRightRadius: "10px",
+              }}
               ref={mapContainerRef}
               id="central-map"
             />
