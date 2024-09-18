@@ -7,6 +7,9 @@ import { ErrorMessage, Formik } from "formik";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
+import  GoogleMapLogo from '../../../assets/svg/GoogleMapLogo.svg'
+import  OlaMapLogo from '../../../assets/svg/OlaMapLogo.svg'
+
 import {
   addFare,
   createAppFlowAPI,
@@ -335,15 +338,17 @@ function General() {
             {isLoading ? (
               <Loader />
             ) : (
-              <div className="mb-5">
+              <div className="mb-5 mt-5  flex-col gap-5">
                 <label
                   htmlFor="flow"
-                  className="input-custom-label dark:text-white"
+                  className="input-custom-label dark:text-white mb-10"
                 >
                   Choose Map
                 </label>
-                <div className="w-full justify-between  gap-5">
+                <div className="w-full  justify-between flex-col gap-5">
+                  
                   <label htmlFor="default" className="mr-8 ">
+                    <div>
                     <input
                       type="radio"
                       id="google"
@@ -353,9 +358,12 @@ function General() {
                       onChange={handleOptionChange}
                       // disabled={isDisabled}
                     />
-                    <label className="ml-2">Google</label>
+                    <label className="ml-2 "style={{ display: "inline-block", marginLeft: "8px" }}>Google Map</label>
+                    <img src={GoogleMapLogo } alt="google Map Logo" width={40} height={40} style={{ display: "inline-block", marginLeft: "8px" }}/>
+                    </div>
                   </label>
                   <label htmlFor="custom" className="mr-8">
+                    <div className="mb-4">
                     <input
                       type="radio"
                       id="olaMap"
@@ -365,11 +373,13 @@ function General() {
                       onChange={handleOptionChange}
                       // disabled={isDisabled}
                     />
-                    <label className="ml-2">OlaMap</label>
+                    <label className="ml-2" style={{ display: "inline-block", marginLeft: "8px" }}>Ola Map</label>
+                    <img src={OlaMapLogo } alt="ola Map Logo" width={40} height={40} style={{ display: "inline-block", marginLeft: "8px" }}/>
+                    </div>
                   </label>
                   <button
                     onClick={() => handleSelectedMap()}
-                    className="save-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 sm:my-0"
+                    className="save-button bg-brand-500 dark:bg-brand-400 "
                   >
                     Save
                   </button>
