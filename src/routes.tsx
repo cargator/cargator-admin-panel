@@ -28,6 +28,7 @@ import {
   MdTwoWheeler,
 } from "react-icons/md";
 import { HiLocationMarker } from "react-icons/hi";
+import { IoRestaurantOutline } from "react-icons/io5";
 import { BsChatLeftText } from "react-icons/bs";
 import { IoCarSportSharp, IoSettingsOutline } from "react-icons/io5";
 import Drivers from "views/admin/drivers";
@@ -38,6 +39,8 @@ import Admins from "views/admin/settings/Admins";
 import CreateUsers from "views/admin/settings/Admins/createUsers";
 import Activity from "views/admin/settings/Activity";
 import ActivityDetails from "views/admin/settings/Activity/ActivityDetails";
+import Restaurent from "views/admin/restaurent";
+import RestaurentForm from "views/admin/restaurent/components/RestaurentForm";
 
 export interface RoutesType {
   name: string;
@@ -69,6 +72,20 @@ const authenticatedRoutes: RoutesType[] = [
     path: "spot/spot-form",
     // icon: <MdPerson className="h-6 w-6" />,
     component: <SpotForm />,
+    secondary: true,
+  },
+  {
+    name: "Restaurent",
+    layout: "/admin",
+    path: "restaurent",
+    icon: <IoRestaurantOutline className="h-6 w-6" />,
+    component: <Restaurent />,
+  },
+  {
+    name: "Restaurent Form",
+    layout: "/admin",
+    path: "restaurent/restaurent-form",
+    component: <RestaurentForm />,
     secondary: true,
   },
   {

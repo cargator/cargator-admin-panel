@@ -160,6 +160,7 @@ export const deleteVehicleType = (id) => {
   return customAxios.delete(`/delete-vehicle-type/${id}`);
 };
 
+
 // fare
 
 export const addFare = (data) => {
@@ -300,6 +301,25 @@ export const deleteSpot = (id) => {
 export const getActiveSpots = () => {
   return customAxios.get(`/get-active-spot`);
 };
+
+// restaurent 
+export const createRestaurent = (data) => {
+  console.log("data", data);
+  return customAxios.post("/create-restaurent", data);
+};
+
+export const getRestaurentList = (data) => {
+  console.log("getDataApi");
+  return customAxios.get(
+    `/get-restaurent-list?page=${data.page}&limit=${data.limit}`
+  );
+};
+
+export const getAvailableRestaurentApi = () => {
+  return customAxios.get("/get-available-restaurent");
+};
+
+
 // country code APIs
 
 export const createCountryCodeApi = (data) => {

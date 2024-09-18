@@ -20,6 +20,7 @@ import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 type RowObj = {
   fullName: customFieldType1;
   mobileNumber: string;
+  restaurentName: string;
   vehicleNumber: string;
   vehicleType: string;
   status: string;
@@ -151,6 +152,21 @@ function ColumnsTable(props: {
         </p>
       ),
     }),
+    columnHelper.accessor("restaurentName", {
+      id: "restaurentName",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Restaurent Name")}
+        </p>
+      ),
+      cell: (info) => {
+        const value = info.getValue();
+        return(
+        <p className="text-sm  font-bold text-navy-700 dark:text-white">
+          {!value || value.trim() === "" ? "NA" : info.getValue()}
+        </p>
+      )},
+    }),
     columnHelper.accessor("vehicleNumber", {
       id: "vehicleNumber",
       header: () => (
@@ -158,7 +174,7 @@ function ColumnsTable(props: {
           {t("Vehicle Number")}
         </p>
       ),
-      cell: (info) => (
+      cell: (info) =>(
         <p className="text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue() === "   " ? "NA" : info.getValue()}
         </p>

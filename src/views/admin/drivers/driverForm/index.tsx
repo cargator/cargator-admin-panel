@@ -5,11 +5,12 @@ import { Button } from "@chakra-ui/react";
 import "./driverform.css";
 import { ErrorMessage, Formik, useFormikContext } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
 import {
   createDriverApi,
   deleteObjectFromS3Api,
+  getAvailableRestaurentApi,
   getAvailableVehiclesApi,
   getDriverByIdApi,
   getS3SignUrlApi,
@@ -66,7 +67,6 @@ const Logger = (props: any): JSX.Element => {
         formik.values.vehicleName = "none";
         setVehicleName("None");
         setVehicleType("None");
-
       } else {
         allAvailableVehicles.map((data: any) => {
           if (data.vehicleNumber === formik.values.vehicleNumber) {
@@ -98,6 +98,7 @@ type docState = FinalDocArray[];
 
 type formvalues = {
   firstName: string;
+  restaurentName: string;
   lastName: string;
   mobileNumber: string;
   vehicleNumber: string;
@@ -114,10 +115,12 @@ const DriverForm = () => {
   const [vehicleName, setVehicleName] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
+  const [restaurentName, setRestaurentName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({
     firstName: "",
     lastName: "",
+    restaurentName: "",
     mobileNumber: "",
     vehicleNumber: "",
     vehicleType: "",
@@ -128,7 +131,9 @@ const DriverForm = () => {
     documents: [],
   });
   const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
+  const [allRestaurentList, setAllRestaurentList] = useState([]);
   const [options, setOptions] = useState([]);
+  const [restaurentOptions, setRestaurentOptions] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const anchorImageRef = useRef(null);
 
@@ -154,6 +159,9 @@ const DriverForm = () => {
     firstName: Yup.string()
       .min(2, t("First name must be atleast two characters."))
       .required(t("Name is required")),
+    restaurentName: Yup.string()
+      .min(2, t("Restaurent name must be atleast two characters."))
+      .required(t("Restaurent is required")),
     // lastName: Yup.string()
     //   .min(2, "Last name must be atleast two characters.")
     //   .required("Last name is required"),
@@ -172,51 +180,51 @@ const DriverForm = () => {
     // // .required(t("Vehicle number is required"))
     // ,
     // vehicleType: Yup.string().required(t("Vehicle type is required")),
-    // vehicleName: Yup.string().required(t("Vehicle name is required")),  
+    // vehicleName: Yup.string().required(t("Vehicle name is required")),
     image: isProfileImage
       ? Yup.mixed()
-        // .nullable()
-        .required(t("A file is required"))
-        .test(
-          "fileSize",
-          t("Please upload file below 1 MB size"),
-          (value: any) => {
-            return value && value.size <= FILE_SIZE;
-          }
-        )
-        .test(
-          "fileFormat",
-          t("Unsupported Format"),
-          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-        )
+          // .nullable()
+          .required(t("A file is required"))
+          .test(
+            "fileSize",
+            t("Please upload file below 1 MB size"),
+            (value: any) => {
+              return value && value.size <= FILE_SIZE;
+            }
+          )
+          .test(
+            "fileFormat",
+            t("Unsupported Format"),
+            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+          )
       : Yup.mixed(),
     documents: isdocuments
       ? Yup.mixed()
-        .required(t("A file is required"))
-        .test("fileSizeDoc", t("File too large"), (value: any) => {
-          let add = 0;
-          let i = value?.length - 1;
-          while (i >= 0) {
-            add = add + value[i]?.size;
-            i--;
-          }
-          return value && add <= FILE_SIZE_DOC;
-        })
-        .test("fileFormat", t("Unsupported Format"), (value: any) => {
-          let i = value?.length - 1;
-          while (i >= 0) {
-            if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
-              if (i === 0) {
-                return (
-                  value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
-                );
-              }
-            } else {
-              return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+          .required(t("A file is required"))
+          .test("fileSizeDoc", t("File too large"), (value: any) => {
+            let add = 0;
+            let i = value?.length - 1;
+            while (i >= 0) {
+              add = add + value[i]?.size;
+              i--;
             }
-            i--;
-          }
-        })
+            return value && add <= FILE_SIZE_DOC;
+          })
+          .test("fileFormat", t("Unsupported Format"), (value: any) => {
+            let i = value?.length - 1;
+            while (i >= 0) {
+              if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
+                if (i === 0) {
+                  return (
+                    value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
+                  );
+                }
+              } else {
+                return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+              }
+              i--;
+            }
+          })
       : Yup.mixed(),
     // .nullable()
   });
@@ -250,12 +258,10 @@ const DriverForm = () => {
     });
   };
 
-
-
   const getAvailableVehicles = async () => {
     try {
       const res = await getAvailableVehiclesApi();
-      console.log("res", res.data)
+      console.log("res", res.data);
       if (!res) {
         errorToast("Vehicles not available");
       }
@@ -273,9 +279,30 @@ const DriverForm = () => {
     }
   };
 
+  const getAvailableRestaurent = async () => {
+    try {
+      const res = await getAvailableRestaurentApi();
+      console.log("res", res.data);
+      if (!res) {
+        errorToast("Restaurent not available");
+      }
+      setRestaurentOptions(
+        res.data.map((option: any) => {
+          return {
+            value: option.restaurentName,
+            label: option.restaurentName,
+          };
+        })
+      );
+      setAllRestaurentList(res.data);
+    } catch (error: any) {
+      errorToast(error.response.data.message);
+    }
+  };
+
   useEffect(() => {
-    console.log({ options })
-  }, [options])
+    console.log({ options });
+  }, [options]);
 
   async function getS3SignUrl(key: string, contentType: string, type: string) {
     const headers = { "Content-Type": "application/json" };
@@ -291,7 +318,7 @@ const DriverForm = () => {
   }
 
   async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
-    console.log("-----------", presignedUrl, uploadPhoto)
+    console.log("-----------", presignedUrl, uploadPhoto);
     const response = await axios.put(presignedUrl, uploadPhoto);
     console.log("pushProfilePhotoToS3  :>> ", response);
     return response;
@@ -366,6 +393,7 @@ const DriverForm = () => {
         const result: any = await handleCreateDriverApi(params.id, {
           firstName: values.firstName,
           lastName: values.lastName,
+          restaurentName: values.restaurentName,
           mobileNumber: values.mobileNumber,
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
@@ -392,10 +420,12 @@ const DriverForm = () => {
             const data: any = await getS3SignUrl(key, contentType, type);
 
             if (data.url) {
-              res = await pushProfilePhotoToS3(data.url, finalProfileImage.file);
+              res = await pushProfilePhotoToS3(
+                data.url,
+                finalProfileImage.file
+              );
             }
           }
-
         }
 
         {
@@ -411,13 +441,13 @@ const DriverForm = () => {
                 res1 = await pushProfilePhotoToS3(data.url, ele.file);
               }
             }
-
           });
         }
 
         const result: any = await createDriverApi({
           firstName: values.firstName,
           lastName: values.lastName,
+          restaurentName: values.restaurentName,
           mobileNumber: values.mobileNumber,
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
@@ -434,7 +464,7 @@ const DriverForm = () => {
           setIsLoading(false);
         } else {
           console.log("11112345678");
-          
+
           errorToast(t("Something went wrong"));
         }
       }
@@ -487,10 +517,13 @@ const DriverForm = () => {
         }
       }
 
+      console.log("get data by driver id ", res.data);
+
       setInitialFormValues({
         firstName: res.data.firstName,
+        restaurentName: res.data.restaurentName,
         lastName: res.data.lastName,
-        mobileNumber: res.data.mobileNumber.slice(2,12),
+        mobileNumber: res.data.mobileNumber.slice(2, 12),
         vehicleNumber: res.data.vehicleNumber,
         vehicleType: res.data.vehicleType,
         vehicleName: res.data.vehicleName,
@@ -504,6 +537,7 @@ const DriverForm = () => {
       setVehicleNumber(res.data.vehicleNumber);
       setVehicleName(res.data.vehicleName);
       setVehicleType(res.data.vehicleType);
+      setRestaurentName(res.data.restaurentName);
 
       setIsLoading(false);
     } catch (error: any) {
@@ -552,32 +586,34 @@ const DriverForm = () => {
     setFinalDocArray(newArray);
   };
 
-
-
-  React.useEffect(() => {
+  useEffect(() => {
     if (options && paramData?.vehicleNumber) {
       if (options[options.length - 1]?.value !== paramData.vehicleNumber) {
         // options.push({
         //   value: paramData?.vehicleNumber,
         //   label: paramData?.vehicleNumber,
         // });
-        setOptions([...options, {
-          value: paramData?.vehicleNumber,
-          label: vehicleNumberFormat(paramData.vehicleNumber),
-        }]);
+        setOptions([
+          ...options,
+          {
+            value: paramData?.vehicleNumber,
+            label: vehicleNumberFormat(paramData.vehicleNumber),
+          },
+        ]);
         allAvailableVehicles.push(paramData);
       }
     }
   }, [options, paramData]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (params.id) {
       getData(params.id);
     }
   }, [params]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getAvailableVehicles();
+    getAvailableRestaurent();
   }, [vehicleType]);
 
   return (
@@ -655,32 +691,69 @@ const DriverForm = () => {
                           : null}
                       </div>
                     </div>
-                    {/* <div className="mb-3 ms-6 w-full">
+                    <div className="mb-3 ms-6 w-full">
                       <label
-                        htmlFor="lastName"
+                        htmlFor="restaurent"
                         className="input-custom-label dark:text-white"
                       >
-                        Last Name
+                        {t("Restaurent Name")}
                       </label>
-                      <input
-                        required
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="lastName"
-                        type="text"
-                        id="lastName"
-                        placeholder="Enter last name here"
-                        onChange={handleChange}
+                      <Select
+                        options={[
+                          { value: "none", label: "None" },
+                          ...restaurentOptions,
+                        ]}
+                        id="restaurentName"
+                        name="resturentName"
                         onBlur={handleBlur}
-                        value={values?.lastName}
+                        onChange={(e: any) => {
+                          if (e && e.value) {
+                            setRestaurentName(e.value);
+                            values.restaurentName = e.value;
+                          }
+                        }}
+                        value={
+                          allRestaurentList.find(
+                            (option: any) => option.value === restaurentName
+                          ) || {
+                            value: !restaurentName ? "none" : restaurentName,
+                            label: !restaurentName ? "None" : restaurentName,
+                          }
+                        }
+                        styles={{
+                          menu: (provided: any) => ({
+                            ...provided,
+                            zIndex: 9999,
+                          }),
+                          control: (provided: any) => ({
+                            ...provided,
+                            height: "47px",
+                            marginTop: "8px",
+                            borderRadius: "10px",
+                            fontSize: "0.875rem",
+                            borderColor: "#e6e6e6",
+                          }),
+                          option: (provided: any, state: any) => ({
+                            ...provided,
+                            backgroundColor: state.isSelected
+                              ? "#f2f3f7"
+                              : "white",
+                            color: "black",
+                            "&:hover": {
+                              backgroundColor: "#f2f3f7",
+                            },
+                          }),
+                        }}
+                        components={{
+                          IndicatorSeparator: () => null,
+                        }}
                       />
                       <div className="error-input">
-                        {errors.lastName && touched.lastName
-                          ? errors.lastName
+                        {errors.restaurentName && touched.restaurentName
+                          ? errors.restaurentName
                           : null}
                       </div>
-                    </div> */}
-                    {/* <div className="mb-3 ms-6 w-full">
-                    </div> */}
+                    </div>
                   </div>
 
                   <div className="flex justify-between">

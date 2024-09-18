@@ -243,6 +243,7 @@ const Drivers = () => {
           path: path,
         },
         mobileNumber: driver.mobileNumber,
+        restaurentName: driver.restaurentName,
         vehicleNumber: `${vehicleNumberFormat(driver?.vehicleNumber)}`,
         vehicleType: driver.vehicleType,
         status: driver.rideStatus,
