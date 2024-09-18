@@ -10,6 +10,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
+import axios from 'axios';
 import L, { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
@@ -62,6 +63,8 @@ const RestaurentForm = () => {
   const [bounds, setBounds] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchText, setSearchText] = useState("Bhopal Madhya pradesh");
+  const [searchtTextCoords, setSearchtextCoords] = useState([]);
   const [currentMap, setcurrentMap] = useState("olaMap");
   const mapContainerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
@@ -155,6 +158,19 @@ const RestaurentForm = () => {
     ) : null;
   }
 
+  const getCoordsFromText = async(text) => {
+    try {
+      const api_Key = process.env.REACT_APP_OLAMAP_API_KEY;
+      const resp = await axios.get(
+        `https://api.olamaps.io/places/v1/geocode?address=${text}&language=hi&api_key=${api_Key}`,
+      );
+      setSearchtextCoords(resp.data.geocodingResults[0].grometry)
+      console.log("getCoordsFromText>>>>>..",resp.data.geocodingResults[0].geometry);
+    } catch (error) {
+      console.log("error from Geocode API", error);
+    }
+  }
+
   const getCurrentMapFLow = async () => {
     setIsLoading(true);
     try {
@@ -169,125 +185,126 @@ const RestaurentForm = () => {
 
   useEffect(() => {
     getCurrentMapFLow();
+    getCoordsFromText(searchText)
     setMapReady(true);
   }, []);
 
-  // useEffect(() => {
-  //   if (!mapReady || !mapContainerRef.current) return;
+  useEffect(() => {
+    if (!mapReady || !mapContainerRef.current) return;
 
-  //   // Initialize the map
-  //   mapRef.current = new MapLibreMap({
-  //     container: mapContainerRef.current,
-  //     center: [77.2201, 28.631605],
-  //     zoom: 9,
-  //     style:
-  //       "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
-  //     transformRequest: (url, resourceType) => {
-  //       const apiKey = process.env.REACT_APP_OLAMAP_API_KEY;
-  //       if (url.includes("?")) {
-  //         url = url + `&api_key=${apiKey}`;
-  //       } else {
-  //         url = url + `?api_key=${apiKey}`;
-  //       }
-  //       return { url, resourceType };
-  //     },
-  //   });
+    // Initialize the map
+    mapRef.current = new MapLibreMap({
+      container: mapContainerRef.current,
+      center: [77.2201, 28.631605],
+      zoom: 9,
+      style:
+        "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
+      transformRequest: (url, resourceType) => {
+        const apiKey = process.env.REACT_APP_OLAMAP_API_KEY;
+        if (url.includes("?")) {
+          url = url + `&api_key=${apiKey}`;
+        } else {
+          url = url + `?api_key=${apiKey}`;
+        }
+        return { url, resourceType };
+      },
+    });
 
-  //   // Add navigation controls
-  //   const nav = new NavigationControl({
-  //     visualizePitch: true,
-  //   });
-  //   mapRef.current.addControl(nav, "top-left");
+    // Add navigation controls
+    const nav = new NavigationControl({
+      visualizePitch: true,
+    });
+    mapRef.current.addControl(nav, "top-left");
 
-  //   mapRef.current.on("click", (e) => {
-  //     const { lng, lat } = e.lngLat;
-  //     console.log(`Clicked at Latitude: ${lat}, Longitude: ${lng}`);
-  //     setMarkerPostion([lng, lat]);
-  //   });
+    mapRef.current.on("click", (e) => {
+      const { lng, lat } = e.lngLat;
+      console.log(`Clicked at Latitude: ${lat}, Longitude: ${lng}`);
+      setMarkerPostion([lng, lat]);
+    });
 
-  //   return () => {
-  //     mapRef.current.remove();
-  //   };
-  // }, [mapReady]);
+    return () => {
+      mapRef.current.remove();
+    };
+  }, [mapReady]);
 
-  // useEffect(() => {
-  //   if (mapRef.current && markerPosition) {
-  //     if (markerPosition.length) {
+  useEffect(() => {
+    if (mapRef.current && markerPosition) {
+      if (markerPosition.length) {
 
-  //       const popupContent = `
-  //       <div class="popup absolute z-20 flex w-[25vw] flex-col justify-between rounded-2xl border bg-white p-7 shadow">
-  //         <label
-  //           htmlFor="input1"
-  //           class="font-Poppins text-center text-xl font-bold"
-  //         >
-  //           ${t("Enter Restaurent Name")}
-  //         </label>
-  //         <input
-  //           type="text"
-  //           id="input1"
-  //           class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
-  //           placeholder="${t("Enter restaurent name here")}"
-  //           value="${inputs.input1}"
-  //           onChange="updateInput(event)"
-  //         />
-  //          ${!isSpotNameFilled ? `<p class="mt-1 text-sm text-red-500">${t("Please fill the spot name")}</p>` : ''}
-  //         <div class="flex justify-center gap-2">
-  //           <button
-  //             class="h-[8vh] w-[7vw] rounded-xl bg-blue-500 text-white"
-  //             onclick="confirmAction()"
-  //             ${!isSpotNameFilled ? 'disabled' : ''}
-  //           >
-  //             ${t("Confirm")}
-  //           </button>
-  //           <button
-  //             class="h-[8vh] w-[7vw] rounded-xl bg-gray-500 text-white"
-  //             onclick="cancelAction()"
-  //           >
-  //             ${t("Cancel")}
-  //           </button>
-  //         </div>
-  //       </div>
-  //     `;
+        const popupContent = `
+        <div class="popup absolute z-20 flex w-[25vw] flex-col justify-between rounded-2xl border bg-white p-7 shadow">
+          <label
+            htmlFor="input1"
+            class="font-Poppins text-center text-xl font-bold"
+          >
+            ${t("Enter Restaurent Name")}
+          </label>
+          <input
+            type="text"
+            id="input1"
+            class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
+            placeholder="${t("Enter restaurent name here")}"
+            value="${inputs.input1}"
+            onChange="updateInput(event)"
+          />
+           ${!isSpotNameFilled ? `<p class="mt-1 text-sm text-red-500">${t("Please fill the spot name")}</p>` : ''}
+          <div class="flex justify-center gap-2">
+            <button
+              class="h-[8vh] w-[7vw] rounded-xl bg-blue-500 text-white"
+              onclick="confirmAction()"
+              ${!isSpotNameFilled ? 'disabled' : ''}
+            >
+              ${t("Confirm")}
+            </button>
+            <button
+              class="h-[8vh] w-[7vw] rounded-xl bg-gray-500 text-white"
+              onclick="cancelAction()"
+            >
+              ${t("Cancel")}
+            </button>
+          </div>
+        </div>
+      `;
       
-  //     const popup = new maplibregl.Popup({
-  //       offset: [0, -30],
-  //       anchor: 'bottom',
-  //     })
-  //     .setHTML(popupContent)
-  //     .setLngLat(markerPosition)
-  //     .addTo(mapRef.current);
+      const popup = new maplibregl.Popup({
+        offset: [0, -30],
+        anchor: 'bottom',
+      })
+      .setHTML(popupContent)
+      .setLngLat(markerPosition)
+      .addTo(mapRef.current);
 
-  //     window.updateInput = (event) => {
-  //       console.log("updateInput>>>>>>>>>>",event.target.value);
-  //       setInputs({ ...inputs, input1: event.target.value });
-  //       isSpotNameFilled = event.target.value.trim();
-  //     };
+      window.updateInput = (event) => {
+        console.log("updateInput>>>>>>>>>>",event.target.value);
+        setInputs({ ...inputs, input1: event.target.value });
+        isSpotNameFilled = event.target.value.trim();
+      };
 
-  //     window.confirmAction = async() => {
-  //       console.log("1534256476987089>>>>>>>>>>");
-  //         const restaurentName = inputs.input1;
-  //         try {
-  //           const resp = await createRestaurent({ bounds: markerPosition, restaurentName });
-  //           setInputs({ input1: "", input2: "" });
-  //           successToast("Spot added Successfully");
-  //           popup.remove();
-  //         } catch (error) {
-  //           console.log("error", error);
-  //           errorToast(error.response.data.message);
-  //         }
-  //     };
+      window.confirmAction = async() => {
+        console.log("1534256476987089>>>>>>>>>>");
+          const restaurentName = inputs.input1;
+          try {
+            const resp = await createRestaurent({ bounds: markerPosition, restaurentName });
+            setInputs({ input1: "", input2: "" });
+            successToast("Spot added Successfully");
+            popup.remove();
+          } catch (error) {
+            console.log("error", error);
+            errorToast(error.response.data.message);
+          }
+      };
 
-  //     window.cancelAction = () => {
-  //         popup.remove();
-  //         marker.remove()
-  //       };
+      window.cancelAction = () => {
+          popup.remove();
+          marker.remove()
+        };
 
-  //       const marker = new maplibregl.Marker({})
-  //         .setLngLat(markerPosition)
-  //         .addTo(mapRef.current);
-  //     }
-  //   }
-  // }, [markerPosition]);
+        const marker = new maplibregl.Marker({})
+          .setLngLat(markerPosition)
+          .addTo(mapRef.current);
+      }
+    }
+  }, [markerPosition]);
 
   return (
     <>
@@ -395,7 +412,7 @@ const RestaurentForm = () => {
             </div>
           )}
 
-          {/* {currentMap === "olaMap" && (
+          {currentMap === "olaMap" && (
             <div
               style={{ position: "relative", width: "100%", height: "100%" }}
             >
@@ -422,7 +439,7 @@ const RestaurentForm = () => {
                 }}
               />
             </div>
-          )} */}
+          )}
         </div>
       </div>
     </>
