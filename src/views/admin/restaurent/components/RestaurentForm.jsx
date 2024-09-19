@@ -10,7 +10,7 @@ import {
   useMap,
   useMapEvents,
 } from "react-leaflet";
-import axios from 'axios';
+import axios from "axios";
 import L, { Icon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
@@ -63,8 +63,8 @@ const RestaurentForm = () => {
   const [bounds, setBounds] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchText, setSearchText] = useState("Bhopal Madhya pradesh");
-  const [searchtTextCoords, setSearchtextCoords] = useState([]);
+  const [searchText, setSearchText] = useState("Delhi Gurugram");
+  const [searchTextCoords, setSearchTextCoords] = useState([19.259933, 77.412613]);
   const [currentMap, setcurrentMap] = useState("olaMap");
   const mapContainerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
@@ -112,7 +112,6 @@ const RestaurentForm = () => {
     });
   };
 
-
   // Function to handle submission from popup input box
   async function _onSubmit() {
     const restaurentName = inputs.input1;
@@ -137,7 +136,6 @@ const RestaurentForm = () => {
         }
       },
     });
-
     useEffect(() => {
       if (position !== null) {
         addMarker(position);
@@ -157,19 +155,39 @@ const RestaurentForm = () => {
       </Circle>
     ) : null;
   }
+  
 
-  const getCoordsFromText = async(text) => {
+  const mapLocation = (coords) => {
+    console.log("inside mapLocation",mapRef.current);
+    if (mapRef.current) {
+      mapRef.current.flyTo([coords[0], coords[1]], 13);
+    }
+  }
+
+  // const handleSearch = async () => {
+  //   try {
+  //     getCoordsFromText(searchText);
+  //   } catch (error) {
+      
+  //   }
+  // }
+
+  const getCoordsFromText = async (text) => {
     try {
       const api_Key = process.env.REACT_APP_OLAMAP_API_KEY;
       const resp = await axios.get(
-        `https://api.olamaps.io/places/v1/geocode?address=${text}&language=hi&api_key=${api_Key}`,
-      );
-      setSearchtextCoords(resp.data.geocodingResults[0].grometry)
-      console.log("getCoordsFromText>>>>>..",resp.data.geocodingResults[0].geometry);
+        `https://api.olamaps.io/places/v1/geocode?address=${text}&language=hi&api_key=${api_Key}`
+        );
+        const arr = Object.values(
+          resp.data.geocodingResults[0].geometry.location
+          );
+          setSearchTextCoords([arr[1], arr[0]]);
+          console.log("getCoordsFromText>>>>>>", searchText,searchTextCoords);
     } catch (error) {
       console.log("error from Geocode API", error);
     }
-  }
+    mapLocation(searchTextCoords)
+  };
 
   const getCurrentMapFLow = async () => {
     setIsLoading(true);
@@ -185,9 +203,25 @@ const RestaurentForm = () => {
 
   useEffect(() => {
     getCurrentMapFLow();
-    getCoordsFromText(searchText)
+    getCoordsFromText(searchText);
     setMapReady(true);
   }, []);
+
+  useEffect(()=> {
+    console.log("Inside useEffect>>>>>>", searchText);
+    if(searchText){
+      getCoordsFromText(searchText)
+    }
+  },[searchText])
+
+  // useEffect(()=> {
+  //   console.log("Inside useEffect>>>>>>", searchText);
+  //   if(searchText){
+  //     getCoordsFromText(searchText)
+  //   }
+  // },[searchText])
+
+
 
   useEffect(() => {
     if (!mapReady || !mapContainerRef.current) return;
@@ -230,7 +264,6 @@ const RestaurentForm = () => {
   useEffect(() => {
     if (mapRef.current && markerPosition) {
       if (markerPosition.length) {
-
         const popupContent = `
         <div class="popup absolute z-20 flex w-[25vw] flex-col justify-between rounded-2xl border bg-white p-7 shadow">
           <label
@@ -247,12 +280,18 @@ const RestaurentForm = () => {
             value="${inputs.input1}"
             onChange="updateInput(event)"
           />
-           ${!isSpotNameFilled ? `<p class="mt-1 text-sm text-red-500">${t("Please fill the spot name")}</p>` : ''}
+           ${
+             !isSpotNameFilled
+               ? `<p class="mt-1 text-sm text-red-500">${t(
+                   "Please fill the spot name"
+                 )}</p>`
+               : ""
+           }
           <div class="flex justify-center gap-2">
             <button
               class="h-[8vh] w-[7vw] rounded-xl bg-blue-500 text-white"
               onclick="confirmAction()"
-              ${!isSpotNameFilled ? 'disabled' : ''}
+              ${!isSpotNameFilled ? "disabled" : ""}
             >
               ${t("Confirm")}
             </button>
@@ -265,26 +304,29 @@ const RestaurentForm = () => {
           </div>
         </div>
       `;
-      
-      const popup = new maplibregl.Popup({
-        offset: [0, -30],
-        anchor: 'bottom',
-      })
-      .setHTML(popupContent)
-      .setLngLat(markerPosition)
-      .addTo(mapRef.current);
 
-      window.updateInput = (event) => {
-        console.log("updateInput>>>>>>>>>>",event.target.value);
-        setInputs({ ...inputs, input1: event.target.value });
-        isSpotNameFilled = event.target.value.trim();
-      };
+        const popup = new maplibregl.Popup({
+          offset: [0, -30],
+          anchor: "bottom",
+        })
+          .setHTML(popupContent)
+          .setLngLat(markerPosition)
+          .addTo(mapRef.current);
 
-      window.confirmAction = async() => {
-        console.log("1534256476987089>>>>>>>>>>");
+        window.updateInput = (event) => {
+          console.log("updateInput>>>>>>>>>>", event.target.value);
+          setInputs({ ...inputs, input1: event.target.value });
+          isSpotNameFilled = event.target.value.trim();
+        };
+
+        window.confirmAction = async () => {
+          console.log("1534256476987089>>>>>>>>>>");
           const restaurentName = inputs.input1;
           try {
-            const resp = await createRestaurent({ bounds: markerPosition, restaurentName });
+            const resp = await createRestaurent({
+              bounds: markerPosition,
+              restaurentName,
+            });
             setInputs({ input1: "", input2: "" });
             successToast("Spot added Successfully");
             popup.remove();
@@ -292,11 +334,11 @@ const RestaurentForm = () => {
             console.log("error", error);
             errorToast(error.response.data.message);
           }
-      };
+        };
 
-      window.cancelAction = () => {
+        window.cancelAction = () => {
           popup.remove();
-          marker.remove()
+          marker.remove();
         };
 
         const marker = new maplibregl.Marker({})
@@ -317,12 +359,25 @@ const RestaurentForm = () => {
         <div>Back</div>
       </Link>
       <div className="mb-5 mt-5 grid h-[100vh] w-full grid-cols-12 gap-4 rounded-lg bg-white p-4 pb-0 pe-0 pt-0">
-        <header className="relative col-span-12 mt-4 flex items-center justify-between">
+        <header className="relative col-span-4 mt-4 flex items-center justify-between">
           <div className="text-xl font-bold text-navy-700 dark:text-white">
             {t("Add Restaurent")}
           </div>
-          <div>
+          <div className="">
+            {" "}
+            <input
+              type="text"
+              placeholder="Search"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                console.log("<<<<<<<<<<<<<<<object>>>>>>>>>>>>>>>",e.target.value);                
+               setSearchText(e.target.value);
+                }
+              }}
+              className="rounded-md border px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring"
+            />
           </div>
+          <div></div>
         </header>
         <div className="col-span-12 mb-5 mr-3 overflow-hidden">
           {currentMap !== "olaMap" && (
@@ -339,7 +394,7 @@ const RestaurentForm = () => {
                 }
               >
                 <MapContainer
-                  center={[19.07, 72.87]}
+                  center={[19.07,72.87]}
                   zoom={12}
                   className={`z-10`}
                   onClick={() => {
@@ -348,9 +403,10 @@ const RestaurentForm = () => {
                       removeLastMarker();
                     }
                   }}
+                  ref={mapRef}
                 >
                   <TileLayer
-                    url="https://nominatim.openstreetmap.org/search?q=Eiffel+Tower&format=json"
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
 
