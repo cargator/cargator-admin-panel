@@ -63,11 +63,12 @@ const RestaurentForm = () => {
   const [bounds, setBounds] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchText, setSearchText] = useState("Delhi Gurugram");
-  const [searchTextCoords, setSearchTextCoords] = useState([19.259933, 77.412613]);
+  const [searchText, setSearchText] = useState("Delhi");
+  const [searchTextCoords, setSearchTextCoords] = useState([28.471250, 77.040300]);
   const [currentMap, setcurrentMap] = useState("olaMap");
   const mapContainerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
+  const mapRefStreet = useRef(null);
   const mapRef = useRef(null);
   const [markerPosition, setMarkerPostion] = useState([]);
 
@@ -158,19 +159,12 @@ const RestaurentForm = () => {
   
 
   const mapLocation = (coords) => {
-    console.log("inside mapLocation",mapRef.current);
-    if (mapRef.current) {
-      mapRef.current.flyTo([coords[0], coords[1]], 13);
+    console.log("inside mapLocation",mapRefStreet.current);
+    if (mapRefStreet.current) {
+      mapRefStreet.current.flyTo([coords[0], coords[1]], 11);
     }
   }
 
-  // const handleSearch = async () => {
-  //   try {
-  //     getCoordsFromText(searchText);
-  //   } catch (error) {
-      
-  //   }
-  // }
 
   const getCoordsFromText = async (text) => {
     try {
@@ -214,12 +208,13 @@ const RestaurentForm = () => {
     }
   },[searchText])
 
-  // useEffect(()=> {
-  //   console.log("Inside useEffect>>>>>>", searchText);
-  //   if(searchText){
-  //     getCoordsFromText(searchText)
-  //   }
-  // },[searchText])
+  
+  useEffect(()=> {
+    console.log("Inside useEffect>>>>>>", searchTextCoords);
+    if(searchTextCoords){
+      mapLocation(searchTextCoords)
+    }
+  },[searchTextCoords])
 
 
 
@@ -403,7 +398,7 @@ const RestaurentForm = () => {
                       removeLastMarker();
                     }
                   }}
-                  ref={mapRef}
+                  ref={mapRefStreet}
                 >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
