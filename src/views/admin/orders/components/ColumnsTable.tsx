@@ -277,14 +277,14 @@ function ColumnsOrderTable(props: {
           </div>
 
           <div className="flex items-center justify-between">
-            <button
+            {/* <button
               className={`mr-2 rounded-md bg-[rgba(43,122,11,1)] px-6 py-2 text-lg text-white`}
               onClick={() => {
                 navigate("/admin/order/add");
               }}
             >
               Add Order
-            </button>
+            </button> */}
             <div>
               <Select
                 isSearchable={false}

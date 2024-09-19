@@ -1,5 +1,4 @@
 // routes.ts
-
 import React from "react";
 import Dashboard from "views/admin/dashboard";
 import Spots from "views/admin/spots";
@@ -56,21 +55,21 @@ const authenticatedRoutes: RoutesType[] = [
     icon: <MdHome className="h-6 w-6" />,
     component: <Dashboard />,
   },
-  {
-    name: "Spots",
-    layout: "/admin",
-    path: "spots",
-    icon: <HiLocationMarker className="h-6 w-6" />,
-    component: <Spots />,
-  },
-  {
-    name: "Spot Form",
-    layout: "/admin",
-    path: "spot/spot-form",
-    // icon: <MdPerson className="h-6 w-6" />,
-    component: <SpotForm />,
-    secondary: true,
-  },
+  // {
+  //   name: "Spots",
+  //   layout: "/admin",
+  //   path: "spots",
+  //   icon: <HiLocationMarker className="h-6 w-6" />,
+  //   component: <Spots />,
+  // },
+  // {
+  //   name: "Spot Form",
+  //   layout: "/admin",
+  //   path: "spot/spot-form",
+  //   // icon: <MdPerson className="h-6 w-6" />,
+  //   component: <SpotForm />,
+  //   secondary: true,
+  // },
   {
     name: "Riders ",
     layout: "/admin",
