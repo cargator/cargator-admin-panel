@@ -58,11 +58,11 @@ const Sidebar: React.FC<{
       </span>
 
       <div className={`mx-[90px] mt-[100px] flex items-center`}>
-        <div style={{ widows: "1px" }}>
+        <div style={{ widows: "1px"}}>
           <img
             src={appImageUrl ? appImageUrl : logo}
             alt="Logo"
-            style={{ width: "80px", height: "auto", margin: "0%" }}
+            style={{ width: "100px", height: "100px", margin: "0%" }}
           />
         </div>
       </div>

@@ -7,8 +7,8 @@ import { ErrorMessage, Formik } from "formik";
 import * as Yup from "yup";
 import { v4 as uuidv4 } from "uuid";
 import { toast } from "react-toastify";
-import  GoogleMapLogo from '../../../assets/svg/GoogleMapLogo.svg'
-import  OlaMapLogo from '../../../assets/svg/OlaMapLogo.svg'
+import GoogleMapLogo from "../../../assets/svg/GoogleMapLogo.svg";
+import OlaMapLogo from "../../../assets/svg/OlaMapLogo.svg";
 
 import {
   addFare,
@@ -27,7 +27,8 @@ import {
 import Loader from "components/loader/loader";
 import uploadCloud from "../../../assets/svg/upload-cloud.svg";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setAppData } from "redux/reducers/appDataReducer";
 
 type formvalues = {
   appImage: File;
@@ -41,6 +42,7 @@ type profImage = {
 
 function General() {
   const appStoreData = useSelector((store: any) => store.app.sukam);
+  const dispatch = useDispatch()
   const navigate = useNavigate();
   const anchorImageRef = useRef(null);
   const [selectedMapOption, setSelectedMapOption] = useState(
@@ -63,7 +65,6 @@ function General() {
       if (appStoreData.utilId) {
         const data = { selectedMapOption };
         const res = await updateCurrentMap(appStoreData.utilId, data);
-        console.log("respone:>>>>", res);
         setIsLoading(false);
       }
     } catch (error: any) {
@@ -138,7 +139,7 @@ function General() {
         },
         { headers }
       );
-      setImagePreview(response?.url)
+      setImagePreview(response?.url);
     } catch (error: any) {
       errorToast(error.response?.data?.message || "Something went wrong");
     }
@@ -175,9 +176,16 @@ function General() {
       const presignedUrl = await getS3SignUrl(key, "image/png", "put");
       console.log("presignedUrl", presignedUrl);
       await axios.put(presignedUrl, values.appImage);
-      const response = await updateAppImage(appStoreData.utilId, {
+      const response: any = await updateAppImage(appStoreData.utilId, {
         appImageKey: key,
+        contentType:"image/png"
       });
+
+      dispatch(
+        setAppData({
+          appImageUrl: response.imageurl,
+        })
+      );
       successToast("Image Updated Successfuly");
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -338,43 +346,72 @@ function General() {
             {isLoading ? (
               <Loader />
             ) : (
-              <div className="mb-5 mt-5  flex-col gap-5">
+              <div className="grid grid-cols-1 gap-2">
                 <label
                   htmlFor="flow"
-                  className="input-custom-label dark:text-white mb-10"
+                  className="input-custom-label mt-5 dark:text-white"
                 >
                   Choose Map
                 </label>
-                <div className="w-full  justify-between flex-col gap-5">
-                  
-                  <label htmlFor="default" className="mr-8 ">
-                    <div>
-                    <input
-                      type="radio"
-                      id="google"
-                      name="option"
-                      value="google"
-                      checked={selectedMapOption === "google"}
-                      onChange={handleOptionChange}
-                      // disabled={isDisabled}
-                    />
-                    <label className="ml-2 "style={{ display: "inline-block", marginLeft: "8px" }}>Google Map</label>
-                    <img src={GoogleMapLogo } alt="google Map Logo" width={40} height={40} style={{ display: "inline-block", marginLeft: "8px" }}/>
+                <div className="grid  w-full grid-cols-1 gap-4">
+                  <label htmlFor="default" className="mr-8">
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        id="google"
+                        name="option"
+                        value="google"
+                        checked={selectedMapOption === "google"}
+                        onChange={handleOptionChange}
+                      />
+                      <img
+                        src={GoogleMapLogo}
+                        alt="Google Map Logo"
+                        style={{
+                          display: "inline-block",
+                          width: "60px",
+                          height: "60px",
+                          marginLeft: "8px",
+                        }}
+                      />
+                      <label style={{ marginLeft: "8px" }}>Google Map</label>
                     </div>
                   </label>
                   <label htmlFor="custom" className="mr-8">
-                    <div className="mb-4">
-                    <input
-                      type="radio"
-                      id="olaMap"
-                      name="option"
-                      value="olaMap"
-                      checked={selectedMapOption === "olaMap"}
-                      onChange={handleOptionChange}
-                      // disabled={isDisabled}
-                    />
-                    <label className="ml-2" style={{ display: "inline-block", marginLeft: "8px" }}>Ola Map</label>
-                    <img src={OlaMapLogo } alt="ola Map Logo" width={40} height={40} style={{ display: "inline-block", marginLeft: "8px" }}/>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        marginBottom: "16px",
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        id="olaMap"
+                        name="option"
+                        value="olaMap"
+                        checked={selectedMapOption === "olaMap"}
+                        onChange={handleOptionChange}
+                      />
+                      <img
+                        src={OlaMapLogo}
+                        alt="Ola Map Logo"
+                        style={{
+                          display: "inline-block",
+                          width: "60px",
+                          height: "60px",
+                          marginLeft: "8px",
+                        }}
+                      />
+                      <label style={{ marginLeft: "8px" }}>Ola Map</label>
                     </div>
                   </label>
                   <button
