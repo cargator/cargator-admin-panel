@@ -289,7 +289,7 @@ const DriverForm = () => {
       setRestaurentOptions(
         res.data.map((option: any) => {
           return {
-            value: option.restaurentName,
+            value: option.restaurentNameToLowerCase,
             label: option.restaurentName,
           };
         })
