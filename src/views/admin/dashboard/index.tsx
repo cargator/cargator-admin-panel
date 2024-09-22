@@ -546,11 +546,12 @@ const Dashboard = () => {
 
           {currentMap == "olaMap" && (
             <div
-              style={{ position: "relative", width: "100%", height: "100%" }}
+            style={{ position: "relative" }}
+              className="h-100 w-100  bg-info"
             >
               <div
                 // className="h-100 w-100 bg-info"
-                style={{ width: "77.5vw", height: "60vh", overflow: "hidden" }}
+                style={{ width: "100%", height: "500px" }}
                 ref={mapContainerRef}
                 id="central-map"
               />
