@@ -72,6 +72,17 @@ function ColumnsTableAdmins(props: {
     });
   };
 
+  
+  function formatNumber(num:any) {
+    const numStr = num.toString();
+
+    if (numStr.length === 12) {
+        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else {
+        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    }
+}
+
   const errorToast = (message: any) => {
     toast.error(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
@@ -149,7 +160,7 @@ function ColumnsTableAdmins(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
+         { `${formatNumber(info.getValue())}`}
         </p>
       ),
     }),
