@@ -75,7 +75,7 @@ const authenticatedRoutes: RoutesType[] = [
     secondary: true,
   },
   {
-    name: "Restaurent",
+    name: "Restaurants",
     layout: "/admin",
     path: "restaurent",
     icon: <IoRestaurantOutline className="h-6 w-6" />,

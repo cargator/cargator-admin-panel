@@ -319,6 +319,9 @@ export const getAvailableRestaurentApi = () => {
   return customAxios.get("/get-available-restaurent");
 };
 
+export const deleteRestaurent = (id) => {
+  return customAxios.delete(`/delete-Restaurent/${id}`);
+};
 
 // country code APIs
 

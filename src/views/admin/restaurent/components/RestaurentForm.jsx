@@ -119,7 +119,7 @@ const RestaurentForm = () => {
     try {
       const resp = await createRestaurent({ bounds, restaurentName });
       setInputs({ input1: "", input2: "" });
-      successToast("Spot added Successfully");
+      successToast("Restaurant added Successfully");
       setShowPopup(false);
     } catch (error) {
       console.log("error", error);
@@ -265,13 +265,13 @@ const RestaurentForm = () => {
             htmlFor="input1"
             class="font-Poppins text-center text-xl font-bold"
           >
-            ${t("Enter Restaurent Name")}
+            ${t("Enter Restaurant Name")}
           </label>
           <input
             type="text"
             id="input1"
             class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
-            placeholder="${t("Enter restaurent name here")}"
+            placeholder="${t("Enter restaurant name here")}"
             value="${inputs.input1}"
             onChange="updateInput(event)"
           />
@@ -420,14 +420,14 @@ const RestaurentForm = () => {
                     htmlFor="input1"
                     className="font-Poppins text-center text-xl font-bold"
                   >
-                    {t("Enter Restaurent Name")}
+                    {t("Enter Restaurant Name")}
                   </label>
 
                   <input
                     type="text"
                     id="input1"
                     className="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
-                    placeholder={t("Enter restaurent name here")}
+                    placeholder={t("Enter restaurant name here")}
                     value={inputs.input1}
                     onChange={(e) =>
                       setInputs({ ...inputs, input1: e.target.value })
@@ -436,7 +436,7 @@ const RestaurentForm = () => {
 
                   {!isSpotNameFilled && (
                     <p className="mt-1 text-sm text-red-500">
-                      {t("Please fill the restaurent name")}
+                      {t("Please fill the restaurant name")}
                     </p>
                   )}
 

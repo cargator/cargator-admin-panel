@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getRestaurentList, deleteSpot } from "../../../services/customAPI";
+import { getRestaurentList, deleteSpot, deleteRestaurent } from "../../../services/customAPI";
 import ReactPaginate from "react-paginate";
 // import './map.css'
 import Loader from "components/loader/loader";
@@ -128,12 +128,12 @@ const Restaurent = () => {
   }
 
   const handleClickForDeleteModal = (data) => {
+    
     setLoading(true);
     setModalState(true);
     setSelectedItem(data);
-    //   setVisibleModal(true);
     onOpen();
-    setLoading(false);
+    setLoading(false);    
   };
 
   const deleteHandle = async (info) => {
@@ -141,10 +141,11 @@ const Restaurent = () => {
 
     onClose();
     try {
-      const result = await deleteSpot(info.id);
+     
+      const result = await deleteRestaurent(info.id);
       getData();
       if (result.message) {
-        successToast("Spot deleted successfully");
+        successToast("Restaurant deleted successfully");
         setLoading(false);
       } else {
         setLoading(false);
@@ -307,7 +308,7 @@ const Restaurent = () => {
                     </div> */}
                     <ModalBody className="text-center">
                       {t("Are you sure you want to Delete?")} <br />
-                      {t(`${'"' + selectedItem.spotName + '"'}`)}
+                      {t(`${'"' + selectedItem.restaurentName + '"'}`)}
                     </ModalBody>
                     <div className="mt-3 flex justify-center">
                       <Button

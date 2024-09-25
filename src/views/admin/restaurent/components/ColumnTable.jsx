@@ -103,11 +103,12 @@ function ColumnsTable(props) {
   };
 
   const columns = [
+    
     columnHelper.accessor("restaurentName", {
       id: "restaurentName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Restaurent Name")}
+          {t("Restaurant Name")}
         </p>
       ),
       cell: (info) => (
@@ -238,8 +239,8 @@ function ColumnsTable(props) {
     >
       {/* Header */}
       <header className="relative col-span-12 flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
-          {t("Restaurents")}
+        <div className="text-xl font-bold text-navy-700 dark:text-white ">
+          {t("Restaurants")}
         </div>
         <div>
           <button
@@ -247,7 +248,7 @@ function ColumnsTable(props) {
             type="submit"
             onClick={() => navigate("/admin/restaurent/restaurent-form")}
           >
-            {t("Add Restaurent")}
+            {t("Add Restaurant")}
           </button>
         </div>
       </header>

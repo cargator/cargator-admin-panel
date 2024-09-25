@@ -730,7 +730,7 @@ const OrderView = () => {
                           : "pendingClass"
                       }
                     >
-                      {statusItem.status == "ACCEPTED" ? "RECIEVED FROM PETPOOJA" : statusItem.status}
+                      {statusItem.status == "ACCEPTED" ? "RECEIVED FROM PETPOOJA" : statusItem.status}
                     </span> 
 
                    </div> 

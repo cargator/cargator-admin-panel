@@ -42,9 +42,10 @@ type profImage = {
 
 function General() {
   const appStoreData = useSelector((store: any) => store.app.sukam);
-  const dispatch = useDispatch()
+    const dispatch = useDispatch()
   const navigate = useNavigate();
   const anchorImageRef = useRef(null);
+  const utilsId = useRef()
   const [selectedMapOption, setSelectedMapOption] = useState(
     appStoreData.currentMap || "OlaMap"
   );
@@ -62,9 +63,11 @@ function General() {
   const handleSelectedMap = async () => {
     setIsLoading(true);
     try {
-      if (appStoreData.utilId) {
+      if (utilsId.current) {
         const data = { selectedMapOption };
-        const res = await updateCurrentMap(appStoreData.utilId, data);
+        const res = await updateCurrentMap(utilsId.current, data);
+        successToast("Map  Updated Successfuly");
+
         setIsLoading(false);
       }
     } catch (error: any) {
@@ -130,6 +133,9 @@ function General() {
       const res: any = await getCurrentMap();
       setSelectedMapOption(res.data?.currentMap);
 
+      utilsId.current = res.data._id;
+      
+
       const headers = { "Content-Type": "application/json" };
       const response: any = await getS3SignUrlApi(
         {
@@ -174,9 +180,11 @@ function General() {
     try {
       const key = `sukam/logo-${values.appImage.name}.png`;
       const presignedUrl = await getS3SignUrl(key, "image/png", "put");
-      console.log("presignedUrl", presignedUrl);
+      console.log("presignedUrl", presignedUrl);      
       await axios.put(presignedUrl, values.appImage);
-      const response: any = await updateAppImage(appStoreData.utilId, {
+
+      console.log('here is the util id',utilsId.current)
+      const response: any = await updateAppImage(utilsId.current, {
         appImageKey: key,
         contentType:"image/png"
       });
@@ -351,7 +359,7 @@ function General() {
                   htmlFor="flow"
                   className="input-custom-label mt-5 dark:text-white"
                 >
-                  Choose Map
+                  Choose Mapping Provider
                 </label>
                 <div className="grid  w-full grid-cols-1 gap-4">
                   <label htmlFor="default" className="mr-8">
@@ -373,7 +381,7 @@ function General() {
                       />
                       <img
                         src={GoogleMapLogo}
-                        alt="Google Map Logo"
+                        alt="Google Maps Logo"
                         style={{
                           display: "inline-block",
                           width: "60px",
@@ -381,7 +389,7 @@ function General() {
                           marginLeft: "8px",
                         }}
                       />
-                      <label style={{ marginLeft: "8px" }}>Google Map</label>
+                      <label style={{ marginLeft: "8px" }}>Google Maps</label>
                     </div>
                   </label>
                   <label htmlFor="custom" className="mr-8">
@@ -403,7 +411,7 @@ function General() {
                       />
                       <img
                         src={OlaMapLogo}
-                        alt="Ola Map Logo"
+                        alt="Ola Maps Logo"
                         style={{
                           display: "inline-block",
                           width: "60px",
@@ -411,7 +419,7 @@ function General() {
                           marginLeft: "8px",
                         }}
                       />
-                      <label style={{ marginLeft: "8px" }}>Ola Map</label>
+                      <label style={{ marginLeft: "8px" }}>Ola Maps</label>
                     </div>
                   </label>
                   <button
