@@ -76,9 +76,9 @@ function Orders() {
         customerMobileNum:`${formatNumber(order?.drop_details?.contact_number
           ? order?.drop_details?.contact_number
           : null)}`,
-        DriverMobileNum:`${formatNumber(order?.driver_details?.contact
-          ? order?.driver_details?.contact
-          : null)}`,
+        DriverMobileNum:order.driver_details?.contact ?
+        `${formatNumber(order?.driver_details?.contact)}`
+          :null,
         amount: order.order_details.order_total,
         status: order.status,
         pickUpLocation: order.pickup_details.address,
