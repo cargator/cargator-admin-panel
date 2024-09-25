@@ -53,6 +53,19 @@ const Drivers = () => {
   const firstRender = useRef(true);
   const parser = new DOMParser();
 
+
+
+  
+  function formatNumber(num:any) {
+    const numStr = num.toString();
+
+    if (numStr.length === 12) {
+        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else {
+        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    }
+}
+
   const successToast = (message: string) => {
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
@@ -242,7 +255,7 @@ const Drivers = () => {
           name: driver.firstName + " " + driver.lastName,
           path: path,
         },
-        mobileNumber: driver.mobileNumber,
+        mobileNumber:`${formatNumber(driver.mobileNumber)}`,
         restaurentName: driver.restaurentName,
         vehicleNumber: `${vehicleNumberFormat(driver?.vehicleNumber)}`,
         vehicleType: driver.vehicleType,

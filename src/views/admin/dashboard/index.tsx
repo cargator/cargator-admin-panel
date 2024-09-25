@@ -70,6 +70,17 @@ const Dashboard = () => {
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<any>(null);
 
+
+  function formatNumber(num:any) {
+    const numStr = num.toString();
+
+    if (numStr.length === 12) {
+        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else {
+        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    }
+}
+
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
@@ -251,7 +262,7 @@ const Dashboard = () => {
       <strong>Name:</strong> ${driver.firstName}
     </div>
     <div class="text-md">
-      <strong>Mobile:</strong> ${driver.mobileNumber}
+      <strong>Mobile:</strong> ${formatNumber(driver.mobileNumber)}
     </div>
     <div class="text-md">
       <strong>Vehicle Number:</strong> ${driver.vehicleNumber}
@@ -626,7 +637,7 @@ const Dashboard = () => {
                         </p>
                         <p style={{ display: "flex", fontWeight: "400" }}>
                           <p> Mobile Number:</p>
-                          <p> {selectedDriver?.mobileNumber}</p>
+                          <p> {formatNumber(selectedDriver?.mobileNumber)}</p>
                         </p>
                         <p style={{ display: "flex", fontWeight: "400" }}>
                           <p>Vehical Number.:</p>

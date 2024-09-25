@@ -20,6 +20,21 @@ function Orders() {
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
 
+  
+
+  
+  function formatNumber(num:any) {
+    const numStr = num.toString();
+
+    if (numStr.length === 12) {
+        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else {
+        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    }
+
+    return null
+}
+
   const setPageItemRange = (currPageNumber: number, maxItemRange: number) => {
     let startNumber = currPageNumber * limit - limit + 1;
     if (startNumber < 0) {
@@ -58,12 +73,12 @@ function Orders() {
         orderId: order.order_details.vendor_order_id,
         orderDate: dateTime.substring(0, 10),
         orderTime: dateTime.substring(11, 16),
-        customerMobileNum: order?.drop_details?.contact_number
+        customerMobileNum:`${formatNumber(order?.drop_details?.contact_number
           ? order?.drop_details?.contact_number
-          : null,
-        DriverMobileNum: order?.driver_details?.contact
+          : null)}`,
+        DriverMobileNum:`${formatNumber(order?.driver_details?.contact
           ? order?.driver_details?.contact
-          : null,
+          : null)}`,
         amount: order.order_details.order_total,
         status: order.status,
         pickUpLocation: order.pickup_details.address,
