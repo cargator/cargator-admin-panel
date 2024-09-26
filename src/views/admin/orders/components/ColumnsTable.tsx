@@ -120,7 +120,7 @@ function ColumnsOrderTable(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue() == null ? "N/A" : ` +${info.getValue()}`}
+          {info.getValue() == null ? "N/A" : ` ${info.getValue()}`}
         </p>
       ),
     }),

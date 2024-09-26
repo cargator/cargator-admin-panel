@@ -48,7 +48,7 @@ const ImageWithFallback: React.FC<{
     event.currentTarget.src = fallbackSrc;
   };
 
-  
+
 
   return (
     <img
@@ -96,15 +96,18 @@ const OrderView = () => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
-  function formatNumber(num:any) {
-    const numStr = num.toString();
+  function formatNumber(num: any) {
 
+    if (num == null || num == undefined) return "NA";
+    const numStr = num.toString();
     if (numStr.length === 12) {
-        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else {
-        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+      return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else if (numStr.length === 10) {
+      return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
     }
-}
+
+    return num;
+  }
 
   const errorToast = (message: any) => {
     toast.error(`${message}`, {
@@ -426,7 +429,7 @@ const OrderView = () => {
         </div>
       )}
       <>
-        <Card 
+        <Card
           extra={
             "w-full pb-0 p-4 pt-0 pe-0 h-full mt-5 mb-5 grid grid-cols-12 gap-4 overflow-hidden"
           }
@@ -440,7 +443,7 @@ const OrderView = () => {
                 paddingTop: "14px",
               }}
             >
-              Order Details 
+              Order Details
             </div>
             <div
               style={{
@@ -474,8 +477,8 @@ const OrderView = () => {
                   orderStatus === "DELIVERED"
                     ? "completedClass"
                     : orderStatus === "CANCELLED"
-                    ? "cancelledClass"
-                    : "ongoingClass"
+                      ? "cancelledClass"
+                      : "ongoingClass"
                 }
               >
                 {orderStatus || "NA"}
@@ -526,7 +529,7 @@ const OrderView = () => {
                 <div style={{height:"100px"}}>
                   <div id='add'className=" grid ">
                     {" "}
-                        {/* <div className="">
+                    {/* <div className="">
                       {driverImagePath ? (
                         <ImageWithFallback
                           src={driverImagePath}
@@ -554,7 +557,7 @@ const OrderView = () => {
                             marginLeft: "5px",
                           }}
                         >
-                          {`- +${formatNumber(driverMobileNumber)}` || "NA"}
+                          {`- ${formatNumber(driverMobileNumber)}`}
                         </span>
                       </div>
                     </div>
@@ -612,7 +615,7 @@ const OrderView = () => {
                           marginLeft: "5px",
                         }}
                       >
-                        {`- +${formatNumber(customerMobileNumber)}` || "NA" }
+                        {`- ${formatNumber(customerMobileNumber)}`}
                       </span>
                     </div>
                     <div style={{ fontSize: "12px" }}>{drop}</div>
@@ -661,8 +664,8 @@ const OrderView = () => {
                 </div>
               </div>
             </div>
-            <hr style={{ color: "#E1E2F1" }} /> 
-             Order status History
+            <hr style={{ color: "#E1E2F1" }} />
+            Order status History
             <div
               style={{
                 fontSize: "20px",
@@ -671,7 +674,7 @@ const OrderView = () => {
                 paddingTop: "14px",
               }}
             >
-            Order Status History   
+              Order Status History
             </div>
             <div>
               {updatedStatus.map((statusItem) => {
@@ -693,16 +696,16 @@ const OrderView = () => {
                       fontWeight: "500",
                       paddingBottom: "18px",
                     }}
-                  > 
+                  >
                     {/* Date Icon and Date   */}
-                     <img
+                    <img
                       src={date}
                       width={16}
                       height={16}
                       style={{ display: "inline-block", marginRight: "2px" }}
                       alt="date icon"
-                    /> 
-                    <span className="pe-5">{istDateString}</span> 
+                    />
+                    <span className="pe-5">{istDateString}</span>
 
                     {/* Time Icon and Time  */}
                     <img
@@ -719,110 +722,126 @@ const OrderView = () => {
                         statusItem.status === "ACCEPTED"
                           ? "pendingClass"
                           : statusItem.status === "DELIVERED"
-                          ? "completedClass"
-                          : statusItem.status === "CANCELLED"
-                          ? "cancelledClass"
-                          : statusItem.status === "ARRIVED_CUSTOMER_DOORSTEP" ||
-                            statusItem.status === "ALLOTTED" ||
-                            statusItem.status === "ARRIVED" ||
-                            statusItem.status === "DISPATCHED"
-                          ? "ongoingClass"
-                          : "pendingClass"
+                            ? "completedClass"
+                            : statusItem.status === "CANCELLED"
+                              ? "cancelledClass"
+                              : statusItem.status === "ARRIVED_CUSTOMER_DOORSTEP" ||
+                                statusItem.status === "ALLOTTED" ||
+                                statusItem.status === "ARRIVED" ||
+                                statusItem.status === "DISPATCHED"
+                                ? "ongoingClass"
+                                : "pendingClass"
                       }
                     >
                       {statusItem.status == "ACCEPTED" ? "RECEIVED FROM PETPOOJA" : statusItem.status}
-                    </span> 
+                    </span>
 
-                   </div> 
-                 ); 
-              })} 
-             </div> 
+                  </div>
+                );
+              })}
+            </div>
 
           </div>
+          <div className="col-span-7">
 
-          {currentMap == "olaMap" && (
-            <div
-              className="col-span-7"
-              style={{
-                width: "100%",
-                height: "650px",
-                borderTopRightRadius: "10px",
-                borderBottomRightRadius: "10px",
-              }}
-              ref={mapContainerRef}
-              id="central-map"
-            />
-          )}
+             {/* legends for the map  */}
+            <div className="flex items-center space-x-6 justify-end mt-4 mr-4 mb-4">
+              <div className="flex items-center">
+                <div className="w-6 h-1 bg-blue-500 mr-2"></div>
+                <span className="text-md font-semibold text-gray-800">Route by map</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-6 h-1 bg-green-500 mr-2"></div>
+                <span className="text-md font-semibold text-gray-800">Route by Driver</span>
+              </div>
+            </div>
 
-          {currentMap == "google" && (
-            <div className="col-span-7">
-              {!isLoaded ? (
-                <h1>Loading...</h1>
-              ) : (
-                <GoogleMap
-                  mapContainerStyle={{
-                    width: "100%",
-                    height: "650px",
-                    borderTopRightRadius: "10px",
-                    borderBottomRightRadius: "10px",
-                  }}
-                  center={orderCurrentLatLong.current}
-                  zoom={13}
-                >
-                  {updatedStatus &&
-                    updatedStatus.length > 0 &&
-                    updatedStatus.slice(1).map((orderStatus) => {
-                      if (
-                        !orderStatus.location ||
-                        !Array.isArray(orderStatus.location) ||
-                        orderStatus.location.length < 2
-                      ) {
-                        console.error(
-                          "Invalid location data:",
-                          orderStatus.location
-                        );
-                        return null;
-                      }
 
-                      const position = {
-                        lng: orderStatus.location[1],
-                        lat: orderStatus.location[0],
-                      };
-                      let icon: any;
-                      switch (orderStatus.status) {
-                        case "ALLOTTED":
-                          icon = orderAccepted;
-                          break;
 
-                        case "ARRIVED":
-                          icon = ArrivedPickLoc;
-                          break;
 
-                        case "DISPATCHED":
-                          icon = orderDisp;
-                          break;
 
-                        case "ARRIVED_CUSTOMER_DOORSTEP":
-                          icon = ArrivedCustLoc;
-                          break;
+            {currentMap == "olaMap" && (
+              <div
+                style={{
+                  width: "100%",
+                  height: "650px",
+                  borderTopRightRadius: "10px",
+                  borderBottomRightRadius: "10px",
+                }}
+                ref={mapContainerRef}
+                id="central-map"
+              />
+            )}
 
-                        case "DELIVERED":
-                          icon = Delivered;
-                          break;
-
-                        default:
+            {currentMap == "google" && (
+              <div >
+                {!isLoaded ? (
+                  <h1>Loading...</h1>
+                ) : (
+                  <GoogleMap
+                    mapContainerStyle={{
+                      width: "100%",
+                      height: "650px",
+                      borderTopRightRadius: "10px",
+                      borderBottomRightRadius: "10px",
+                    }}
+                    center={orderCurrentLatLong.current}
+                    zoom={13}
+                  >
+                    {updatedStatus &&
+                      updatedStatus.length > 0 &&
+                      updatedStatus.slice(1).map((orderStatus) => {
+                        if (
+                          !orderStatus.location ||
+                          !Array.isArray(orderStatus.location) ||
+                          orderStatus.location.length < 2
+                        ) {
+                          console.error(
+                            "Invalid location data:",
+                            orderStatus.location
+                          );
                           return null;
-                      }
-                      return (
-                        <Marker
-                          key={orderStatus}
-                          position={position}
-                          icon={icon}
-                        />
-                      );
-                    })}
+                        }
 
-                  {/* {path.length !== 0 && (
+                        const position = {
+                          lng: orderStatus.location[1],
+                          lat: orderStatus.location[0],
+                        };
+                        let icon: any;
+                        switch (orderStatus.status) {
+                          case "ALLOTTED":
+                            icon = orderAccepted;
+                            break;
+
+                          case "ARRIVED":
+                            icon = ArrivedPickLoc;
+                            break;
+
+                          case "DISPATCHED":
+                            icon = orderDisp;
+                            break;
+
+                          case "ARRIVED_CUSTOMER_DOORSTEP":
+                            icon = ArrivedCustLoc;
+                            break;
+
+                          case "DELIVERED":
+                            icon = Delivered;
+                            break;
+
+                          default:
+                            return null;
+                        }
+                        return (
+                          <Marker
+                            key={orderStatus}
+                            position={position}
+                            icon={icon}
+                          />
+                        );
+                      })}
+
+                    {/* {path.length !== 0 && (
                     <Marker
                       position={{
                         lat: orderDetails?.riderPathToPickUp[0]?.latitude,
@@ -845,21 +864,23 @@ const OrderView = () => {
                     }}
                     label="D"
                   /> */}
-                  {driverLocation && (
-                    <Marker position={driverLocation} label="DR" />
-                  )}
-                  <Polyline
-                    path={path}
-                    options={{ strokeColor: "blue", strokeWeight: 4 }}
-                  />
-                  <Polyline
-                    path={realPath}
-                    options={{ strokeColor: "green", strokeWeight: 4 }}
-                  />
-                </GoogleMap>
-              )}
-            </div>
-          )}
+                    {driverLocation && (
+                      <Marker position={driverLocation} label="DR" />
+                    )}
+                    <Polyline
+                      path={path}
+                      options={{ strokeColor: "blue", strokeWeight: 4 }}
+                    />
+                    <Polyline
+                      path={realPath}
+                      options={{ strokeColor: "green", strokeWeight: 4 }}
+                    />
+                  </GoogleMap>
+                )}
+              </div>
+            )}
+
+          </div >
         </Card>
       </>
     </>

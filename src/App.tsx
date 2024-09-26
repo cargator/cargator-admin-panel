@@ -23,6 +23,35 @@ const PrivacyPolicy = React.lazy(
 
 const CustomRoutes = () => {
   const token = useSelector((store: any) => store.auth.token);
+  const dispatch = useDispatch();
+
+  const getData = async () => {
+    try {
+      const res: any = await getCurrentMap();
+      const headers = { "Content-Type": "application/json" };
+      const response: any = await getS3SignUrlApi(
+        {
+          key: res.data?.appImageKey,
+          contentType: "image/png",
+          type: "get",
+        },
+        { headers }
+      );
+
+      dispatch(
+        setAppData({
+          utilId: res.data._id,
+          appImageUrl: response.url,
+          currentMap: res.data?.currentMap,
+        })
+      );
+    } catch (error: any) {
+      console.log("error", error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
   return (
     <Routes>
       <Route path="/login" element={<Login />} />

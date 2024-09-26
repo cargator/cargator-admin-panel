@@ -74,13 +74,16 @@ function ColumnsTableAdmins(props: {
 
   
   function formatNumber(num:any) {
-    const numStr = num.toString();
 
+    if(num==null || num==undefined) return "NA";
+    const numStr = num.toString();
     if (numStr.length === 12) {
-        return `${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else {
-        return `91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+        return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else if(numStr.length === 10){
+        return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
     }
+
+    return num;
 }
 
   const errorToast = (message: any) => {
