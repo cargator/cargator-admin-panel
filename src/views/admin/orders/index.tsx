@@ -20,8 +20,8 @@ function Orders() {
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
 
-  
 
+  
   
   function formatNumber(num:any) {
 
@@ -96,7 +96,8 @@ function Orders() {
       const response: any = await findOrders({
         page: currentPage,
         limit: limit,
-        query: searchText.trim(),
+        filter:data,
+        searchtext:searchText.trim()
       });
       console.log("response ===>", response);
       return response;
@@ -111,25 +112,32 @@ function Orders() {
   async function getAllOrders(
     page: number,
     limit: number,
-    filter: any = undefined
+    filter: any = undefined,
+    searchtext:any =""
   ) {
     try {
       setLoading(true);
-      console.log("limits shows", {
+          const response: any = await findOrders({
         page: page,
         limit: limit,
-        filter,
+        filter:data,
+        searchtext:searchText.trim()
       });
+      
 
-      const response: any = await findOrders({
-        page: page,
-        limit: limit,
-        filter,
-      });
-      console.log("RESPONSE", response.data[0].data);
+      // response?.data[0].data -> this is the incomming data
+
+      if(response?.data[0].count.length==0) {setPageItemRange(100,0);setPageCount(0);}
+
+      else {
+
+        setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+        setPageItemRange(page, response?.data[0].count[0]?.totalcount);
+
+      }
+     
       setAllOrders(await convertToOrders(response?.data[0].data));
-      setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-      setPageItemRange(page, response?.data[0].count[0]?.totalcount);
+     
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
@@ -146,16 +154,16 @@ function Orders() {
       let response: any;
 
       if (status === "all") {
-        response = await getAllOrders(currentPage, limit, status);
+        response = await getAllOrders(currentPage, limit, status,searchText.trim());
       } else if (status === "current-order") {
         console.log("hey am here~~~");
 
-        response = await getAllOrders(currentPage, limit, status);
+        response = await getAllOrders(currentPage, limit, status,searchText.trim());
       } else if (status === "completed") {
-        response = await getAllOrders(currentPage, limit, status);
+        response = await getAllOrders(currentPage, limit, status,searchText.trim());
       } else {
         const filter = status;
-        response = await getAllOrders(currentPage, limit, filter);
+        response = await getAllOrders(currentPage, limit, filter,searchText.trim());
       }
       setAllOrders(await convertToOrders(response?.data[0].orders));
       setPageItemRange(currentPage, response?.data[0].count[0]?.totalcount);
@@ -184,19 +192,20 @@ function Orders() {
 
   const handleSearchSubmit = async (e: any) => {
     e.preventDefault();
-    await searchOrderFn();
+
+    await getAllOrders(currentPage,10);
   };
 
   const handlePageClick = async (event: any) => {
     const selectedPage = event.selected + 1;
     setCurrentPage(selectedPage);
-    await getAllOrders(selectedPage, 10, data);
+    await getAllOrders(selectedPage, 10, data,searchText.trim());
   };
 
   useEffect(() => {
     const fetchData = async () => {
       setCurrentPage(1);
-      await getAllOrders(1, 10, data);
+      await getAllOrders(1, 10, data,searchText.trim());
     };
     fetchData();
   }, [data]);

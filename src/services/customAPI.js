@@ -402,7 +402,7 @@ export const orderById=(id)=>{
 
 export const findOrders = (data) => {
   return customAxios.get(
-    `/get-order-history?page=${data.page}&limit=${data.limit}&filter=${data.filter}`
+    `/get-order-history?page=${data.page}&limit=${data.limit}&filter=${data.filter}&searchtext=${data.searchtext}`
   );
 };
 

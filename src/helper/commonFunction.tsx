@@ -1,5 +1,5 @@
 export function vehicleNumberFormat(vehicleNumber: string) {
-  if (!vehicleNumber) return "";
+  if (!vehicleNumber) return "NA";
   let number =
     vehicleNumber?.substring(0, 2) + " " + vehicleNumber?.substring(2, 4) + " ";
 
@@ -9,7 +9,7 @@ export function vehicleNumberFormat(vehicleNumber: string) {
       (vehicleNumber.charAt(i) >= "a" && vehicleNumber.charAt(i) <= "z")
     ) {
       number = number + vehicleNumber.charAt(i);
-      console.log();
+      
     } else {
       number = number + " " + vehicleNumber.substring(i);
       break;
