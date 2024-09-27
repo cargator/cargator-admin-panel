@@ -32,7 +32,7 @@ import {
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
 import LocationPin from "../../../../assets/svg/LocationPinAdd.svg";
-import "./RestaurentForm.css";
+import "./RestaurantForm.css";
 import {
   createRestaurent,
   createSpot,
@@ -55,10 +55,11 @@ const icon = L.icon({
   iconSize: [40, 40],
 });
 
-const RestaurentForm = () => {
+const RestaurantForm = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [inputs, setInputs] = useState({ input1: "", input2: "" });
+  const slecetedrestaurantName = useRef("")
   const [showPopup, setShowPopup] = useState(false);
   const [bounds, setBounds] = useState([]);
   const [markers, setMarkers] = useState([]);
@@ -115,11 +116,11 @@ const RestaurentForm = () => {
 
   // Function to handle submission from popup input box
   async function _onSubmit() {
-    const restaurentName = inputs.input1;
+    const restaurantName = inputs.input1;
     try {
-      const resp = await createRestaurent({ bounds, restaurentName });
+      const resp = await createRestaurent({ bounds, restaurantName });
       setInputs({ input1: "", input2: "" });
-      successToast("Restaurant added Successfully");
+      successToast("Restaurant Created Successfully");
       setShowPopup(false);
     } catch (error) {
       console.log("error", error);
@@ -259,47 +260,44 @@ const RestaurentForm = () => {
   useEffect(() => {
     if (mapRef.current && markerPosition) {
       if (markerPosition.length) {
+        // Popup content with initial button disabled and error message hidden
         const popupContent = `
-        <div class="popup absolute z-20 flex w-[25vw] flex-col justify-between rounded-2xl border bg-white p-7 shadow">
-          <label
-            htmlFor="input1"
-            class="font-Poppins text-center text-xl font-bold"
-          >
-            ${t("Enter Restaurant Name")}
-          </label>
-          <input
-            type="text"
-            id="input1"
-            class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
-            placeholder="${t("Enter restaurant name here")}"
-            value="${inputs.input1}"
-            onChange="updateInput(event)"
-          />
-           ${
-             !isSpotNameFilled
-               ? `<p class="mt-1 text-sm text-red-500">${t(
-                   "Please fill the spot name"
-                 )}</p>`
-               : ""
-           }
-          <div class="flex justify-center gap-2">
-            <button
-              class="h-[8vh] w-[7vw] rounded-xl bg-blue-500 text-white"
-              onclick="confirmAction()"
-              ${!isSpotNameFilled ? "disabled" : ""}
+          <div class="popup absolute z-20 flex w-[25vw] flex-col justify-between rounded-2xl border bg-white p-7 shadow">
+            <label
+              htmlFor="input1"
+              class="font-Poppins text-center text-xl font-bold"
             >
-              ${t("Confirm")}
-            </button>
-            <button
-              class="h-[8vh] w-[7vw] rounded-xl bg-gray-500 text-white"
-              onclick="cancelAction()"
-            >
-              ${t("Cancel")}
-            </button>
+              ${t("Enter Restaurant Name")}
+            </label>
+            <input
+              type="text"
+              id="input1"
+              class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
+              placeholder="${t("Enter restaurant name here")}"
+              oninput="updateInput(event)"
+            />
+              <p id="errorMsg" class="mb-3 text-sm text-red-500 hidden">
+            ${t("Please fill the spot name")}
+          </p>
+            </p>
+            <div class="flex justify-center gap-2">
+              <button
+                id="confirmBtn"
+                class="h-[8vh] w-[7vw] rounded-xl bg-blue-500 text-white"
+                onclick="confirmAction()"
+              >
+                ${t("Confirm")}
+              </button>
+              <button
+                class="h-[8vh] w-[7vw] rounded-xl bg-gray-500 text-white"
+                onclick="cancelAction()"
+              >
+                ${t("Cancel")}
+              </button>
+            </div>
           </div>
-        </div>
-      `;
-
+        `;
+  
         const popup = new maplibregl.Popup({
           offset: [0, -30],
           anchor: "bottom",
@@ -309,45 +307,48 @@ const RestaurentForm = () => {
           .addTo(mapRef.current);
 
         window.updateInput = (event) => {
-          console.log("updateInput>>>>>>>>>>", event.target.value);
-          setInputs({ ...inputs, input1: event.target.value });
-          isSpotNameFilled = event.target.value.trim();
+          const value = event.target.value;
+          slecetedrestaurantName.current = value.trim();
         };
-
+  
         window.confirmAction = async () => {
-          console.log("1534256476987089>>>>>>>>>>");
-          const restaurentName = inputs.input1;
+  
+          if (!slecetedrestaurantName.current.length) {
+            document.getElementById("errorMsg").classList.remove("hidden");
+            return;
+          }
+  
           try {
+            const restaurantName = slecetedrestaurantName.current;
             const resp = await createRestaurent({
               bounds: markerPosition,
-              restaurentName,
+              restaurantName,
             });
-            setInputs({ input1: "", input2: "" });
-            successToast("Spot added Successfully");
+            successToast("Restaurant Created Successfully");
             popup.remove();
           } catch (error) {
-            console.log("error", error);
-            errorToast(error.response.data.message);
+            console.error("API Error", error);
+            errorToast(error.response?.data?.message || "Failed to create new restaurant");
           }
         };
-
+  
+        // Cancel action
         window.cancelAction = () => {
           popup.remove();
           marker.remove();
         };
-
+  
         const marker = new maplibregl.Marker({})
           .setLngLat(markerPosition)
           .addTo(mapRef.current);
       }
     }
   }, [markerPosition]);
-
   return (
     <>
       <Navbar flag={false} brandText="driverform" />
       <Link
-        to="/admin/restaurent"
+        to="/admin/restaurant"
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
       >
         <FaArrowLeft />
@@ -356,7 +357,7 @@ const RestaurentForm = () => {
       <div className="mb-5 mt-5 grid h-[100vh] w-full grid-cols-12 gap-4 rounded-lg bg-white p-4 pb-0 pe-0 pt-0">
         <header className="relative col-span-4 mt-4 flex items-center justify-between">
           <div className="text-xl font-bold text-navy-700 dark:text-white">
-            {t("Add Restaurent")}
+            {t("Add Restaurant")}
           </div>
           <div className="">
             {" "}
@@ -435,7 +436,7 @@ const RestaurentForm = () => {
                   />
 
                   {!isSpotNameFilled && (
-                    <p className="mt-1 text-sm text-red-500">
+                    <p className="mb-3 text-sm text-red-500">
                       {t("Please fill the restaurant name")}
                     </p>
                   )}
@@ -497,5 +498,5 @@ const RestaurentForm = () => {
   );
 };
 
-export default RestaurentForm;
+export default RestaurantForm;
 const columnHelper = createColumnHelper();

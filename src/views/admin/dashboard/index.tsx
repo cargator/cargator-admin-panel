@@ -70,21 +70,19 @@ const Dashboard = () => {
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<any>(null);
 
-
-  function formatNumber(num:any) {
-
-    if(num==null || num==undefined) return "NA";
+  function formatNumber(num: any) {
+    if (num == null || num == undefined) return "NA";
 
     const numStr = num.toString();
 
     if (numStr.length === 12) {
-        return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else if(numStr.length === 10){
-        return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+      return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
+    } else if (numStr.length === 10) {
+      return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
     }
 
     return num;
-}
+  }
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -271,6 +269,33 @@ const Dashboard = () => {
     </div>
     <div class="text-md">
       <strong>Vehicle Number:</strong> ${driver.vehicleNumber}
+    </div>
+    <div class="text-md">
+      <strong>App Version:</strong> ${
+        driver?.deviceInfo?.versionNumber
+          ? driver?.deviceInfo?.versionNumber
+          : "NA"
+      }
+    </div>
+    <div class="text-md">
+      <strong>Android Version:</strong> ${
+        driver?.deviceInfo?.systemVersion
+          ? driver?.deviceInfo?.systemVersion
+          : "NA"
+      }
+    </div>
+        <div class="text-md">
+      <strong>Device Model:</strong> ${
+        driver?.deviceInfo?.deviceModel ? driver?.deviceInfo?.deviceModel : "NA"
+      }
+    </div>
+      </div>
+        <div class="text-md">
+      <strong>Battery Lavel:</strong> ${
+        driver?.deviceInfo?.batteryLevel
+          ? driver?.deviceInfo?.batteryLevel
+          : "NA"
+      }
     </div>
   </div>`);
 
@@ -562,7 +587,7 @@ const Dashboard = () => {
 
           {currentMap == "olaMap" && (
             <div
-            style={{ position: "relative" }}
+              style={{ position: "relative" }}
               className="h-100 w-100  bg-info"
             >
               <div
@@ -634,19 +659,71 @@ const Dashboard = () => {
                           {/* <p>ID:</p> <p> {selectedDriver?.driverId}</p> */}
                         </p>
                         <p style={{ display: "flex", fontWeight: "400" }}>
-                          <p>Name:</p>{" "}
+                          <p>Name:</p>
+                          {"  "}
                           <p>
-                            {selectedDriver?.firstName}
+                            {"  "}
+                            {selectedDriver?.firstName
+                              ? selectedDriver?.firstName
+                              : "NA"}
                             {"  "} {selectedDriver?.lastName}
                           </p>
                         </p>
                         <p style={{ display: "flex", fontWeight: "400" }}>
                           <p> Mobile Number:</p>
-                          <p> {formatNumber(selectedDriver?.mobileNumber)}</p>
+                          <p>
+                            {" "}
+                            {formatNumber(
+                              selectedDriver?.mobileNumber
+                                ? selectedDriver?.mobileNumber
+                                : "NA"
+                            )}
+                          </p>
                         </p>
                         <p style={{ display: "flex", fontWeight: "400" }}>
-                          <p>Vehical Number.:</p>
-                          <p> {selectedDriver?.vehicleNumber}</p>
+                          <p>Vehical Number:</p>
+                          <p>
+                            {" "}
+                            {selectedDriver?.vehicleNumber
+                              ? selectedDriver?.vehicleNumber
+                              : "NA"}
+                          </p>
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>App Version:</p>
+                          <p>
+                            {" "}
+                            {selectedDriver?.deviceInfo?.versionNumber
+                              ? selectedDriver?.deviceInfo?.versionNumber
+                              : "NA"}
+                          </p>
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Android Version:</p>
+                          <p>
+                            {" "}
+                            {selectedDriver?.deviceInfo?.systemVersion
+                              ? selectedDriver?.deviceInfo?.systemVersion
+                              : "NA"}
+                          </p>
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Device Model:</p>
+                          <p>
+                            {" "}
+                            {selectedDriver?.deviceInfo?.deviceModel
+                              ? selectedDriver?.deviceInfo?.deviceModel
+                              : "NA"}
+                          </p>
+                        </p>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                          <p>Battery Lavel:</p>
+                          <p>
+                            {" "}
+                            {selectedDriver?.deviceInfo?.batteryLevel
+                              ? selectedDriver?.deviceInfo?.batteryLevel
+                              : "NA"}
+                          </p>
                         </p>
                       </div>
                     </InfoWindow>

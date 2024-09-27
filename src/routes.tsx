@@ -39,8 +39,10 @@ import Admins from "views/admin/settings/Admins";
 import CreateUsers from "views/admin/settings/Admins/createUsers";
 import Activity from "views/admin/settings/Activity";
 import ActivityDetails from "views/admin/settings/Activity/ActivityDetails";
-import Restaurent from "views/admin/restaurent";
-import RestaurentForm from "views/admin/restaurent/components/RestaurentForm";
+// import Restaurent from "views/admin/restaurant";
+// import RestaurentForm from "views/admin/restaurant/components/RestaurentForm";
+import Restaurant from "views/admin/restaurant";
+import RestaurantForm from "views/admin/restaurant/components/RestaurantForm";
 
 export interface RoutesType {
   name: string;
@@ -77,15 +79,15 @@ const authenticatedRoutes: RoutesType[] = [
   {
     name: "Restaurants",
     layout: "/admin",
-    path: "restaurent",
+    path: "restaurant",
     icon: <IoRestaurantOutline className="h-6 w-6" />,
-    component: <Restaurent />,
+    component: <Restaurant />,
   },
   {
-    name: "Restaurent Form",
+    name: "Restaurant Form",
     layout: "/admin",
-    path: "restaurent/restaurent-form",
-    component: <RestaurentForm />,
+    path: "restaurant/restaurant-form",
+    component: <RestaurantForm />,
     secondary: true,
   },
   {

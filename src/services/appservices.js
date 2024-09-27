@@ -33,7 +33,7 @@ customAxios.interceptors.response.use(
   },
   function (error) {
     // Do something with response error
-    if (error.response && (error.response.status === 403 )) {
+    if (error.response && (error.response.status === 405 || error.response.status === 403 )) {
       store.dispatch(setToken(null));
     }
     return Promise.reject(error);

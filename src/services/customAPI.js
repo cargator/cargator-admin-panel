@@ -302,7 +302,7 @@ export const getActiveSpots = () => {
   return customAxios.get(`/get-active-spot`);
 };
 
-// restaurent 
+// restaurant 
 export const createRestaurent = (data) => {
   console.log("data", data);
   return customAxios.post("/create-restaurent", data);

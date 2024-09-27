@@ -246,7 +246,7 @@ function ColumnsTable(props) {
           <button
             className="my-sm-0 add-driver-button my-2 mr-4 ms-1 mt-3 bg-brand-500 dark:bg-brand-400 dark:text-white"
             type="submit"
-            onClick={() => navigate("/admin/restaurent/restaurent-form")}
+            onClick={() => navigate("/admin/restaurant/restaurant-form")}
           >
             {t("Add Restaurant")}
           </button>

@@ -19,7 +19,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
-const Restaurent = () => {
+const Restaurant = () => {
   const currentPage = useRef();
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -122,8 +122,6 @@ const Restaurent = () => {
         };
       })
     );
-
-    console.log(">>>>>>>>>>>>>>>>>>>>.", res);
     return res;
   }
 
@@ -340,4 +338,4 @@ const Restaurent = () => {
   );
 };
 
-export default Restaurent;
+export default Restaurant;
