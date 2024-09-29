@@ -20,7 +20,7 @@ import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 type RowObj = {
   fullName: customFieldType1;
   mobileNumber: string;
-  restaurentName: string;
+  restaurantName: string;
   vehicleNumber: string;
   vehicleType: string;
   status: string;
@@ -152,11 +152,11 @@ function ColumnsTable(props: {
         </p>
       ),
     }),
-    columnHelper.accessor("restaurentName", {
-      id: "restaurentName",
+    columnHelper.accessor("restaurantName", {
+      id: "restaurantName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Restaurent Name")}
+          {t("Restaurant Name")}
         </p>
       ),
       cell: (info) => {

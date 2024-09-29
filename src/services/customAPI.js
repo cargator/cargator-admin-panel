@@ -303,24 +303,24 @@ export const getActiveSpots = () => {
 };
 
 // restaurant 
-export const createRestaurent = (data) => {
+export const createRestaurant = (data) => {
   console.log("data", data);
-  return customAxios.post("/create-restaurent", data);
+  return customAxios.post("/create-restaurant", data);
 };
 
-export const getRestaurentList = (data) => {
+export const getRestaurantList = (data) => {
   console.log("getDataApi");
   return customAxios.get(
-    `/get-restaurent-list?page=${data.page}&limit=${data.limit}`
+    `/get-restaurant-list?page=${data.page}&limit=${data.limit}`
   );
 };
 
-export const getAvailableRestaurentApi = () => {
-  return customAxios.get("/get-available-restaurent");
+export const getAvailableRestaurantApi = () => {
+  return customAxios.get("/get-available-restaurant");
 };
 
-export const deleteRestaurent = (id) => {
-  return customAxios.delete(`/delete-Restaurent/${id}`);
+export const deleteRestaurant = (id) => {
+  return customAxios.delete(`/delete-Restaurant/${id}`);
 };
 
 // country code APIs

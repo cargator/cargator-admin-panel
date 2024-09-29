@@ -146,6 +146,25 @@ function ColumnsTable(props) {
     });
   };
 
+
+  const customIconOlaMap = (number) => {
+    const markerElement = document.createElement('div');
+    
+    // Set innerHTML with the image and number overlay using a template literal
+    markerElement.innerHTML = `
+      <div class="custom-icon" style="position: relative;">
+        <img src="${LocationPin}" class="icon-image" style="width: 100%; height: auto;">
+        <span class="number-overlay">${number}</span>
+      </div>
+    `;
+    
+    markerElement.className = 'custom-icon'; // Optional, set additional classes if needed
+    
+    return markerElement;
+  };
+
+
+
   const columns = [
     columnHelper.accessor("spotName", {
       id: "spotName",
@@ -250,7 +269,7 @@ function ColumnsTable(props) {
     mapRef.current = new MapLibreMap({
       container: mapContainerRef.current,
       center: [77.2201, 28.631605],
-      zoom: 9,
+      zoom: 12,
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
       transformRequest: (url, resourceType) => {
@@ -280,15 +299,28 @@ function ColumnsTable(props) {
 
     mapRef.current.on("load", () => {
       data.map((spot, i) => {
-        const bounds = spot.bounds;
+        const bounds = spot?.bounds;
 
-        console.log("latLong>>>>>>>>>>>>>>", spot, bounds[0], bounds[1]);
+
+        const popup = new maplibregl.Popup({
+          offset: [0, -30],
+          anchor: "bottom",
+          className: "custom-popup",
+        })
+          .setHTML(`
+            <div class="popup-content">
+              <div class="popup-title">${spot?.spotName}</div>
+            </div>
+          `);
+
+        const markerElement = customIconOlaMap(i + 1);
 
         const marker = new olaMarker({
-          // element: customIcon(i+1),
+          element: markerElement,
           anchor: "center",
         })
           .setLngLat([bounds[0], bounds[1]])
+          .setPopup(popup)
           .addTo(mapRef.current);
       });
     });
@@ -445,10 +477,10 @@ function ColumnsTable(props) {
               {data.map((marker, i) => {
                 const bounds = marker.bounds;
 
-                if (bounds[0]?.lat == undefined) {
+                if (bounds[0] == undefined) {
                   return;
                 }
-                const centerPoint = [bounds[0]?.lat, bounds[0]?.lng];
+                const centerPoint = [bounds[1], bounds[0]];
 
                 return (
                   <Marker

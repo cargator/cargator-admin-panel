@@ -70,6 +70,19 @@ function ColumnsOrderTable(props: {
         </p>
       ),
     }),
+    columnHelper.accessor("orderTime", {
+      id: "orderTime",
+      header: () => (
+        <p className="text-sm font-bold text-gray-600 dark:text-white">
+          {t("Order Time")}
+        </p>
+      ),
+      cell: (info) => (
+        <p className="text-sm font-bold text-navy-700 dark:text-white">
+          {info.getValue()}
+        </p>
+      ),
+    }),
     columnHelper.accessor("orderId", {
       id: "orderId",
       header: () => (
@@ -83,19 +96,6 @@ function ColumnsOrderTable(props: {
             {info.getValue().slice(-6)}
           </p>
         </Tooltip>
-      ),
-    }),
-    columnHelper.accessor("orderTime", {
-      id: "orderTime",
-      header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Order Time")}
-        </p>
-      ),
-      cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
-        </p>
       ),
     }),
     columnHelper.accessor("customerMobileNum", {

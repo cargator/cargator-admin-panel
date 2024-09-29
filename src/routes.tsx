@@ -39,8 +39,6 @@ import Admins from "views/admin/settings/Admins";
 import CreateUsers from "views/admin/settings/Admins/createUsers";
 import Activity from "views/admin/settings/Activity";
 import ActivityDetails from "views/admin/settings/Activity/ActivityDetails";
-// import Restaurent from "views/admin/restaurant";
-// import RestaurentForm from "views/admin/restaurant/components/RestaurentForm";
 import Restaurant from "views/admin/restaurant";
 import RestaurantForm from "views/admin/restaurant/components/RestaurantForm";
 

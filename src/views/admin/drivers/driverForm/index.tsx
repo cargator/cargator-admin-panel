@@ -10,7 +10,7 @@ import * as Yup from "yup";
 import {
   createDriverApi,
   deleteObjectFromS3Api,
-  getAvailableRestaurentApi,
+  getAvailableRestaurantApi,
   getAvailableVehiclesApi,
   getDriverByIdApi,
   getS3SignUrlApi,
@@ -98,7 +98,7 @@ type docState = FinalDocArray[];
 
 type formvalues = {
   firstName: string;
-  restaurentName: string;
+  restaurantName: string;
   lastName: string;
   mobileNumber: string;
   vehicleNumber: string;
@@ -115,12 +115,12 @@ const DriverForm = () => {
   const [vehicleName, setVehicleName] = useState("");
   const [vehicleType, setVehicleType] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
-  const [restaurentName, setRestaurentName] = useState("");
+  const [restaurantName, setRestaurantName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [initialFormValues, setInitialFormValues] = useState<formvalues>({
     firstName: "",
     lastName: "",
-    restaurentName: "",
+    restaurantName: "",
     mobileNumber: "",
     vehicleNumber: "",
     vehicleType: "",
@@ -131,9 +131,9 @@ const DriverForm = () => {
     documents: [],
   });
   const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
-  const [allRestaurentList, setAllRestaurentList] = useState([]);
+  const [allRestaurantList, setAllRestaurantList] = useState([]);
   const [options, setOptions] = useState([]);
-  const [restaurentOptions, setRestaurentOptions] = useState([]);
+  const [restaurantOptions, setRestaurantOptions] = useState([]);
   const [imageFile, setImageFile] = useState(null);
   const anchorImageRef = useRef(null);
 
@@ -159,9 +159,9 @@ const DriverForm = () => {
     firstName: Yup.string()
       .min(2, t("First name must be atleast two characters."))
       .required(t("Name is required")),
-    restaurentName: Yup.string()
-      .min(2, t("Restaurent name must be atleast two characters."))
-      .required(t("Restaurent is required")),
+    restaurantName: Yup.string()
+      .min(2, t("Restaurant name must be atleast two characters."))
+      .required(t("Restaurant is required")),
     // lastName: Yup.string()
     //   .min(2, "Last name must be atleast two characters.")
     //   .required("Last name is required"),
@@ -279,22 +279,22 @@ const DriverForm = () => {
     }
   };
 
-  const getAvailableRestaurent = async () => {
+  const getAvailableRestaurant = async () => {
     try {
-      const res = await getAvailableRestaurentApi();
+      const res = await getAvailableRestaurantApi();
       console.log("res", res.data);
       if (!res) {
-        errorToast("Restaurent not available");
+        errorToast("Restaurant not available");
       }
-      setRestaurentOptions(
+      setRestaurantOptions(
         res.data.map((option: any) => {
           return {
-            value: option.restaurentNameToLowerCase,
-            label: option.restaurentName,
+            value: option.restaurantNameToLowerCase,
+            label: option.restaurantName,
           };
         })
       );
-      setAllRestaurentList(res.data);
+      setAllRestaurantList(res.data);
     } catch (error: any) {
       errorToast(error.response.data.message);
     }
@@ -393,7 +393,7 @@ const DriverForm = () => {
         const result: any = await handleCreateDriverApi(params.id, {
           firstName: values.firstName,
           lastName: values.lastName,
-          restaurentName: values.restaurentName,
+          restaurantName: values.restaurantName,
           mobileNumber: values.mobileNumber,
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
@@ -447,7 +447,7 @@ const DriverForm = () => {
         const result: any = await createDriverApi({
           firstName: values.firstName,
           lastName: values.lastName,
-          restaurentName: values.restaurentName,
+          restaurantName: values.restaurantName,
           mobileNumber: values.mobileNumber,
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
@@ -521,7 +521,7 @@ const DriverForm = () => {
 
       setInitialFormValues({
         firstName: res.data.firstName,
-        restaurentName: res.data.restaurentName,
+        restaurantName: res.data.restaurantName,
         lastName: res.data.lastName,
         mobileNumber: res.data.mobileNumber.slice(2, 12),
         vehicleNumber: res.data.vehicleNumber,
@@ -537,7 +537,7 @@ const DriverForm = () => {
       setVehicleNumber(res.data.vehicleNumber);
       setVehicleName(res.data.vehicleName);
       setVehicleType(res.data.vehicleType);
-      setRestaurentName(res.data.restaurentName);
+      setRestaurantName(res.data.restaurantName);
 
       setIsLoading(false);
     } catch (error: any) {
@@ -613,7 +613,7 @@ const DriverForm = () => {
 
   useEffect(() => {
     getAvailableVehicles();
-    getAvailableRestaurent();
+    getAvailableRestaurant();
   }, [vehicleType]);
 
   return (
@@ -693,31 +693,31 @@ const DriverForm = () => {
                     </div>
                     <div className="mb-3 ms-6 w-full">
                       <label
-                        htmlFor="restaurent"
+                        htmlFor="restaurant"
                         className="input-custom-label dark:text-white"
                       >
-                        {t("Restaurent Name")}
+                        {t("Restaurant Name")}
                       </label>
                       <Select
                         options={[
                           { value: "none", label: "None" },
-                          ...restaurentOptions,
+                          ...restaurantOptions,
                         ]}
-                        id="restaurentName"
+                        id="restaurantName"
                         name="resturentName"
                         onBlur={handleBlur}
                         onChange={(e: any) => {
                           if (e && e.value) {
-                            setRestaurentName(e.value);
-                            values.restaurentName = e.value;
+                            setRestaurantName(e.value);
+                            values.restaurantName = e.value;
                           }
                         }}
                         value={
-                          allRestaurentList.find(
-                            (option: any) => option.value === restaurentName
+                          allRestaurantList.find(
+                            (option: any) => option.value === restaurantName
                           ) || {
-                            value: !restaurentName ? "none" : restaurentName,
-                            label: !restaurentName ? "None" : restaurentName,
+                            value: !restaurantName ? "none" : restaurantName,
+                            label: !restaurantName ? "None" : restaurantName,
                           }
                         }
                         styles={{
@@ -749,8 +749,8 @@ const DriverForm = () => {
                         }}
                       />
                       <div className="error-input">
-                        {errors.restaurentName && touched.restaurentName
-                          ? errors.restaurentName
+                        {errors.restaurantName && touched.restaurantName
+                          ? errors.restaurantName
                           : null}
                       </div>
                     </div>

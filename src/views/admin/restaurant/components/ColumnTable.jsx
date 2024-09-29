@@ -38,8 +38,6 @@ const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
 const olaMarker = maplibregl.Marker;
 
-
-
 const icon = L.icon({
   html: `<div class="custom-marker"><span>1</span></div>`,
   // iconUrl: LocationPin,
@@ -64,16 +62,17 @@ const ResetCenterView = (props) => {
 
 function ColumnsTable(props) {
   const { tableData, handleClickForDeleteModal } = props;
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [position, setPosition] = useState([19.07, 72.87]);
+  const [position, setPosition] = useState([28.439990, 77.073380]);
   const [currentMap, setcurrentMap] = useState("olaMap");
   const mapContainerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
-  const [markerPosition, setMarkerPostion] = useState([])
+  const [markerPosition, setMarkerPostion] = useState([]);
 
   const parser = new DOMParser();
 
@@ -102,10 +101,25 @@ function ColumnsTable(props) {
     });
   };
 
-  const columns = [
+  const customIconOlaMap = (number) => {
+    const markerElement = document.createElement('div');
     
-    columnHelper.accessor("restaurentName", {
-      id: "restaurentName",
+    // Set innerHTML with the image and number overlay using a template literal
+    markerElement.innerHTML = `
+      <div class="custom-icon" style="position: relative;">
+        <img src="${LocationPin}" class="icon-image" style="width: 100%; height: auto;">
+        <span class="number-overlay">${number}</span>
+      </div>
+    `;
+    
+    markerElement.className = 'custom-icon'; // Optional, set additional classes if needed
+    
+    return markerElement;
+  };
+
+  const columns = [
+    columnHelper.accessor("restaurantName", {
+      id: "restaurantName",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
           {t("Restaurant Name")}
@@ -122,19 +136,6 @@ function ColumnsTable(props) {
         </p>
       ),
     }),
-    // columnHelper.accessor("vehicleNumber", {
-    //   id: "mobileNumber",
-    //   header: () => (
-    //     <p className="text-sm font-bold text-gray-600 dark:text-white">
-    //       {t("Mobile Number")}
-    //     </p>
-    //   ),
-    //   cell: (info) => (
-    //     <p className="text-sm font-bold text-navy-700 dark:text-white">
-    //       {info.getValue()}
-    //     </p>
-    //   ),
-    // }),
     columnHelper.accessor("action", {
       id: "action",
       header: () => (
@@ -178,10 +179,8 @@ function ColumnsTable(props) {
     getCurrentMapFLow();
   }, []);
 
-  
   const [data, setData] = useState([...tableData]);
 
-  
   const table = useReactTable({
     data,
     columns,
@@ -206,7 +205,7 @@ function ColumnsTable(props) {
     mapRef.current = new MapLibreMap({
       container: mapContainerRef.current,
       center: [77.2201, 28.631605],
-      zoom: 9,
+      zoom: 11,
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
       transformRequest: (url, resourceType) => {
@@ -228,9 +227,61 @@ function ColumnsTable(props) {
 
     return () => {
       mapRef.current.remove();
-    }; // Clean up map on unmount
+    };
   }, [mapReady]);
 
+  useEffect(() => {
+    if (!mapRef.current || !data || data.length === 0) return;
+
+    // Clear previous markers before adding new ones
+    // clearMarkers();
+
+    if (mapRef.current.loaded()) {
+      console.log("Map is loaded");
+      updateMarkers();
+    } else {
+      mapRef.current.on("load", () => {
+        updateMarkers();
+      });
+    }
+
+
+
+
+    function updateMarkers() {
+      data.forEach((restaurant,i) => {
+        if (!restaurant.bounds.length) {
+          console.error("Invalid restaurant location", restaurant);
+          return;
+        }
+
+        const position = [restaurant?.bounds[0], restaurant?.bounds[1]];
+
+        console.log("Adding marker at", position);
+
+        const popup = new maplibregl.Popup({
+          offset: [0, -30],
+          anchor: "bottom",
+          className: "custom-popup",
+        })
+          .setHTML(`
+            <div class="popup-content">
+              <div class="popup-title">${restaurant?.restaurantName}</div>
+            </div>
+          `);
+
+        const markerElement = customIconOlaMap(i + 1);
+
+        const marker = new olaMarker({
+          element: markerElement,
+          anchor: "center",
+        })
+          .setLngLat(position)
+          .setPopup(popup)
+          .addTo(mapRef.current);
+      });
+    }
+  }, [data]);
   return (
     <Card
       extra={
@@ -358,7 +409,7 @@ function ColumnsTable(props) {
                 position: "absolute",
                 bottom: "12px",
                 // left: "10px",
-                right: '10px',
+                right: "10px",
                 width: "70px",
                 height: "70px",
                 zIndex: 10,
@@ -371,7 +422,7 @@ function ColumnsTable(props) {
           <div className="h-full w-full">
             <MapContainer
               center={position}
-              zoom={12}
+              zoom={10}
               className="leaf-Container-spot z-10"
             >
               <TileLayer
@@ -382,10 +433,10 @@ function ColumnsTable(props) {
               {data.map((marker, i) => {
                 const bounds = marker.bounds;
 
-                if (bounds[0]?.lat == undefined) {
+                if (bounds[0] == undefined) {
                   return;
                 }
-                const centerPoint = [bounds[0]?.lat, bounds[0]?.lng];
+                const centerPoint = [bounds[1], bounds[0]];
 
                 return (
                   <Marker
@@ -394,12 +445,12 @@ function ColumnsTable(props) {
                     icon={customIcon(i + 1)}
                   >
                     <Popup>
-                      <div className="text-center">{marker.restaurentName}</div>
+                      <div className="text-center">{marker.restaurantName}</div>
                     </Popup>
                   </Marker>
                 );
               })}
-              <ResetCenterView position={position} />
+              {/* <ResetCenterView position={position} /> */}
             </MapContainer>
           </div>
         )}

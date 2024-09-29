@@ -44,6 +44,7 @@ import { FaArrowLeft } from "react-icons/fa";
 import OlaMap from "../../../../assets/images/Ola_Map_logo.svg";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import axios from "axios";
 const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
 const olaMarker = maplibregl.Marker;
@@ -57,11 +58,15 @@ const SpotForm = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [inputs, setInputs] = useState({ input1: "", input2: "" });
+  const spot = useRef("")
   const [showPopup, setShowPopup] = useState(false);
   const [bounds, setBounds] = useState([]);
   const [markers, setMarkers] = useState([]);
+  const [searchText, setSearchText] = useState("Delhi");
+  const [searchTextCoords, setSearchTextCoords] = useState([28.471250, 77.040300]);
   const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
   const [vehicleNumber, setVehicleNumber] = useState("");
+  const selectedVehicleNumber = useRef("")
   const [isLoading, setIsLoading] = useState(false);
   const [options, setOptions] = useState([
     {
@@ -70,6 +75,7 @@ const SpotForm = () => {
     },
   ]);
   const [currentMap, setcurrentMap] = useState("olaMap");
+  const mapRefStreet = useRef(null);
   const mapContainerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef(null);
@@ -79,7 +85,7 @@ const SpotForm = () => {
 
   const addMarker = (pos) => {
     setMarkers((prevMarkers) => [...prevMarkers, pos]);
-    setBounds([{ lat: pos[0], lng: pos[1] }]);
+    setBounds([pos[1],pos[0]]);
     setShowPopup(true);
   };
 
@@ -202,6 +208,32 @@ const SpotForm = () => {
     ) : null;
   }
 
+
+  const mapLocation = (coords) => {
+    console.log("inside mapLocation",mapRefStreet.current);
+    if (mapRefStreet.current) {
+      mapRefStreet.current.flyTo([coords[0], coords[1]], 11);
+    }
+  }
+
+
+  const getCoordsFromText = async (text) => {
+    try {
+      const api_Key = process.env.REACT_APP_OLAMAP_API_KEY;
+      const resp = await axios.get(
+        `https://api.olamaps.io/places/v1/geocode?address=${text}&language=hi&api_key=${api_Key}`
+        );
+        const arr = Object.values(
+          resp.data.geocodingResults[0].geometry.location
+          );
+          setSearchTextCoords([arr[1], arr[0]]);
+          console.log("getCoordsFromText>>>>>>", searchText,searchTextCoords);
+    } catch (error) {
+      console.log("error from Geocode API", error);
+    }
+    await mapLocation(searchTextCoords)
+  };
+
   const getCurrentMapFLow = async () => {
     setIsLoading(true);
     try {
@@ -217,8 +249,24 @@ const SpotForm = () => {
   useEffect(() => {
     getCurrentMapFLow();
     getAvailableVehicles();
+    getCoordsFromText(searchText);
     setMapReady(true);
   }, []);
+
+  useEffect(()=> {
+    console.log("Inside useEffect>>>>>>", searchText);
+    if(searchText){
+      getCoordsFromText(searchText)
+    }
+  },[searchText])
+
+  
+  useEffect(()=> {
+    console.log("Inside useEffect>>>>>>", searchTextCoords);
+    if(searchTextCoords){
+      mapLocation(searchTextCoords)
+    }
+  },[searchTextCoords])
 
   useEffect(() => {
     if (!mapReady || !mapContainerRef.current) return;
@@ -226,7 +274,7 @@ const SpotForm = () => {
     // Initialize the map
     mapRef.current = new MapLibreMap({
       container: mapContainerRef.current,
-      center: [77.2201, 28.631605],
+      center: [searchTextCoords[1],searchTextCoords[0]],
       zoom: 9,
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
@@ -250,7 +298,7 @@ const SpotForm = () => {
     mapRef.current.on("click", (e) => {
       const { lng, lat } = e.lngLat;
       console.log(`Clicked at Latitude: ${lat}, Longitude: ${lng}`);
-      setMarkerPostion([lng, lat]);
+      setMarkerPostion([lng, lat]); 
     });
 
     return () => {
@@ -270,15 +318,16 @@ const SpotForm = () => {
           >
             ${t("Enter Spot Name")}
           </label>
-          <input
-            type="text"
-            id="input1"
-            class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
-            placeholder="${t("Enter spot name here")}"
-            value="${inputs.input1}"
-            onChange="updateInput(event)"
-          />
-           ${!isSpotNameFilled ? `<p class="mt-1 text-sm text-red-500">${t("Please fill the spot name")}</p>` : ''}
+            <input
+              type="text"
+              id="input1"
+              class="mt-2 h-12 w-full border bg-white/0 text-sm outline-none"
+              placeholder="${t("Enter restaurant name here")}"
+              oninput="updateInput(event)"
+            />
+              <p id="errorMsg" class="mb-3 text-sm text-red-500 hidden">
+            ${t("Please fill the spot name")}
+          </p>
           <select
             id="vehicleNumber"
             name="vehicleNumber"
@@ -292,7 +341,6 @@ const SpotForm = () => {
             <button
               class="h-[8vh] w-[7vw] rounded-xl bg-blue-500 text-white"
               onclick="confirmAction()"
-              ${!isSpotNameFilled ? 'disabled' : ''}
             >
               ${t("Confirm")}
             </button>
@@ -315,22 +363,23 @@ const SpotForm = () => {
       .addTo(mapRef.current);
 
       window.updateInput = (event) => {
-        console.log("updateInput>>>>>>>>>>",event.target.value);
-        setInputs({ ...inputs, input1: event.target.value });
-        isSpotNameFilled = event.target.value.trim() !== ''
+        const value = event.target.value;
+        spot.current = value.trim();
       };
 
       window.updateVehicleNumber = (event) => {
-        console.log("updateVehicleNumber>>>>>>>>>>",event.target.value);
-        setVehicleNumber(event.target.value);
+        selectedVehicleNumber.current = event.target.value;
       };
 
       window.confirmAction = async() => {
-        console.log("1534256476987089>>>>>>>>>>");
-          const spotName = inputs.input1;
+        if (!spot.current.length) {
+          document.getElementById("errorMsg").classList.remove("hidden");
+          return;
+        }
           try {
+            const spotName = spot.current;
+            const vehicleNumber = selectedVehicleNumber.current;
             const resp = await createSpot({ bounds: markerPosition, spotName, vehicleNumber });
-            setInputs({ input1: "", input2: "" });
             successToast("Spot added Successfully");
             popup.remove();
           } catch (error) {
@@ -362,18 +411,24 @@ const SpotForm = () => {
         <div>Back</div>
       </Link>
       <div className="mb-5 mt-5 grid h-[100vh] w-full grid-cols-12 gap-4 rounded-lg bg-white p-4 pb-0 pe-0 pt-0">
-        <header className="relative col-span-12 mt-4 flex items-center justify-between">
+        <header className="relative col-span-4 mt-4 flex items-center justify-between">
           <div className="text-xl font-bold text-navy-700 dark:text-white">
             {t("Add Spots")}
           </div>
-          <div>
-            {/* <button
-                        className="my-sm-0 add-spot-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 mr-3 mt-4"
-                        type="submit"
-                        onClick={() => navigate("/admin/default/spot/spot-form")}
-                    >
-                        Add Spots
-                    </button> */}
+          <div className="w-full max-w-xs">
+            {" "}
+            <input
+              type="text"
+              placeholder="Search"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                console.log("<<<<<<<<<<<<<<<object>>>>>>>>>>>>>>>",e.target.value);                
+               setSearchText(e.target.value);
+                }
+              }}
+              className="w-full rounded-md border px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring"
+      style={{ minWidth: '200px', maxWidth: '200px' }}
+            />
           </div>
         </header>
         <div className="col-span-12 mb-5 mr-3 overflow-hidden">
@@ -400,6 +455,7 @@ const SpotForm = () => {
                       removeLastMarker();
                     }
                   }}
+                  ref={mapRefStreet}
                 >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

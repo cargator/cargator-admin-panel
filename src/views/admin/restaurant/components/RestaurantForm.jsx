@@ -34,7 +34,7 @@ import { useEffect, useRef, useState } from "react";
 import LocationPin from "../../../../assets/svg/LocationPinAdd.svg";
 import "./RestaurantForm.css";
 import {
-  createRestaurent,
+  createRestaurant,
   createSpot,
   getAllVehiclesApi,
   getCurrentMap,
@@ -77,7 +77,7 @@ const RestaurantForm = () => {
 
   const addMarker = (pos) => {
     setMarkers((prevMarkers) => [...prevMarkers, pos]);
-    setBounds([{ lat: pos[0], lng: pos[1] }]);
+    setBounds([ pos[1], pos[0]]);
     setShowPopup(true);
   };
 
@@ -118,7 +118,7 @@ const RestaurantForm = () => {
   async function _onSubmit() {
     const restaurantName = inputs.input1;
     try {
-      const resp = await createRestaurent({ bounds, restaurantName });
+      const resp = await createRestaurant({ bounds, restaurantName });
       setInputs({ input1: "", input2: "" });
       successToast("Restaurant Created Successfully");
       setShowPopup(false);
@@ -225,7 +225,7 @@ const RestaurantForm = () => {
     // Initialize the map
     mapRef.current = new MapLibreMap({
       container: mapContainerRef.current,
-      center: [77.2201, 28.631605],
+      center: [searchTextCoords[1],searchTextCoords[0]],
       zoom: 9,
       style:
         "https://api.olamaps.io/tiles/vector/v1/styles/default-light-standard/style.json",
@@ -249,13 +249,13 @@ const RestaurantForm = () => {
     mapRef.current.on("click", (e) => {
       const { lng, lat } = e.lngLat;
       console.log(`Clicked at Latitude: ${lat}, Longitude: ${lng}`);
-      setMarkerPostion([lng, lat]);
+      setMarkerPostion([lng,lat]);
     });
 
     return () => {
       mapRef.current.remove();
     };
-  }, [mapReady]);
+  }, [mapReady,searchTextCoords]);
 
   useEffect(() => {
     if (mapRef.current && markerPosition) {
@@ -277,7 +277,7 @@ const RestaurantForm = () => {
               oninput="updateInput(event)"
             />
               <p id="errorMsg" class="mb-3 text-sm text-red-500 hidden">
-            ${t("Please fill the spot name")}
+            ${t("Please fill the restaurant name")}
           </p>
             </p>
             <div class="flex justify-center gap-2">
@@ -320,14 +320,14 @@ const RestaurantForm = () => {
   
           try {
             const restaurantName = slecetedrestaurantName.current;
-            const resp = await createRestaurent({
+            const resp = await createRestaurant({
               bounds: markerPosition,
               restaurantName,
             });
             successToast("Restaurant Created Successfully");
             popup.remove();
           } catch (error) {
-            console.error("API Error", error);
+            console.error("error", error);
             errorToast(error.response?.data?.message || "Failed to create new restaurant");
           }
         };
@@ -359,7 +359,7 @@ const RestaurantForm = () => {
           <div className="text-xl font-bold text-navy-700 dark:text-white">
             {t("Add Restaurant")}
           </div>
-          <div className="">
+          <div className="w-full max-w-xs">
             {" "}
             <input
               type="text"
@@ -370,10 +370,10 @@ const RestaurantForm = () => {
                setSearchText(e.target.value);
                 }
               }}
-              className="rounded-md border px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring"
+              className="w-full rounded-md border px-4 py-2 text-sm focus:border-blue-300 focus:outline-none focus:ring"
+      style={{ minWidth: '200px', maxWidth: '200px' }}
             />
           </div>
-          <div></div>
         </header>
         <div className="col-span-12 mb-5 mr-3 overflow-hidden">
           {currentMap !== "olaMap" && (

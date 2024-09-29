@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getRestaurentList, deleteSpot, deleteRestaurent } from "../../../services/customAPI";
+import { getRestaurantList, deleteSpot, deleteRestaurant } from "../../../services/customAPI";
 import ReactPaginate from "react-paginate";
 // import './map.css'
 import Loader from "components/loader/loader";
@@ -23,7 +23,7 @@ const Restaurant = () => {
   const currentPage = useRef();
   const { t } = useTranslation();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [allRetstaurentData, setAllRetstaurentData] = useState([]);
+  const [allRetstaurentData, setAllRetstaurantData] = useState([]);
   const [pageCount, setPageCount] = useState(1);
   const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
@@ -110,19 +110,19 @@ const Restaurant = () => {
     );
   };
 
-  async function convertToUsableDriverArray(restaurentArray) {
+  async function convertToUsableDriverArray(restaurantArray) {
     const res = Promise.all(
-      restaurentArray.map(async (restaurent) => {
+      restaurantArray.map(async (restaurant) => {
         return {
-          restaurentName: restaurent?.restaurentName,
+          restaurantName: restaurant?.restaurantName,
           action: {
-            id: restaurent._id,
-          },
-          bounds: restaurent?.bounds,
-        };
-      })
-    );
-    return res;
+            id: restaurant._id,
+            },
+            bounds: restaurant?.bounds,
+            };
+            })
+            );
+            return res;
   }
 
   const handleClickForDeleteModal = (data) => {
@@ -140,7 +140,7 @@ const Restaurant = () => {
     onClose();
     try {
      
-      const result = await deleteRestaurent(info.id);
+      const result = await deleteRestaurant(info.id);
       getData();
       if (result.message) {
         successToast("Restaurant deleted successfully");
@@ -164,14 +164,14 @@ const Restaurant = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const response = await getRestaurentList({
+      const response = await getRestaurantList({
         page: currentPage.current,
         limit: limit,
       });
 
       // console.log("res", response.data)
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-      setAllRetstaurentData(await convertToUsableDriverArray(response?.data[0].data));
+      setAllRetstaurantData(await convertToUsableDriverArray(response?.data[0].data));
       setPageItemRange(
         currentPage.current,
         response?.data[0].count[0]?.totalcount
@@ -208,12 +208,12 @@ const Restaurant = () => {
     if (searchText.trim() == "") {
       // setLoading(true);
       // setSearchData([]);
-      setPageCount(Math.ceil(getRestaurentList.length / limit));
-      if (getRestaurentList.length === 0) {
-        setPageItemRange(0, getRestaurentList.length);
+      setPageCount(Math.ceil(getRestaurantList.length / limit));
+      if (getRestaurantList.length === 0) {
+        setPageItemRange(0, getRestaurantList.length);
       } else {
         currentPage.current = 1;
-        setPageItemRange(currentPage.current, getRestaurentList.length);
+        setPageItemRange(currentPage.current, getRestaurantList.length);
       }
       // setLoading(false);
     }
@@ -306,7 +306,7 @@ const Restaurant = () => {
                     </div> */}
                     <ModalBody className="text-center">
                       {t("Are you sure you want to Delete?")} <br />
-                      {t(`${'"' + selectedItem.restaurentName + '"'}`)}
+                      {t(`${'"' + selectedItem.restaurantName + '"'}`)}
                     </ModalBody>
                     <div className="mt-3 flex justify-center">
                       <Button
