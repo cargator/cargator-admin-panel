@@ -289,7 +289,7 @@ const DriverForm = () => {
       setRestaurantOptions(
         res.data.map((option: any) => {
           return {
-            value: option.restaurantNameToLowerCase,
+            value: option.restaurantName,
             label: option.restaurantName,
           };
         })
@@ -700,7 +700,7 @@ const DriverForm = () => {
                       </label>
                       <Select
                         options={[
-                          { value: "none", label: "None" },
+                          { value: "None", label: "None" },
                           ...restaurantOptions,
                         ]}
                         id="restaurantName"
@@ -716,7 +716,7 @@ const DriverForm = () => {
                           allRestaurantList.find(
                             (option: any) => option.value === restaurantName
                           ) || {
-                            value: !restaurantName ? "none" : restaurantName,
+                            value: !restaurantName ? "None" : restaurantName,
                             label: !restaurantName ? "None" : restaurantName,
                           }
                         }

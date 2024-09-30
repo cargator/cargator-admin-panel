@@ -163,7 +163,7 @@ function ColumnsTable(props: {
         const value = info.getValue();
         return(
         <p className="text-sm  font-bold text-navy-700 dark:text-white">
-          {!value || value.trim() === "" ? "NA" : info.getValue()}
+          {!value || value.trim() === "None" ? "NA" : info.getValue()}
         </p>
       )},
     }),
