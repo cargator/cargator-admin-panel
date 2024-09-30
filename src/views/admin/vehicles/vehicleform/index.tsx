@@ -136,11 +136,11 @@ const VehicleForm: React.FC = () => {
     vehicleNumber: Yup.string()
       .min(6, "Vehicle Number atleast be 6 digits.")
       .max(10, "Vehicle Number must be 10 digits only.")
-      .matches(
-        // /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
-        /^[A-Za-z]{2}\d{2}[A-Za-z]{1,2}\d{1,4}$/,
-        "Vehicle Number must follow the pattern: XX99XX9999"
-      )
+      // .matches(
+      //   // /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
+      //   /^[A-Za-z]{2}\d{2}[A-Za-z]{1,2}\d{1,4}$/,
+      //   "Vehicle Number must follow the pattern: XX99XX9999"
+      // )
       .required("Vehicle number is required"),
     vehicleType: Yup.string().required("Vehicle type is required"),
     image: isProfileImage

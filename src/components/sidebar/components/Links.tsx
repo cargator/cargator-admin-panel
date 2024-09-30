@@ -83,14 +83,14 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                       <span>{t("Users")}</span>
                     </div>
                   </Link>
-                  <Link
+                  {/* <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={`${route.layout}/settings/countrycode`}
                   >
                     <div>
                       <span>{t("Country Code")}</span>
                     </div>
-                  </Link>
+                  </Link> */}
                   <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={`${route.layout}/settings/flows`}
@@ -107,30 +107,30 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                       <span>{t("Vehicle Details")}</span>
                     </div>
                   </Link>
-                  <Link
+                  {/* <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={`${route.layout}/settings/activity`}
                   >
                     <div>
                       <span>{t("Activity")}</span>
                     </div>
-                  </Link>
-                  <Link
+                  </Link> */}
+                  {/* <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={`${route.layout}/settings/privacyPolicy`}
                   >
                     <div>
                       <span>{t("Privacy Policy")}</span>
                     </div>
-                  </Link>
-                  <Link
+                  </Link> */}
+                  {/* <Link
                     className="mb-2 text-sm font-medium text-gray-600 hover:text-blue-700"
                     to={`${route.layout}/settings/support`}
                   >
                     <div>
                       <span>{t("Support")}</span>
                     </div>
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </div>
