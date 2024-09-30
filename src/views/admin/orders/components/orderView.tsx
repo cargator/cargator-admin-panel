@@ -3,6 +3,7 @@ import {
   GoogleMap,
   Marker,
   Polyline,
+  InfoWindow,
   useJsApiLoader,
 } from "@react-google-maps/api";
 import car from "../../../../assets/images/car.svg";
@@ -83,6 +84,8 @@ const OrderView = () => {
   const [vehicleName, setVehicleName] = useState("");
   const [vehicleNumber, setVehicleNumber] = useState("");
   const [orderStatus, setOrderStatus] = useState("");
+  const [selectedOrderStatus, setSelectedOrderStatus] = useState(null);
+  const [orderStatusPosition, setOrderStatusPosition] = useState(null);
   const [orderDetails, setOrderDetails] = useState(null);
   const [updatedStatus, setUpdatedStatus] = useState([]);
   const [currentMap, setcurrentMap] = useState<any>("olaMap");
@@ -122,6 +125,28 @@ const OrderView = () => {
       style: { borderRadius: "15px" },
     });
   };
+
+
+
+  const showOrderStatus = (ordersStatus: any, position: any) => {
+    setSelectedOrderStatus(ordersStatus);
+    setOrderStatusPosition(position);
+  };
+
+  const timeConverter = (orderStatus: any) => {
+
+    const utcDate = new Date(orderStatus.time);
+    const istDate = new Date(
+      utcDate.getTime() + 5 * 60 * 60 * 1000 + 30 * 60 * 1000
+    );
+
+    // Extract the IST date and time in 'YYYY-MM-DD' and 'HH:MM' format
+    const istDateString = istDate.toISOString().substring(0, 10);
+    const istTimeString = istDate.toISOString().substring(11, 16);
+
+    return istTimeString;
+  }
+  
 
   const getCurrentMapFLow = async () => {
     setIsLoading(true);
@@ -790,7 +815,7 @@ const OrderView = () => {
                   >
                     {updatedStatus &&
                       updatedStatus.length > 0 &&
-                      updatedStatus.slice(1).map((orderStatus) => {
+                      updatedStatus.slice(1).map((orderStatus,i) => {
                         if (
                           !orderStatus.location ||
                           !Array.isArray(orderStatus.location) ||
@@ -807,63 +832,41 @@ const OrderView = () => {
                           lng: orderStatus.location[1],
                           lat: orderStatus.location[0],
                         };
-                        let icon: any;
-                        switch (orderStatus.status) {
-                          case "ALLOTTED":
-                            icon = orderAccepted;
-                            break;
+                        // let icon: any;
+                        // switch (orderStatus.status) {
+                        //   case "ALLOTTED":
+                        //     icon = orderAccepted;
+                        //     break;
 
-                          case "ARRIVED":
-                            icon = ArrivedPickLoc;
-                            break;
+                        //   case "ARRIVED":
+                        //     icon = ArrivedPickLoc;
+                        //     break;
 
-                          case "DISPATCHED":
-                            icon = orderDisp;
-                            break;
+                        //   case "DISPATCHED":
+                        //     icon = orderDisp;
+                        //     break;
 
-                          case "ARRIVED_CUSTOMER_DOORSTEP":
-                            icon = ArrivedCustLoc;
-                            break;
+                        //   case "ARRIVED_CUSTOMER_DOORSTEP":
+                        //     icon = ArrivedCustLoc;
+                        //     break;
 
-                          case "DELIVERED":
-                            icon = Delivered;
-                            break;
+                        //   case "DELIVERED":
+                        //     icon = Delivered;
+                        //     break;
 
-                          default:
-                            return null;
-                        }
+                        //   default:
+                        //     return null;
+                        // }
                         return (
                           <Marker
                             key={orderStatus}
                             position={position}
-                            icon={icon}
+                            label={`${i+1}`}
+                            onClick={() => showOrderStatus(orderStatus, position)}
                           />
                         );
                       })}
 
-                    {/* {path.length !== 0 && (
-                    <Marker
-                      position={{
-                        lat: orderDetails?.riderPathToPickUp[0]?.latitude,
-                        lng: orderDetails?.riderPathToPickUp[0]?.longitude,
-                      }}
-                      label="S"
-                    />
-                  )}
-                  <Marker
-                    position={{
-                      lat: orderDetails?.pickup_details?.latitude,
-                      lng: orderDetails?.pickup_details?.longitude,
-                    }}
-                    label="P"
-                  />
-                  <Marker
-                    position={{
-                      lat: orderDetails?.drop_details?.latitude,
-                      lng: orderDetails?.drop_details?.longitude,
-                    }}
-                    label="D"
-                  /> */}
                     {driverLocation && (
                       <Marker position={driverLocation} label="DR" />
                     )}
@@ -875,6 +878,19 @@ const OrderView = () => {
                       path={realPath}
                       options={{ strokeColor: "green", strokeWeight: 4 }}
                     />
+                      {orderStatusPosition && selectedOrderStatus && (
+                    <InfoWindow
+                      position={orderStatusPosition}
+                      onCloseClick={() => setSelectedOrderStatus(null)}
+                    >
+                      <div style={{ width: "100%" }}>
+                        <p style={{ display: "flex", fontWeight: "400" }}>
+                        <p> {selectedOrderStatus?.status}</p>
+
+                        </p>  
+                      </div>
+                    </InfoWindow>
+                  )}
                   </GoogleMap>
                 )}
               </div>
