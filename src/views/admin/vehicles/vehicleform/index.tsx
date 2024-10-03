@@ -28,6 +28,18 @@ import uploadCloud from "../../../../assets/svg/upload-cloud.svg";
 import { t } from "i18next";
 import { Link } from "react-router-dom";
 
+//  for crop function 
+import Cropper from 'react-easy-crop';
+
+interface ImageUploadProps {
+  setFieldValue: (field: string, value: any) => void;
+  handleBlur: () => void;
+  params: { id?: string };
+  t: (key: string) => string; // Assuming t is a translation function
+}
+
+
+
 const Logger = (props: any): JSX.Element => {
   const {
     setVehicleMake,
@@ -72,6 +84,12 @@ type FinalDocArray = {
   file?: any;
 };
 
+// document overflow
+interface Document {
+  key: string;
+  file?: string; 
+}
+
 type docState = FinalDocArray[];
 
 type formvalues = {
@@ -94,7 +112,7 @@ const VehicleForm: React.FC = () => {
     image: {},
     documents: [],
   });
-  
+
   const [paramData, setParamData] = useState<any>({});
   const [options, setOptions] = useState([
     {
@@ -122,12 +140,74 @@ const VehicleForm: React.FC = () => {
     params.id ? false : false
   );
   const [isImageFile, setIsImageFile] = useState<boolean>(false)
+
+  // for crop function
+  const [cropCompleted, setCropCompleted] = useState(false);
+
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
+
+
+  
   const anchorRefs = useRef(Array(finalDocArray.length).fill(null));
+  // for document overflow
+  const [showAll, setShowAll] = useState(false);
+  const visibleDocs: FinalDocArray[] = showAll ? finalDocArray : finalDocArray.slice(0, 4);
+
 
   const FILE_SIZE = 1024 * 1024;
   const FILE_SIZE_DOC = 1024 * 1024;
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
   const SUPPORTED_FORMATS_DOC = ["application/pdf"];
+
+// for crop image
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result as string);
+        setCropperOpen(true); // Open cropper when file is selected
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+
+// for crop  image
+  const handleCropImage = async (e: any) => {
+
+  
+    if (!e) return;
+
+    if (imageFile && croppedAreaPixels && cropCompleted) { // Check if crop is complete
+      const imageUrl = await getCroppedImg(imageFile, croppedAreaPixels);
+
+    console.log('this is the imageURL>>>>>>>>>>>>>>>:',imageUrl);
+
+      const response = await fetch(imageUrl);
+      const blob = await response.blob(); // Get the Blob
+
+      // Create a File from the Blob
+      const croppedFile = new File([blob], `cropped_${uuidv4()}.png`, { type: blob.type });
+
+      setImagePreview(imageUrl);
+      setImageFile(croppedFile)
+      setFinalProfileImage({
+        key: `vehicles/vehicleimage/${uuidv4()}.png`,
+        url: imageUrl,
+        file: croppedFile,
+      });
+      setCropperOpen(false);
+      // Reset the crop completion status
+
+    }
+  };
+
+
 
   const vehicleSchema = Yup.object().shape({
     vehicleName: Yup.string()
@@ -279,14 +359,14 @@ const VehicleForm: React.FC = () => {
             if (key !== undefined) {
               const data: any = await getS3SignUrl(key, contentType, type);
 
-            if (data.url) {
-              res1 = await pushProfilePhotoToS3(data?.url, ele.file);
-              if (res1.status === 200) {
-                console.log("uploaded correctly ");
+              if (data.url) {
+                res1 = await pushProfilePhotoToS3(data?.url, ele.file);
+                if (res1.status === 200) {
+                  console.log("uploaded correctly ");
+                }
               }
             }
-            }
-            
+
           }
         });
 
@@ -348,7 +428,7 @@ const VehicleForm: React.FC = () => {
                 res1 = await pushProfilePhotoToS3(data.url, ele.file);
               }
             }
-           
+
           });
         }
 
@@ -643,6 +723,8 @@ const VehicleForm: React.FC = () => {
                         <div className="error-input">{errors.vehicleName}</div>
                       ) : null}
                     </div>
+                   
+
                   </div>
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
@@ -768,7 +850,8 @@ const VehicleForm: React.FC = () => {
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
                       <div className="mt-4">
-                        {imagePreview && (
+                        
+                        {imagePreview && !cropperOpen && (
                           <>
                             <div
                               className="image-preview"
@@ -809,8 +892,64 @@ const VehicleForm: React.FC = () => {
                           }}
                           className="h-15 mt-2 rounded-xl border bg-white/0 p-3 text-sm outline-none"
                         >
-                          <label>
-                            <div
+                          
+                            {/* for image crop  */}
+
+                            {cropperOpen && (
+                              <div className="relative max-w-[300px] mx-auto">
+                                <div className="absolute top-2 left-2 z-10 text-gray-800 bg-white bg-opacity-80 p-2 rounded-md">
+                                  Zoom and drag to crop the image
+                                </div>
+
+                                {/* Wrapper div for styling the Cropper */}
+                                <div  className="border-2 border-dashed border-green-600 rounded-md shadow-md h-[300px] w-[300px] relative mb-4">
+                                  <Cropper
+                                    image={imagePreview!}
+                                    crop={crop}
+                                    zoom={zoom}
+                                    aspect={1} // 1:1 aspect ratio
+                                    onCropChange={setCrop}
+                                    onZoomChange={setZoom}
+                                    onCropComplete={(croppedArea, croppedAreaPixels) => {
+                                      console.log("hereee in the oncropcomplete")
+                                      setCroppedAreaPixels(croppedAreaPixels);
+                                      setCropCompleted(true);
+                                    }}
+                                  />
+                                </div>
+
+                                {/* Buttons below the cropping area */}
+                                <div className="flex space-x-2"
+                                  onClick={(e) => {console.log('inside div >>>>>>>>>>>>>')}}
+                                >
+                                  <button
+                                     type="button"
+                                    className="bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"
+                                    onClick={(e) => {
+                                      
+                                      console.log('Crop button clicked ------------------------',e.target);
+                                      handleCropImage(e);
+                                    }}
+                                  >
+                                    Crop Image
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="border border-gray-300 rounded-md py-2 px-4 cursor-pointer"
+                                    onClick={(e) => {
+                                      setCropperOpen(false);
+                                      setImagePreview(null);
+                                    }}
+                                  >
+                                    Cancel
+                                  </button>
+                                </div>
+                               </div>
+                            )}
+
+                            <label>
+                               {/* put div inside a condition for crop image */}
+                            {!cropperOpen && <div
                               className="flex items-center justify-center gap-3"
                               style={{ cursor: "pointer" }}
                             >
@@ -827,47 +966,26 @@ const VehicleForm: React.FC = () => {
                                 {!params.id
                                   ? t("Click here to upload your vehicle image")
                                   : t(
-                                      "Click here to change your vehicle image"
-                                    )}
+                                    "Click here to change your vehicle image"
+                                  )}
                                 <br />
                                 {t("file size below")} 1MB
                               </div>
-                            </div>
-                            <input
+                            </div>}
+                              {/* put input in the crop image condition */}
+                            {!cropperOpen && (
+                              <input
                               // required
                               accept="image/*"
-                              style={{
-                                backgroundColor: "rgba(242, 242, 242, 0.5)",
-                                display: "none",
-                              }}
-                              className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                              name="image"
-                              type="file"
-                              id="image"
-                              onChange={(event) => {
-                                setFieldValue("image", event.target.files[0]);
-                                const file = event.target.files[0];
-                                setFinalProfileImage({
-                                  key: `vehicles/vehicleimage/${uuidv4()}.png`,
-                                  url: "",
-                                  file: file,
-                                });
-                                if (file) {
-                                  setIsImageFile(true);
-                                  const reader = new FileReader();
-                                  reader.onload = (e) => {
-                                    setImagePreview(e.target.result);
-                                  };
-                                  reader.readAsDataURL(file);
-                                } else {
-                                  setImagePreview(null);
-                                }
-                                if (event.target.files[0]) {
-                                  setIsProfileImage(true);
-                                }
-                              }}
-                              onBlur={handleBlur}
-                            />
+                                style={{ display: "none" }}
+                                name="image"
+                                type="file"
+                                id="image"
+                                onChange={handleFileChange} // added function here
+                                onBlur={handleBlur}
+                              />
+                            )}
+
                           </label>
                         </div>
                         <ErrorMessage
@@ -878,83 +996,87 @@ const VehicleForm: React.FC = () => {
                       </div>
                     </div>
                     <div className="mb-3 ms-6 w-full">
-                      <div className="flex flex-row items-start">
-                        {finalDocArray.length > 0 &&
-                          finalDocArray.map((doc, index) => {
-                            return (
-                              <>
-                                <div
-                                  className="document-container m-0 mb-2 me-2"
-                                  key={index}
-                                >
-                                  <div
-                                    style={{
-                                      position: "relative",
-                                      width: "55px",
-                                      height: "55px",
-                                      padding: "2px",
-                                      cursor: "pointer",
-                                      border: "2px solid #9CA3AF",
-                                      borderRadius: "4px",
-                                    }}
-                                  >
-                                    <img
-                                      src={pdf}
-                                      style={{
-                                        objectFit: "contain",
-                                        height: "100%",
-                                        width: "auto",
-                                        cursor: "pointer",
-                                        padding: "5px",
-                                      }}
-                                      onClick={() => {
-                                        if (!doc?.file) {
-                                          handleDivClickDoc(index, doc.key);
-                                        }
-                                      }}
-                                    />
-                                    <a
-                                      ref={(el) =>
-                                        (anchorRefs.current[index] = el)
-                                      }
-                                      download="your-pdf-file.pdf"
-                                      style={{
-                                        display: "none",
-                                      }}
-                                    ></a>
-                                    <p>{doc.key.slice(0, 6)}</p>
-                                    <span
-                                      style={{
-                                        position: "absolute",
-                                        top: "0",
-                                        right: "0",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
+                      <div className="flex flex-row items-start flex-wrap">
+                         {/* changes for document overflow */}
+                        {visibleDocs.length > 0 &&
+                          visibleDocs.map((doc, index) => (
+                            <div className="document-container m-0 mb-2 mt-2 me-2" key={index}>
+                              <div
+                                style={{
+                                  position: "relative",
+                                  width: "55px",
+                                  height: "40px",
+                                  padding: "2px",
+                                  cursor: "pointer",
+                                  border: "2px solid #9CA3AF",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                <img
+                                  src={pdf}
+                                  style={{
+                                    objectFit: "contain",
+                                    height: "100%",
+                                    width: "auto",
+                                    cursor: "pointer",
+                                    padding: "5px",
+                                  }}
+                                  onClick={() => {
+                                    if (!doc?.file) {
+                                      handleDivClickDoc(index, doc.key);
+                                    }
+                                  }}
+                                />
+                                <a
+                                  ref={(el) => 
+                                    (anchorRefs.current[index] = el)
+                                  }
+                                  download="your-pdf-file.pdf"
+                                  style={{ 
+                                    display: "none",
+                                  }}
+                                ></a>
+                                <p>{doc.key.slice(0, 6)}</p>
+                                <span
+                                  style={{
+                                    position: "absolute",
+                                    top: "0",
+                                    right: "0",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
                                         borderRadius: "0 4px 0 0", // Rounded top-right corner
-                                        cursor: "pointer",
-                                        padding: "-2px -2px 5px 5px",
-                                      }}
-                                      onClick={() => {
-                                        values.documents = handleDelete(index);
-                                      }}
-                                    >
-                                      <img
-                                        src={cross}
-                                        alt="cross"
-                                        width="22px"
-                                        height="22px"
+                                    cursor: "pointer",
+                                    padding: "-2px -2px 5px 5px",
+                                  }}
+                                  onClick={() => {
+                                    handleDelete(index);
+                                  }}
+                                >
+                                  <img
+                                    src={cross}
+                                    alt="cross"
+                                    width="22px"
+                                    height="22px"
                                         style={{
                                           margin: "-8px -8px 0px 0px",
                                         }}
-                                      />
-                                    </span>
-                                  </div>
-                                </div>
-                              </>
-                            );
-                          })}
+                                  />
+                                </span>
+                              </div>
+                            </div>
+                          ))}
                       </div>
+                       {/* for document overflow */}
+                      {finalDocArray.length > 4 && (
+                        <button
+                          type="button"
+                          className="text-blue-600 underline hover:text-blue-800 mt-3"
+                          onClick={() => setShowAll(!showAll)}
+                        >
+                          {showAll ? 'Show Less' : 'Show More'}
+                        </button>
+                      )}
                       <div
                         style={{
                           border: "2px solid #9CA3AF",
@@ -964,9 +1086,9 @@ const VehicleForm: React.FC = () => {
                         className="h-15 mt-4 rounded-xl border bg-white/0 p-3 text-sm outline-none"
                       >
                         <label>
-                          <div
-                            className="flex items-center justify-center gap-3"
-                            style={{ cursor: "pointer" }}
+                          <div 
+                          className="flex items-center justify-center gap-3" 
+                          style={{ cursor: "pointer" }}
                           >
                             <div className="mb-3">
                               <img
@@ -980,10 +1102,10 @@ const VehicleForm: React.FC = () => {
                             <div className="mb-1 mt-1 text-center">
                               {!params.id
                                 ? t(
-                                    "Click here to upload your vehicle documents"
-                                  )
+                                  "Click here to upload your vehicle documents"
+                                )
                                 : t(
-                                    "Click here to change your vehicle documents"
+                                  "Click here to change your vehicle documents"
                                   )}
                               <br />
                               {t("file size below")} 1MB
@@ -1015,6 +1137,9 @@ const VehicleForm: React.FC = () => {
                         className="error-input"
                       />
                     </div>
+
+
+
                   </div>
                   <div className="button-save-cancel mt-3 flex justify-end">
                     <Button
@@ -1042,4 +1167,43 @@ const VehicleForm: React.FC = () => {
     </>
   );
 };
+
+
+
+
+// for crop image 
+const getCroppedImg = (imageSrc: File, pixelCrop: any): Promise<string> => {
+  return new Promise((resolve) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.src = URL.createObjectURL(imageSrc);
+    img.onload = () => {
+      canvas.width = pixelCrop.width;
+      canvas.height = pixelCrop.height;
+      ctx.drawImage(
+        img,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        pixelCrop.width,
+        pixelCrop.height
+      );
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          resolve(url as string); // Ensure it's treated as a string
+        } else {
+          resolve(''); // Resolve with an empty string if blob is null
+        }
+      }, 'image/png');
+    };
+  });
+};
+
 export default VehicleForm;
