@@ -193,7 +193,7 @@ function ColumnsTableRiders(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
+                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4"
                     >
                       <div className="flex gap-4 text-xs text-gray-200">
@@ -206,7 +206,7 @@ function ColumnsTableRiders(props: {
                           desc: "",
                         }[header.column.getIsSorted() as string] ?? null} */}
                          {
-                          <>
+                          <>(header.id!=='action' && header.id!=='actions')&&
                             {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp size={20} className="text-gray-600 font-bold" />
                             ) : header.column.getIsSorted() === "desc" ? (

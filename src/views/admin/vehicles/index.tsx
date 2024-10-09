@@ -267,7 +267,7 @@ const Vehicles: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div> 
       <Navbar
         flag={true}
         brandText="Vehicles"
@@ -275,6 +275,7 @@ const Vehicles: React.FC = () => {
           handleSearchSubmit(e)
         }
         setSearchText={setSearchText}
+        placeholder=" Nickname , Number , Type , Status"
       />
       {/* {!noData ? (
         <Card extra={" m-4 w-full p-4 h-full"}>

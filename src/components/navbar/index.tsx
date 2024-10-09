@@ -16,9 +16,10 @@ const Navbar = (props: {
   secondary?: boolean | string;
   handleSearch?: (e: React.SyntheticEvent<EventTarget>) => void;
   setSearchText?: (val: string) => void;
-  flag?: boolean
+  flag?: boolean;
+  placeholder?:string;
 }) => {
-  const { onOpenSidenav, brandText, handleSearch, setSearchText, flag } = props;
+  const { onOpenSidenav, brandText, handleSearch, setSearchText, flag,placeholder } = props;
   const [darkmode, setDarkmode] = React.useState(
     document.body.classList.contains("dark")
   );
@@ -79,7 +80,7 @@ const Navbar = (props: {
               </p>
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder={`${placeholder || 'Search ...'}`}
                 className="block h-full w-full rounded-full bg-lightPrimary text-sm font-medium text-navy-700 outline-none placeholder:!text-gray-400 dark:bg-navy-900 dark:text-white dark:placeholder:!text-white sm:w-fit"
                 onChange={(e) => setSearchText(e.target.value)}
               />

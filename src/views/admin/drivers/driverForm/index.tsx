@@ -140,6 +140,7 @@ const DriverForm = () => {
     image: {},
     documents: [],
   });
+  const formvalues=useRef(null);
   const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
   const [allRestaurantList, setAllRestaurantList] = useState([]);
   const [options, setOptions] = useState([]);
@@ -394,12 +395,13 @@ const DriverForm = () => {
     return response;
   }
 
-  const handleCreateDriver = async (values: any) => {
+  const handleCreateDriver = async (values: any) => {  
     setIsLoading(true);
     console.log("finalDocArray :>> ", finalDocArray);
     console.log("initialDocArray :>> ", initialDocArray);
-    try {
-      if (params.id) {
+    try {  
+       formvalues.current=values;
+      if (params.id) { 
         let res, res1;
         if (finalProfileImage?.url === "") {
           console.log("image key to upload :>> ", finalProfileImage?.url);
@@ -539,10 +541,9 @@ const DriverForm = () => {
         }
       }
     } catch (error: any) {
-      console.log("2222222222");
-      errorToast(error.response.data.message);
-      console.log(error);
-      setIsLoading(false);
+        errorToast(error.response.data.message);
+        setInitialFormValues(formvalues.current);
+         setIsLoading(false);
     }
   };
 
@@ -587,8 +588,8 @@ const DriverForm = () => {
         }
       }
 
-      console.log("get data by driver id ", res.data);
-
+      
+    
       setInitialFormValues({
         firstName: res.data.firstName,
         restaurantName: res.data.restaurantName,
@@ -611,7 +612,8 @@ const DriverForm = () => {
 
       setIsLoading(false);
     } catch (error: any) {
-      errorToast(error.response.data.message);
+      errorToast(error.response.data.message);  
+     
       setIsLoading(false);
     }
   };

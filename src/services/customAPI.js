@@ -315,6 +315,15 @@ export const getRestaurantList = (data) => {
   );
 };
 
+export const getSearchRestaurantList = (data) => {
+  console.log("getDataApi");
+  return customAxios.get(
+    `/get-search-restaurant-list?page=${data.page}&limit=${data.limit}&text=${data.query}`
+  );
+};
+
+
+
 export const getAvailableRestaurantApi = () => {
   return customAxios.get("/get-available-restaurant");
 };
@@ -335,8 +344,7 @@ export const createUsersApi = (data) => {
 };
 
 export const deleteUserAPI = (id) => {
-  console.log("deleteusesrss>>>>deleteBreakPoints>", id)
-  return customAxios.delete(`/delete-user/${id}`);
+    return customAxios.delete(`/delete-user/${id}`);
 };
 
 export const getUsersById = (id) => {
@@ -344,7 +352,6 @@ export const getUsersById = (id) => {
 };
 
 export const updateUsersApi = (id, data) => {
-  console.log("updateUsersApi called", id, data);
   return customAxios.patch(`/update-user/${id}`, data);
 };
 

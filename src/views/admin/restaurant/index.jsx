@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { getRestaurantList, deleteSpot, deleteRestaurant } from "../../../services/customAPI";
+import { getRestaurantList, deleteSpot, deleteRestaurant,getSearchRestaurantList } from "../../../services/customAPI";
 import ReactPaginate from "react-paginate";
 // import './map.css'
 import Loader from "components/loader/loader";
@@ -66,27 +66,51 @@ const Restaurant = () => {
 
   const handleSearchSubmit = async (e) => {
     e.preventDefault();
-    // if (searchText.trim() == "") {
-    //   setNoData(true);
-    //   return;
-    // }
-    // currentPage.current = 1;
+    if (searchText.trim() == "") {
+      // setNoData(true);
+      return;
+    }
+    currentPage.current = 1;
     searchRideFunction();
     setLoading(false);
   };
 
+const searchRides = async () => {
+  try {
+    setLoading(true);
+    const response = await getSearchRestaurantList({
+      page: currentPage.current,
+      limit: limit,
+      query:searchText.trim()
+    });
+
+    // console.log("res", response.data)
+    setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+    setAllRetstaurantData(await convertToUsableRestaurantArray(response?.data[0].data));
+    setPageItemRange(
+      currentPage.current,
+      response?.data[0].count[0]?.totalcount
+    );
+    setLoading(false);
+  } catch (error) {
+    setLoading(false);
+    console.log(`get-all-rides >> error :>> `, error);
+  }
+};
+
+
   const searchRideFunction = async () => {
-    // const response = await searchRides();
-    // if (!response) {
-    //   return;
-    // }
-    // setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-    // setAllRideData(await convertToUsableRideArray(response?.data[0].data));
-    // setPageItemRange(
-    //   currentPage.current,
-    //   response?.data[0].count[0]?.totalcount
-    // );
-    // setLoading(false);
+    const response = await searchRides();
+    if (!response) {
+      return;
+    }
+    setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
+    setAllRetstaurantData(await convertToUsableRestaurantArray(response?.data[0].data));
+    setPageItemRange(
+      currentPage.current,
+      response?.data[0].count[0]?.totalcount
+    );
+    setLoading(false);
   };
 
   const setPageItemRange = (currPageNumber, maxItemRange) => {
@@ -110,7 +134,7 @@ const Restaurant = () => {
     );
   };
 
-  async function convertToUsableDriverArray(restaurantArray) {
+  async function convertToUsableRestaurantArray(restaurantArray) {
     const res = Promise.all(
       restaurantArray.map(async (restaurant) => {
         return {
@@ -141,8 +165,12 @@ const Restaurant = () => {
     try {
      
       const result = await deleteRestaurant(info.id);
-      getData();
-      if (result.message) {
+       getData();
+      if(result.riderExists){
+        setLoading(false);
+        errorToast(result.message);
+      }
+      else if (result.message) {
         successToast("Restaurant deleted successfully");
         setLoading(false);
       } else {
@@ -171,7 +199,7 @@ const Restaurant = () => {
 
       // console.log("res", response.data)
       setPageCount(Math.ceil(response?.data[0].count[0]?.totalcount / limit));
-      setAllRetstaurantData(await convertToUsableDriverArray(response?.data[0].data));
+      setAllRetstaurantData(await convertToUsableRestaurantArray(response?.data[0].data));
       setPageItemRange(
         currentPage.current,
         response?.data[0].count[0]?.totalcount
@@ -184,9 +212,13 @@ const Restaurant = () => {
   };
 
   useEffect(() => {
-    currentPage.current = 1;
-    getData();
-  }, []);
+
+    if(searchText==""){
+      currentPage.current = 1;
+      getData();
+    }
+   
+  }, [searchText]);
 
   async function handlePageClick(event) {
     currentPage.current = event.selected + 1;
@@ -230,6 +262,7 @@ const Restaurant = () => {
         brandText="rides"
         handleSearch={(e) => handleSearchSubmit(e)}
         setSearchText={setSearchText}
+        placeholder="restaurant Name ....."
       />
       {loading ? (
         <Loader />

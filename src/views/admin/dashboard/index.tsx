@@ -341,7 +341,7 @@ const Dashboard = () => {
         </div>
       )}
       <>
-        <Card extra={"w-full pb-10 p-4 h-full"}>
+        <Card extra={"w-full pb-10 p-4 h-full mt-4"}>
           <div
             style={{
               display: "flex",

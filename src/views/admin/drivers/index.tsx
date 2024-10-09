@@ -395,7 +395,7 @@ const Drivers = () => {
   }, [searchText, status]);
 
   return (
-    <div>
+    <div> 
       <Navbar
         flag={true}
         brandText="Drivers"
@@ -403,6 +403,7 @@ const Drivers = () => {
           handleSearchSubmit(e)
         }
         setSearchText={setSearchText}
+        placeholder={'Name , Mobile Number,RestaurentName Vehicle Number'}
       />
       {/* {!noData ? (
         <Card extra={" m-4 w-full p-4 h-full"}>

@@ -69,7 +69,7 @@ function ColumnsTableVehicles(props: {
         <p
           className="text-sm font-bold text-navy-700"
           style={{ display: "flex", alignItems: "center" }}
-        >
+        > 
           {info.getValue()?.path === "" ? (
             <div
               style={{
@@ -184,7 +184,7 @@ function ColumnsTableVehicles(props: {
       id: "action",
       header: () => (
         <p className="text-sm font-bold text-gray-600 dark:text-white">
-          {t("Actions")}
+          {t("Actions")} 
         </p>
       ),
       cell: (info) => (
@@ -254,7 +254,8 @@ function ColumnsTableVehicles(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
+                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
+                      
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
                       <div className="flex gap-4 text-xs text-gray-200">
@@ -266,8 +267,8 @@ function ColumnsTableVehicles(props: {
                           asc: "",
                           desc: "",
                         }[header.column.getIsSorted() as string] ?? null} */}
-                         {
-                          <>
+                         { (header.id!=='action' && header.id!=='actions') &&
+                          <> 
                             {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
                             ) : header.column.getIsSorted() === "desc" ? (
@@ -276,7 +277,7 @@ function ColumnsTableVehicles(props: {
                               <div className="flex mr-[-6]">
                                <FaCaretDown size={20} className="text-gray-600 font-bold" />
                               </div>
-                            )}
+                            )}     
                           </>
                         }
                       </div>

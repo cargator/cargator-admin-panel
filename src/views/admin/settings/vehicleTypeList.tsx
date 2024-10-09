@@ -248,7 +248,7 @@ function VehicleTypeList() {
                         <th
                           key={header.id}
                           colSpan={header.colSpan}
-                          onClick={header.column.getToggleSortingHandler()}
+                          onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
                           className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                         >
                           <div className="flex gap-4 text-left text-xs text-gray-200">
@@ -256,6 +256,9 @@ function VehicleTypeList() {
                               header.column.columnDef.header,
                               header.getContext()
                             )}
+
+                          {(header.id!=='action' && header.id!=='actions') && 
+                          <>
                             {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp
                                 className="mr-[-6] font-bold text-gray-600"
@@ -274,6 +277,7 @@ function VehicleTypeList() {
                                 />
                               </div>
                             )}
+                          </>}
                           </div>
                         </th>
                       ))}

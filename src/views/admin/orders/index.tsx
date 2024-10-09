@@ -233,11 +233,13 @@ function Orders() {
         setCurrentPage(1);
         setPageItemRange(currentPage, allOrders.length);
       }
+       getAllOrders(currentPage,10);
+
     }
   }, [searchText]);
 
   return (
-    <div>
+    <div> 
       <Navbar
         flag={true}
         brandText="rides"
@@ -245,6 +247,7 @@ function Orders() {
           handleSearchSubmit(e)
         }
         setSearchText={setSearchText}
+        placeholder="Order Id , Mobile Number,Location"
       />
       {loading ? (
         <Loader />

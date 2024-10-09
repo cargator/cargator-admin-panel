@@ -258,7 +258,7 @@ function ColumnsTable(props: {
     setData([...tableData]);
   }, [tableData]);
 
-  return (
+  return ( 
     <Card extra={"w-full pb-10 p-4 h-full"}>
       <header className="relative flex items-center justify-between">
         <div className="text-xl font-bold text-navy-700 dark:text-white">
@@ -301,7 +301,7 @@ function ColumnsTable(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
+                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
                       <div className="flex gap-4 text-left text-xs text-gray-200">
@@ -309,7 +309,7 @@ function ColumnsTable(props: {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {
+                        {(header.id!=='action' && header.id!=='actions') &&
                           <>
                             {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp

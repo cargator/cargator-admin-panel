@@ -332,7 +332,7 @@ function ColumnsOrderTable(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
+                      onClick={(header.id!=='action' && header.id!=='view') ? header.column.getToggleSortingHandler() : undefined}
                       className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
                     >
                       <div className="flex items-center justify-between text-xs text-gray-200">
@@ -340,7 +340,7 @@ function ColumnsOrderTable(props: {
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {
+                        {(header.id!=='action' && header.id!=='view') &&
                           <>
                             {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp

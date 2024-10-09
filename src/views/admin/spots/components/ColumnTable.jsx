@@ -320,7 +320,7 @@ function ColumnsTable(props) {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={header.column.getToggleSortingHandler()}
+                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
                       className="cursor-pointer px-4 py-2 text-left"
                     >
                       <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -330,7 +330,7 @@ function ColumnsTable(props) {
                             header.getContext()
                           )}
                         </span>
-                        {
+                        {(header.id!=='action' && header.id!=='actions') &&
                           <>
                             {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp
