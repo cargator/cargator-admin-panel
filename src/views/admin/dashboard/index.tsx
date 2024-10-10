@@ -161,7 +161,7 @@ const Dashboard = () => {
   };
 
   const handleNavigation = () => {
-    navigate("/admin/order?data=ongoing-rides");
+    navigate("/admin/order?data=current-order");
   };
 
   const handleNavigationCompleteRide = () => {
