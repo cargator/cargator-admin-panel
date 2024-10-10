@@ -16,7 +16,7 @@ import VehicleType from "views/admin/settings/vehicleType/vehicleType";
 import Fare from "views/admin/settings/fare";
 import VehicleTypeList from "views/admin/settings/vehicleTypeList";
 import DriverForm from "views/admin/drivers/driverForm";
-import RideView from "views/admin/rides/rideview";
+// import RideView from "views/admin/rides/rideview";
 import VehicleForm from "views/admin/vehicles/vehicleform";
 import {
   MdHome,
@@ -238,14 +238,14 @@ const authenticatedRoutes: RoutesType[] = [
     component: <DriverForm />,
     secondary: true,
   },
-  {
-    name: "Ride Details",
-    layout: "/admin",
-    path: "rides/ridedetails/:id",
-    // icon: <MdPerson className="h-6 w-6" />,
-    component: <RideView />,
-    secondary: true,
-  },
+  // {
+  //   name: "Ride Details",
+  //   layout: "/admin",
+  //   path: "rides/ridedetails/:id",
+  //   // icon: <MdPerson className="h-6 w-6" />,
+  //   component: <RideView />,
+  //   secondary: true,
+  // },
   {
     name: "Order Details",
     layout: "/admin",
