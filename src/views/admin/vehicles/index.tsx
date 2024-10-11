@@ -42,6 +42,8 @@ const Vehicles: React.FC = () => {
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
   const { t } = useTranslation();
+  const [sortedBy,setSortedBy]=useState("");
+  const [isAscending,setIsAscending]=useState(false);
 
   const successToast = (message: string) => {
     toast.success(`${message}`, {
@@ -163,7 +165,9 @@ const Vehicles: React.FC = () => {
       const response: any = await searchVehiclesApi({
         page: currentPage.current,
         limit: limit,
-        query: searchText.trim(),
+        query: searchText.trim()||"",
+        sortby:sortedBy,
+        order:isAscending?1:-1
       });
 
       if (!response) {
@@ -232,7 +236,7 @@ const Vehicles: React.FC = () => {
 
   function handlePageClick(e: any) {
     currentPage.current = e.selected + 1;
-    if (searchText !== "") {
+    if (searchText !== "" || sortedBy!="" ) {
       searchVehicleFunction();
     } else {
       getPaginatedVehicleData();
@@ -266,6 +270,12 @@ const Vehicles: React.FC = () => {
     getPaginatedVehicleData();
   }, []);
 
+  useEffect(()=>{
+
+    searchVehicleFunction();
+
+  },[sortedBy,isAscending]);
+
   return (
     <div> 
       <Navbar
@@ -293,6 +303,10 @@ const Vehicles: React.FC = () => {
               <ColumnsTableVehicles
                 tableData={vehicleData}
                 handleClickForDeleteModal={handleClickForDeleteModal}
+                sortedBy={sortedBy}
+                setSortedBy={setSortedBy}
+                isAscending={isAscending}
+                setIsAscending={setIsAscending}
               />
               <div
                 className="mx-2 "

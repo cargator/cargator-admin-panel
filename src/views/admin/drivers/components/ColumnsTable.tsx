@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Card from "components/card";
 import ButtonEdit from "../../../../assets/svg/ButtonEdit.svg";
 import "./ColumnsTable.css";
@@ -42,11 +42,17 @@ type customFieldType2 = {
 function ColumnsTable(props: {
   tableData: any;
   status: String;
+  sortedBy: string;
+  setSortedBy: React.Dispatch<React.SetStateAction<string>>;
+  isAscending: boolean;
+  setIsAscending: React.Dispatch<React.SetStateAction<boolean>>;
   handleClickForDeleteModal: (data: any) => void;
   handleToggleForStatusMOdal: (data: any) => void;
 }) {
-  const { tableData, status } = props;
+  const { tableData, status,sortedBy,setSortedBy,isAscending,setIsAscending } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  // const [sortedBy,setSortedBy]=useState("fullName");
+  // const [isascending,setIsAscending]=useState(true);
   const { t } = useTranslation();
   const arrowdown = () => (
     <div
@@ -301,17 +307,38 @@ function ColumnsTable(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
-                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
+                      onClick={(header.id!=='action' && header.id!=='status') ? ()=>{setSortedBy(header.id);setIsAscending(prev=>!prev)} : undefined}
+                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start group"
                     >
                       <div className="flex gap-4 text-left text-xs text-gray-200">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {(header.id!=='action' && header.id!=='actions') &&
-                          <>
-                            {header.column.getIsSorted() === "asc" ? (
+                        {(header.id!=='action' && header.id!=='status') &&
+                        <div className="w-5 h-5">
+                          <span className={`${sortedBy===header.id?'block':'hidden'} group-hover:block`}>
+
+                            { header.id==sortedBy?
+                            (isAscending?
+                              (<FaCaretUp
+                                className="mr-[-6]  font-bold text-green-400"
+                                size={20}
+                              />)
+                              :
+                              (<FaCaretDown
+                                className="mr-[-6] font-bold text-green-400"
+                                size={20}
+                              />)
+                            )
+                            :
+                            (<FaCaretUp
+                              className="mr-[-6] font-bold text-gray-600"
+                              size={20}
+                            />)
+
+                            }
+                            {/* {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp
                                 className="mr-[-6] font-bold text-gray-600"
                                 size={20}
@@ -328,8 +355,9 @@ function ColumnsTable(props: {
                                   className="font-bold text-gray-600"
                                 />
                               </div>
-                            )}
-                          </>
+                            )} */}
+                          </span>
+                          </div>
                         }
                       </div>
                     </th>

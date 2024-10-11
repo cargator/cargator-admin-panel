@@ -33,6 +33,8 @@ const Restaurant = () => {
   const firstRender = useRef(true);
   const [pageItemStartNumber, setPageItemStartNumber] = useState(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState(0);
+  const [sortedBy,setSortedBy]=useState("");
+  const [isAscending,setIsAscending]=useState(false);
 
   const parser = new DOMParser();
 
@@ -81,7 +83,9 @@ const searchRides = async () => {
     const response = await getSearchRestaurantList({
       page: currentPage.current,
       limit: limit,
-      query:searchText.trim()
+      query:searchText.trim(),
+      sortby:sortedBy,
+      order:isAscending?1:-1
     });
 
     // console.log("res", response.data)
@@ -255,6 +259,9 @@ const searchRides = async () => {
     console.log("loading--------", loading);
   }, [loading]);
 
+  useEffect(() => {
+    searchRideFunction();   
+  }, [sortedBy,isAscending]);
   return (
     <div>
       <Navbar
@@ -281,6 +288,10 @@ const searchRides = async () => {
               <ColumnsTable
                 tableData={allRetstaurentData}
                 handleClickForDeleteModal={handleClickForDeleteModal}
+                sortedBy={sortedBy}
+                setSortedBy={setSortedBy}
+                isAscending={isAscending}
+                setIsAscending={setIsAscending}
               />
               {/* )} */}
 

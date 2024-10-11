@@ -48,9 +48,13 @@ function ColumnsTableVehicles(props: {
   // setVehicleStatus: (val: string) => void;
   // vehicleStatus: string;
   handleClickForDeleteModal: (data: any) => void;
+  sortedBy: string;
+  setSortedBy: React.Dispatch<React.SetStateAction<string>>;
+  isAscending: boolean;
+  setIsAscending: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const { t } = useTranslation();
-  const { tableData, handleClickForDeleteModal } = props;
+  const { tableData, handleClickForDeleteModal,sortedBy,setSortedBy,isAscending,setIsAscending } = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const navigate = useNavigate(); // Create a history object
   const handleEditClick = (vehicleId: string) => {
@@ -235,6 +239,7 @@ function ColumnsTableVehicles(props: {
           {t("Vehicles")}
         </div>
         <div>
+
            <Button
             type="submit"
             className="my-sm-0 add-driver-button my-2 ms-1 bg-brand-500 dark:bg-brand-400 dark:text-white"
@@ -254,32 +259,62 @@ function ColumnsTableVehicles(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
-                      
-                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
+
+                      onClick={(header.id!=='action' && header.id!=='vehicleStatus') ? ()=>{setSortedBy(header.id);setIsAscending(prev=>!prev)} : undefined}                      
+                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start group"
                     >
                       <div className="flex gap-4 text-xs text-gray-200">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {/* {{
-                          asc: "",
-                          desc: "",
-                        }[header.column.getIsSorted() as string] ?? null} */}
-                         { (header.id!=='action' && header.id!=='actions') &&
-                          <> 
-                            {header.column.getIsSorted() === "asc" ? (
-                              <FaCaretUp className="mr-[-6] text-gray-600 font-bold" size={20} />
+                        {(header.id!=='action' && header.id!=='vehicleStatus') &&
+                        <div className="w-5 h-5">
+                          <span className={`${sortedBy===header.id?'block':'hidden'} group-hover:block`}>
+
+                            { header.id==sortedBy?
+                            (isAscending?
+                              (<FaCaretUp
+                                className="mr-[-6]  font-bold text-green-400"
+                                size={20}
+                              />)
+                              :
+                              (<FaCaretDown
+                                className="mr-[-6] font-bold text-green-400"
+                                size={20}
+                              />)
+                            )
+                            :
+                            (<FaCaretUp
+                              className="mr-[-6] font-bold text-gray-600"
+                              size={20}
+                            />)
+
+                            }
+                            {/* {header.column.getIsSorted() === "asc" ? (
+                              <FaCaretUp
+                                className="mr-[-6] font-bold text-gray-600"
+                                size={20}
+                              />
                             ) : header.column.getIsSorted() === "desc" ? (
-                              <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                              <FaCaretDown
+                                size={20}
+                                className="font-bold text-gray-600"
+                              />
                             ) : (
-                              <div className="flex mr-[-6]">
-                               <FaCaretDown size={20} className="text-gray-600 font-bold" />
+                              <div className="mr-[-6] flex">
+                                <FaCaretDown
+                                  size={20}
+                                  className="font-bold text-gray-600"
+                                />
                               </div>
-                            )}     
-                          </>
+                            )} */}
+                          </span>
+                          </div>
                         }
+
+
+
                       </div>
                     </th>
                   );

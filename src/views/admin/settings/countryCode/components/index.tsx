@@ -231,7 +231,7 @@ function CountryCode() {
                           key={header.id}
                           colSpan={header.colSpan}
                           onClick={header.column.getToggleSortingHandler()}
-                          className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
+                          className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start group"
                         >
                           <div className="flex gap-4 text-left text-xs text-gray-200">
                             {flexRender(

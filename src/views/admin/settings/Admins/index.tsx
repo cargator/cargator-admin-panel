@@ -37,6 +37,8 @@ export default function Admins() {
   const [pageCount, setPageCount] = useState(1);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
+  const [sortedBy,setSortedBy]=useState("");
+  const [isAscending,setIsAscending]=useState(false);
 
   const parser = new DOMParser();
 
@@ -163,6 +165,9 @@ export default function Admins() {
       const response = await getAllAdminsData({
         page: currentPage.current,
         limit: limit,
+        sortby:sortedBy,
+        order:isAscending?1:-1
+
       });
       console.log("response==> ", response);
 
@@ -193,7 +198,7 @@ export default function Admins() {
 
   useEffect(() => {
     getAllAdmin();
-  }, []);
+  }, [sortedBy,isAscending]);
   return (
     <>
       <Navbar flag={false} brandText="Settings" />
@@ -207,6 +212,10 @@ export default function Admins() {
               handleClickForDeleteModal={handleClickForDeleteModal}
               handleToggleForStatusMOdal={handleToggleForStatusMOdal}
               handleUpdate={handleUpdate}
+              sortedBy={sortedBy}
+              setSortedBy={setSortedBy}
+              isAscending={isAscending}
+              setIsAscending={setIsAscending}
             />
 
             <div

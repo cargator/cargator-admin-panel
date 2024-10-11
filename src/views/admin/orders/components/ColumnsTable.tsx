@@ -50,8 +50,14 @@ function ColumnsOrderTable(props: {
   tableData: any;
   statusOptions: statusOption[];
   orderStatus: string;
+  sortedBy: string;
+  setSortedBy: React.Dispatch<React.SetStateAction<string>>;
+  isAscending: boolean;
+  setIsAscending: React.Dispatch<React.SetStateAction<boolean>>;
+
+
 }) {
-  const { tableData, statusOptions, orderStatus } = props;
+  const { tableData, statusOptions, orderStatus,sortedBy,setSortedBy,isAscending,setIsAscending } = props;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -285,6 +291,9 @@ function ColumnsOrderTable(props: {
             >
               Add Order
             </button> */}
+
+
+
             <div>
               <Select
                 isSearchable={false}
@@ -332,17 +341,38 @@ function ColumnsOrderTable(props: {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={(header.id!=='action' && header.id!=='view') ? header.column.getToggleSortingHandler() : undefined}
-                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start"
+                      onClick={(header.id!=='view' && header.id!=='status') ? ()=>{setSortedBy(header.id);setIsAscending(prev=>!prev)} : undefined}
+                      className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start group"
                     >
-                      <div className="flex items-center justify-between text-xs text-gray-200">
+                      <div className="flex items-center justify-around text-xs text-gray-200">
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
-                        {(header.id!=='action' && header.id!=='view') &&
-                          <>
-                            {header.column.getIsSorted() === "asc" ? (
+                        {(header.id!=='view' && header.id!=='status') &&
+                        <div className="w-5 h-5">
+                          <span className={`${sortedBy===header.id?'block':'hidden'} group-hover:block`}>
+
+                            { header.id==sortedBy?
+                            (isAscending?
+                              (<FaCaretUp
+                                className="mr-[-6]  font-bold text-green-400"
+                                size={20}
+                              />)
+                              :
+                              (<FaCaretDown
+                                className="mr-[-6] font-bold text-green-400"
+                                size={20}
+                              />)
+                            )
+                            :
+                            (<FaCaretUp
+                              className="mr-[-6] font-bold text-gray-600"
+                              size={20}
+                            />)
+
+                            }
+                            {/* {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp
                                 className="mr-[-6] font-bold text-gray-600"
                                 size={20}
@@ -359,8 +389,9 @@ function ColumnsOrderTable(props: {
                                   className="font-bold text-gray-600"
                                 />
                               </div>
-                            )}
-                          </>
+                            )} */}
+                          </span>
+                          </div>
                         }
                       </div>
                     </th>

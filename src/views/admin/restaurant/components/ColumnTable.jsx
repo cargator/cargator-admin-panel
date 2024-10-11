@@ -61,7 +61,8 @@ const ResetCenterView = (props) => {
 };
 
 function ColumnsTable(props) {
-  const { tableData, handleClickForDeleteModal } = props;
+
+  const { tableData, handleClickForDeleteModal, sortedBy, setSortedBy, isAscending, setIsAscending } = props;
 
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -103,7 +104,7 @@ function ColumnsTable(props) {
 
   const customIconOlaMap = (number) => {
     const markerElement = document.createElement('div');
-    
+
     // Set innerHTML with the image and number overlay using a template literal
     markerElement.innerHTML = `
       <div class="custom-icon" style="position: relative;">
@@ -111,9 +112,9 @@ function ColumnsTable(props) {
         <span class="number-overlay">${number}</span>
       </div>
     `;
-    
+
     markerElement.className = 'custom-icon'; // Optional, set additional classes if needed
-    
+
     return markerElement;
   };
 
@@ -249,7 +250,7 @@ function ColumnsTable(props) {
 
 
     function updateMarkers() {
-      data.forEach((restaurant,i) => {
+      data.forEach((restaurant, i) => {
         if (!restaurant.bounds.length) {
           console.error("Invalid restaurant location", restaurant);
           return;
@@ -294,6 +295,8 @@ function ColumnsTable(props) {
           {t("Restaurants")}
         </div>
         <div>
+         
+
           <button
             className="my-sm-0 add-driver-button my-2 mr-4 ms-1 mt-3 bg-brand-500 dark:bg-brand-400 dark:text-white"
             type="submit"
@@ -308,7 +311,7 @@ function ColumnsTable(props) {
       <div className="col-span-6">
         <table className="w-full border-collapse">
           <thead>
-            <tr className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start">
+            <tr className="cursor-pointer border-b-[1px] border-gray-200 pb-2 pr-4 pt-4 text-start group">
               <th className="cursor-pointer px-4 py-2 text-left">
                 <div className="flex items-center gap-2 text-xs text-gray-500">
                   <span className="text-sm font-bold text-gray-600 dark:text-white">
@@ -322,7 +325,8 @@ function ColumnsTable(props) {
                     <th
                       key={header.id}
                       colSpan={header.colSpan}
-                      onClick={(header.id!=='action' && header.id!=='actions') ? header.column.getToggleSortingHandler() : undefined}
+
+                      onClick={(header.id !== 'action' && header.id !== 'status') ? () => { setSortedBy(header.id); setIsAscending(prev => !prev) } : undefined}
                       className="cursor-pointer px-4 py-2 text-left"
                     >
                       <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -332,9 +336,30 @@ function ColumnsTable(props) {
                             header.getContext()
                           )}
                         </span>
-                        {(header.id!=='action' && header.id!=='actions') &&
-                          <>
-                            {header.column.getIsSorted() === "asc" ? (
+                        {(header.id !== 'action' && header.id !== 'status') &&
+                          <div className="w-5 h-5">
+                            <span className={`${sortedBy === header.id ? 'block' : 'hidden'} group-hover:block`}>
+
+                              {header.id == sortedBy ?
+                                (isAscending ?
+                                  (<FaCaretUp
+                                    className="mr-[-6]  font-bold text-green-400"
+                                    size={20}
+                                  />)
+                                  :
+                                  (<FaCaretDown
+                                    className="mr-[-6] font-bold text-green-400"
+                                    size={20}
+                                  />)
+                                )
+                                :
+                                (<FaCaretUp
+                                  className="mr-[-6] font-bold text-gray-600"
+                                  size={20}
+                                />)
+
+                              }
+                              {/* {header.column.getIsSorted() === "asc" ? (
                               <FaCaretUp
                                 className="mr-[-6] font-bold text-gray-600"
                                 size={20}
@@ -351,9 +376,11 @@ function ColumnsTable(props) {
                                   className="font-bold text-gray-600"
                                 />
                               </div>
-                            )}
-                          </>
+                            )} */}
+                            </span>
+                          </div>
                         }
+
                       </div>
                     </th>
                   ))}

@@ -20,6 +20,9 @@ function Orders() {
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
 
+  const [sortedBy,setSortedBy]=useState("");
+  const [isAscending,setIsAscending]=useState(false);
+
 
   
   
@@ -97,7 +100,10 @@ function Orders() {
         page: currentPage,
         limit: limit,
         filter:data,
-        searchtext:searchText.trim()
+        searchtext:searchText.trim(),
+        sortby:sortedBy,
+        order:isAscending?1:-1
+        
       });
       console.log("response ===>", response);
       return response;
@@ -113,7 +119,9 @@ function Orders() {
     page: number,
     limit: number,
     filter: any = undefined,
-    searchtext:any =""
+    searchtext:any ="",
+    sortby:string="",
+    isascending:boolean=true
   ) {
     try {
       setLoading(true);
@@ -121,7 +129,9 @@ function Orders() {
         page: page,
         limit: limit,
         filter:data,
-        searchtext:searchText.trim()
+        searchtext:searchText.trim(),
+        sortby:sortedBy,
+        order:isAscending?1:-1
       });
       
 
@@ -210,6 +220,14 @@ function Orders() {
     fetchData();
   }, [data]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+     
+      await getAllOrders(currentPage, 10, data,searchText.trim());
+    };
+    fetchData();
+  }, [sortedBy,isAscending]);
+
   // useEffect(() => {
   //   const handleStatusChange = async () => {
   //     // setLoading(true);
@@ -258,6 +276,10 @@ function Orders() {
               tableData={allOrders}
               statusOptions={orderStatusOptions}
               orderStatus={data}
+              sortedBy={sortedBy}
+              setSortedBy={setSortedBy}
+              isAscending={isAscending}
+              setIsAscending={setIsAscending}
             />
 
             <div

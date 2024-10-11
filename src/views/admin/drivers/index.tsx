@@ -44,6 +44,8 @@ const Drivers = () => {
   const [modalState, setModalState] = useState(true);
   const [pageCount, setPageCount] = useState(1);
   const [searchText, setSearchText] = useState("");
+  const [sortedBy,setSortedBy]=useState("");
+  const [isAscending,setIsAscending]=useState(false);
   const [driverData, setDriverData] = useState([]);
   const driverDataRef = useRef([]);
   const [loading, setLoading] = useState(false);
@@ -127,7 +129,7 @@ const Drivers = () => {
       console.log("delete response", response);
       if (response && response.message) {
         successToast("Driver Deleted Successfully");
-        if (driverData.length % limit === 1) {
+         if (driverData.length % limit === 1) {
           currentPage.current = currentPage.current - 1;
         }
         getPaginatedDriverData();
@@ -154,6 +156,9 @@ const Drivers = () => {
         page: currentPage.current,
         limit: limit,
         query: searchText.trim(),
+        sortby:sortedBy,
+        order:isAscending?1:-1 ,
+        status:status  // 1-> ascending , -1 descending
       });
 
       return response;
@@ -205,11 +210,7 @@ const Drivers = () => {
   function handlePageClick(e: any) {
     console.log(e);
     currentPage.current = e.selected + 1;
-    if (searchText !== "") {
-      searchDriverFunction();
-    } else {
-      getPaginatedDriverData();
-    }
+    searchDriverFunction();
   }
 
   const getPaginatedDriverData = async () => {
@@ -390,9 +391,14 @@ const Drivers = () => {
         setNoData(true);
         currentPage.current = 1;
         getPaginatedDriverData();
-      }
+      }else searchDriverFunction();
     }
   }, [searchText, status]);
+
+
+useEffect(()=>{
+  searchDriverFunction();
+},[isAscending,sortedBy]);
 
   return (
     <div> 
@@ -421,6 +427,10 @@ const Drivers = () => {
               <ColumnsTable
                 status={status}
                 tableData={driverData}
+                sortedBy={sortedBy}
+                setSortedBy={setSortedBy}
+                isAscending={isAscending}
+                setIsAscending={setIsAscending}
                 handleClickForDeleteModal={handleClickForDeleteModal}
                 handleToggleForStatusMOdal={handleToggleForStatusMOdal}
               />

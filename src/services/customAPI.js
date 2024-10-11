@@ -13,7 +13,7 @@ export const handleRegisterApi = (data) => {
 };
 
 export const getAllAdminsData = (data) => {
-  return customAxios.get(`/get-all-admins?page=${data.page}&limit=${data.limit}`)
+  return customAxios.get(`/get-all-admins?page=${data.page}&limit=${data.limit}&sortedby=${data.sortby}&order=${data.order}`)
 }
 export const getActivities = (data) => {
   return customAxios.get(`/get-activities?page=${data.page}&limit=${data.limit}`)
@@ -54,7 +54,7 @@ export const searchRidesApi = (data) => {
 
 export const searchDriversApi = (data) => {
   return customAxios.get(
-    `/search-drivers?page=${data.page}&limit=${data.limit}&query=${data.query}`
+    `/search-drivers?page=${data.page}&limit=${data.limit}&query=${data.query}&sortedby=${data.sortby}&order=${data.order}&status=${data.status}`
   );
 };
 
@@ -88,7 +88,7 @@ export const getPaginatedRidersDataApi = (data) => {
 
 export const searchVehiclesApi = (data) => {
   return customAxios.get(
-    `/search-vehicles?page=${data.page}&limit=${data.limit}&query=${data.query}`
+    `/search-vehicles?page=${data.page}&limit=${data.limit}&query=${data.query}&sortedby=${data.sortby}&order=${data.order}`
   );
 };
 
@@ -318,7 +318,7 @@ export const getRestaurantList = (data) => {
 export const getSearchRestaurantList = (data) => {
   console.log("getDataApi");
   return customAxios.get(
-    `/get-search-restaurant-list?page=${data.page}&limit=${data.limit}&text=${data.query}`
+    `/get-search-restaurant-list?page=${data.page}&limit=${data.limit}&text=${data.query}&sortedby=${data.sortby}&order=${data.order}`
   );
 };
 
@@ -409,7 +409,7 @@ export const orderById=(id)=>{
 
 export const findOrders = (data) => {
   return customAxios.get(
-    `/get-order-history?page=${data.page}&limit=${data.limit}&filter=${data.filter}&searchtext=${data.searchtext}`
+    `/get-order-history?page=${data.page}&limit=${data.limit}&filter=${data.filter}&searchtext=${data.searchtext}&sortedby=${data.sortby}&order=${data.order}`
   );
 };
 
