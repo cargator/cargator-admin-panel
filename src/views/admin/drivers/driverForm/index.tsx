@@ -543,6 +543,7 @@ const DriverForm = () => {
     } catch (error: any) {
         errorToast(error.response.data.message);
         setInitialFormValues(formvalues.current);
+        setInitialFormValues(prev=>({...prev , mobileNumber:""}));        
          setIsLoading(false);
     }
   };
@@ -691,7 +692,7 @@ const DriverForm = () => {
   return (
     <>
       <Navbar flag={false} brandText="driverform" />
-      <Link
+            <Link
         to="/admin/drivers"
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
       >
