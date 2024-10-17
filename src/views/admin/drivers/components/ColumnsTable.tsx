@@ -5,7 +5,7 @@ import "./ColumnsTable.css";
 import Select from "react-select";
 import { useTranslation } from "react-i18next";
 import arrow_down from "../../../../assets/svg/arrow_down.svg";
-
+import { MdBlock } from "react-icons/md";
 import {
   createColumnHelper,
   flexRender,
@@ -16,6 +16,7 @@ import {
 } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { updateDriverStatusApi } from "services/customAPI";
 
 type RowObj = {
   fullName: customFieldType1;
@@ -49,7 +50,7 @@ function ColumnsTable(props: {
   handleClickForDeleteModal: (data: any) => void;
   handleToggleForStatusMOdal: (data: any) => void;
 }) {
-  const { tableData, status,sortedBy,setSortedBy,isAscending,setIsAscending } = props;
+  const { tableData, status,sortedBy,setSortedBy,isAscending,setIsAscending ,handleToggleForStatusMOdal} = props;
   const [sorting, setSorting] = React.useState<SortingState>([]);
   // const [sortedBy,setSortedBy]=useState("fullName");
   // const [isascending,setIsAscending]=useState(true);
@@ -233,7 +234,22 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) => (
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
+
+        <div 
+        style={{backgroundColor:'#f3f6f9'}}
+        className={` relative cursor-pointer text-2xl p-1 rounded-lg group 
+          ${info.row.original.action.driverStatus=='inactive'?'text-red-500':'text-gray-600'}`}
+           onClick={()=>{console.log('block',info.row.original.action.driverStatus);handleToggleForStatusMOdal(info.row.original)}}>
+
+            <div className="hidden absolute -top-10 -left-4 group-hover:inline-block px-3 py-2 text-sm font-medium
+             text-white transition-opacity duration-300 bg-gray-600 rounded-lg  shadow-sm tooltip ">
+             {info.getValue().driverStatus}
+              
+            </div>          
+           <MdBlock />            
+          </div>
+         
           <div className="cursor-pointer">
             <img
               src={ButtonEdit}
@@ -242,7 +258,9 @@ function ColumnsTable(props: {
                 navigate(`/admin/drivers/driverform/${info.getValue()?.id}`)
               }
             />
+            
           </div>
+          
         </div>
       ),
     }),

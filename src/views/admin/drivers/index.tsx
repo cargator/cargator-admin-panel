@@ -54,6 +54,7 @@ const Drivers = () => {
   const [noData, setNoData] = useState(true);
   const firstRender = useRef(true);
   const parser = new DOMParser();
+  const [lastdriverwarning,setLastDriverWarning]=useState(false);
 
 
 
@@ -299,14 +300,15 @@ const Drivers = () => {
     return res;
   }
 
-  const updateDriverStatus = async (id: string) => {
+  const updateDriverStatus = async (id: string,delete_last:number) => {
     setLoading(true);
     try {
-      // setVisibleModal(false);
       onClose();
-      const result: any = await updateDriverStatusApi(id);
+      const result: any = await updateDriverStatusApi(id,delete_last);
 
-      console.log("result :>> ", result?.message);
+      if(result?.last_driver){
+         return result;
+      }
 
       if (result?.message) {
         successToast("Driver status updated Successfully");
@@ -316,10 +318,12 @@ const Drivers = () => {
         errorToast("Something went wrong");
       }
       setLoading(false);
+      setLastDriverWarning(false);
     } catch (error: any) {
       console.log("error :>> ", error.response.data.message);
       errorToast(error.response.data.message);
       setLoading(false);
+      setLastDriverWarning(false);
     }
   };
 
@@ -500,11 +504,14 @@ useEffect(()=>{
                       </ModalBody>
                     ) : (
                       <ModalBody className="text-center">
+                         {lastdriverwarning && (
+                                <div className="text-red-500">Only one Driver is Active</div>
+                              )}
                         {selectedItem.action.driverStatus === "active"
-                          ? "Are you sure you want to Unassign ?"
-                          : "Are you sure you want to Assign ?"}
+                          ? (lastdriverwarning?"Do you Really want to Block":"Do you want to Block ")
+                          : "Do you want to resume"}
                         <br />
-                        {'"' + selectedItem.fullName.name + '"'}
+                        {selectedItem.fullName.name+"'s operations at " }<br/>{ selectedItem.restaurantName+"?"}
                       </ModalBody>
                     )}
 
@@ -520,7 +527,7 @@ useEffect(()=>{
                       ) : (
                         <Button
                           className="cancel-block-modal-button mx-2"
-                          onClick={onClose}
+                          onClick={()=>{setLastDriverWarning(false);onClose();}}
                         >
                           Cancel
                         </Button>
@@ -535,8 +542,25 @@ useEffect(()=>{
                       ) : (
                         <Button
                           className="block-modal-button mx-2"
-                          onClick={() =>
-                            updateDriverStatus(selectedItem.action.id)
+                          onClick={async() =>{
+
+                            if(!lastdriverwarning){
+
+                              const res= await updateDriverStatus(selectedItem.action.id,0);
+                                    if(res && res?.last_driver){
+                                          setLastDriverWarning(true);
+                                          setLoading(false);
+                                          onOpen();
+                                        }
+                            }
+                            
+                            else {
+                              updateDriverStatus(selectedItem.action.id,1);
+                            }                     
+                               
+                  
+
+                          }
                           }
                         >
                           {selectedItem.action.driverStatus === "active"

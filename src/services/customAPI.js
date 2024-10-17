@@ -106,8 +106,8 @@ export const getPaginatedDriverDataApi = (data) => {
   );
 };
 
-export const updateDriverStatusApi = (id) => {
-  return customAxios.patch(`/update-driver-status/${id}`);
+export const updateDriverStatusApi = (id,delete_last) => {
+  return customAxios.patch(`/update-driver-status/${id}?delete_last=${delete_last}`);
 };
 
 export const searchDriverApi = (data) => {

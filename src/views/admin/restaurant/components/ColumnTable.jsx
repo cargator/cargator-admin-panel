@@ -133,7 +133,7 @@ function ColumnsTable(props) {
             setPositionForMap(info.row.original);
           }}
         >
-          {info.getValue()}
+          {info.getValue().toLowerCase()}
         </p>
       ),
     }),
