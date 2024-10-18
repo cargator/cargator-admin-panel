@@ -121,6 +121,7 @@ const RestaurantForm = () => {
       const resp = await createRestaurant({ bounds, restaurantName });
       setInputs({ input1: "", input2: "" });
       successToast("Restaurant Created Successfully");
+      navigate("/admin/restaurant");
       setShowPopup(false);
     } catch (error) {
       console.log("error", error);
@@ -325,6 +326,7 @@ const RestaurantForm = () => {
               restaurantName,
             });
             successToast("Restaurant Created Successfully");
+            navigate("/admin/restaurant");
             popup.remove();
           } catch (error) {
             console.error("error", error);

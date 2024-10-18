@@ -140,7 +140,7 @@ const DriverForm = () => {
     image: {},
     documents: [],
   });
-  const formvalues=useRef(null);
+  const formvalues = useRef(null);
   const [allAvailableVehicles, setAllAvailableVehicles] = useState([]);
   const [allRestaurantList, setAllRestaurantList] = useState([]);
   const [options, setOptions] = useState([]);
@@ -159,23 +159,24 @@ const DriverForm = () => {
   const [isProfileImage, setIsProfileImage] = useState(
     params.id ? false : false
   );
+  const [imageerror, setImageError] = useState("");
 
   const [isImageFile, setIsImageFile] = useState<boolean>(false)
 
-   // for crop function
-   const [cropCompleted, setCropCompleted] = useState(false);
+  // for crop function
+  const [cropCompleted, setCropCompleted] = useState(false);
 
-   const [crop, setCrop] = useState({ x: 0, y: 0 });
-   const [zoom, setZoom] = useState(1);
-   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
-   const [cropperOpen, setCropperOpen] = useState(false);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
 
   const anchorRefs = useRef(Array(finalDocArray.length).fill(null));
 
-   // for document overflow
-   const [showAll, setShowAll] = useState(false);
-   const visibleDocs: FinalDocArray[] = showAll ? finalDocArray : finalDocArray.slice(0, 4);
- 
+  // for document overflow
+  const [showAll, setShowAll] = useState(false);
+  const visibleDocs: FinalDocArray[] = showAll ? finalDocArray : finalDocArray.slice(0, 4);
+
   const FILE_SIZE = 1024 * 1024;
   const FILE_SIZE_DOC = 1024 * 1024;
   const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
@@ -183,28 +184,42 @@ const DriverForm = () => {
 
   // for crop image
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+
     const file = event.target.files?.[0];
+
     if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setImagePreview(e.target.result as string);
-        setCropperOpen(true); // Open cropper when file is selected
-      };
-      reader.readAsDataURL(file);
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        if (img.width > 1000 || img.height > 1000) {
+          setImageError("Image dimensions must not exceed 1000x1000 pixels.")
+          setImagePreview(null);
+          return;
+        };
+
+        setImageFile(file); setImageError("");
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setImagePreview(e.target.result as string);
+          setCropperOpen(true); // Open cropper when file is selected
+        };
+        reader.readAsDataURL(file);
+      }
     }
+
   };
 
   // for crop  image
   const handleCropImage = async (e: any) => {
 
-  
+
     if (!e) return;
 
     if (imageFile && croppedAreaPixels && cropCompleted) { // Check if crop is complete
       const imageUrl = await getCroppedImg(imageFile, croppedAreaPixels);
 
-    console.log('this is the imageURL>>>>>>>>>>>>>>>:',imageUrl);
+
 
       const response = await fetch(imageUrl);
       const blob = await response.blob(); // Get the Blob
@@ -254,48 +269,48 @@ const DriverForm = () => {
     // vehicleName: Yup.string().required(t("Vehicle name is required")),
     image: isProfileImage
       ? Yup.mixed()
-          // .nullable()
-          .required(t("A file is required"))
-          .test(
-            "fileSize",
-            t("Please upload file below 1 MB size"),
-            (value: any) => {
-              return value && value.size <= FILE_SIZE;
-            }
-          )
-          .test(
-            "fileFormat",
-            t("Unsupported Format"),
-            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-          )
+        // .nullable()
+        .required(t("A file is required"))
+        .test(
+          "fileSize",
+          t("Please upload file below 1 MB size"),
+          (value: any) => {
+            return value && value.size <= FILE_SIZE;
+          }
+        )
+        .test(
+          "fileFormat",
+          t("Unsupported Format"),
+          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+        )
       : Yup.mixed(),
     documents: isdocuments
       ? Yup.mixed()
-          .required(t("A file is required"))
-          .test("fileSizeDoc", t("File too large"), (value: any) => {
-            let add = 0;
-            let i = value?.length - 1;
-            while (i >= 0) {
-              add = add + value[i]?.size;
-              i--;
-            }
-            return value && add <= FILE_SIZE_DOC;
-          })
-          .test("fileFormat", t("Unsupported Format"), (value: any) => {
-            let i = value?.length - 1;
-            while (i >= 0) {
-              if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
-                if (i === 0) {
-                  return (
-                    value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
-                  );
-                }
-              } else {
-                return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+        .required(t("A file is required"))
+        .test("fileSizeDoc", t("File too large"), (value: any) => {
+          let add = 0;
+          let i = value?.length - 1;
+          while (i >= 0) {
+            add = add + value[i]?.size;
+            i--;
+          }
+          return value && add <= FILE_SIZE_DOC;
+        })
+        .test("fileFormat", t("Unsupported Format"), (value: any) => {
+          let i = value?.length - 1;
+          while (i >= 0) {
+            if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
+              if (i === 0) {
+                return (
+                  value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
+                );
               }
-              i--;
+            } else {
+              return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
             }
-          })
+            i--;
+          }
+        })
       : Yup.mixed(),
     // .nullable()
   });
@@ -395,13 +410,13 @@ const DriverForm = () => {
     return response;
   }
 
-  const handleCreateDriver = async (values: any) => {  
+  const handleCreateDriver = async (values: any) => {
     setIsLoading(true);
     console.log("finalDocArray :>> ", finalDocArray);
     console.log("initialDocArray :>> ", initialDocArray);
-    try {  
-       formvalues.current=values;
-      if (params.id) { 
+    try {
+      formvalues.current = values;
+      if (params.id) {
         let res, res1;
         if (finalProfileImage?.url === "") {
           console.log("image key to upload :>> ", finalProfileImage?.url);
@@ -541,10 +556,10 @@ const DriverForm = () => {
         }
       }
     } catch (error: any) {
-        errorToast(error.response.data.message);
-        setInitialFormValues(formvalues.current);
-        setInitialFormValues(prev=>({...prev , mobileNumber:""}));        
-         setIsLoading(false);
+      errorToast(error.response.data.message);
+      setInitialFormValues(formvalues.current);
+      setInitialFormValues(prev => ({ ...prev, mobileNumber: "" }));
+      setIsLoading(false);
     }
   };
 
@@ -566,7 +581,7 @@ const DriverForm = () => {
           setImagePreview(data.url);
         }
       }
-    
+
       let docsKeyArray = res?.data?.documentsKey;
       if (docsKeyArray && docsKeyArray.length > 0) {
         {
@@ -589,8 +604,8 @@ const DriverForm = () => {
         }
       }
 
-     
-    
+
+
       setInitialFormValues({
         firstName: res.data.firstName,
         restaurantName: res.data.restaurantName,
@@ -613,8 +628,8 @@ const DriverForm = () => {
 
       setIsLoading(false);
     } catch (error: any) {
-      errorToast(error.response.data.message);  
-     
+      errorToast(error.response.data.message);
+
       setIsLoading(false);
     }
   };
@@ -692,7 +707,7 @@ const DriverForm = () => {
   return (
     <>
       <Navbar flag={false} brandText="driverform" />
-            <Link
+      <Link
         to="/admin/drivers"
         className="flex items-center space-x-2 text-gray-600 hover:text-gray-900"
       >
@@ -974,7 +989,7 @@ const DriverForm = () => {
                   <div className="flex justify-between">
                     <div className="mb-3 me-6 w-full">
                       <div className="mt-2">
-                        {imagePreview && !cropperOpen &&(
+                        {imagePreview && !cropperOpen && (
                           <>
                             <div
                               className="image-preview"
@@ -1016,59 +1031,59 @@ const DriverForm = () => {
                           className="h-15 mt-4 rounded-xl border bg-white/0 p-2 text-sm outline-none"
                         >
 
-                           {/* for image crop  */}
+                          {/* for image crop  */}
 
-                           {cropperOpen && (
-                              <div className="relative max-w-[300px] mx-auto">
-                                <div className="absolute top-2 left-2 z-10 text-gray-800 bg-white bg-opacity-80 p-2 rounded-md">
-                                  Zoom and drag to crop the image
-                                </div>
+                          {cropperOpen && (
+                            <div className="relative max-w-[300px] mx-auto">
+                              <div className="absolute top-2 left-2 z-10 text-gray-800 bg-white bg-opacity-80 p-2 rounded-md">
+                                Zoom and drag to crop the image
+                              </div>
 
-                                {/* Wrapper div for styling the Cropper */}
-                                <div  className="border-2 border-dashed border-green-600 rounded-md shadow-md h-[300px] w-[300px] relative mb-4">
-                                  <Cropper
-                                    image={imagePreview!}
-                                    crop={crop}
-                                    zoom={zoom}
-                                    aspect={1} // 1:1 aspect ratio
-                                    onCropChange={setCrop}
-                                    onZoomChange={setZoom}
-                                    onCropComplete={(croppedArea, croppedAreaPixels) => {
-                                      console.log("hereee in the oncropcomplete")
-                                      setCroppedAreaPixels(croppedAreaPixels);
-                                      setCropCompleted(true);
-                                    }}
-                                  />
-                                </div>
+                              {/* Wrapper div for styling the Cropper */}
+                              <div className="border-2 border-dashed border-green-600 rounded-md shadow-md h-[300px] w-[300px] relative mb-4">
+                                <Cropper
+                                  image={imagePreview!}
+                                  crop={crop}
+                                  zoom={zoom}
+                                  aspect={1} // 1:1 aspect ratio
+                                  onCropChange={setCrop}
+                                  onZoomChange={setZoom}
+                                  onCropComplete={(croppedArea, croppedAreaPixels) => {
+                                    console.log("hereee in the oncropcomplete")
+                                    setCroppedAreaPixels(croppedAreaPixels);
+                                    setCropCompleted(true);
+                                  }}
+                                />
+                              </div>
 
-                                {/* Buttons below the cropping area */}
-                                <div className="flex space-x-2"
-                                  onClick={(e) => {console.log('inside div >>>>>>>>>>>>>')}}
+                              {/* Buttons below the cropping area */}
+                              <div className="flex space-x-2"
+                                onClick={(e) => { console.log('inside div >>>>>>>>>>>>>') }}
+                              >
+                                <button
+                                  type="button"
+                                  className="bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"
+                                  onClick={(e) => {
+
+                                    console.log('Crop button clicked ------------------------', e.target);
+                                    handleCropImage(e);
+                                  }}
                                 >
-                                  <button
-                                     type="button"
-                                    className="bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"
-                                    onClick={(e) => {
-                                      
-                                      console.log('Crop button clicked ------------------------',e.target);
-                                      handleCropImage(e);
-                                    }}
-                                  >
-                                    Crop Image
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="border border-gray-300 rounded-md py-2 px-4 cursor-pointer"
-                                    onClick={(e) => {
-                                      setCropperOpen(false);
-                                      setImagePreview(null);
-                                    }}
-                                  >
-                                    Cancel
-                                  </button>
-                                </div>
-                               </div>
-                            )}
+                                  Crop Image
+                                </button>
+                                <button
+                                  type="button"
+                                  className="border border-gray-300 rounded-md py-2 px-4 cursor-pointer"
+                                  onClick={(e) => {
+                                    setCropperOpen(false);
+                                    setImagePreview(null);
+                                  }}
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          )}
                           <label>
                             {!cropperOpen && <div
                               className="flex items-center justify-center gap-3"
@@ -1086,17 +1101,17 @@ const DriverForm = () => {
                               <div className="mb-1 mt-1 text-center">
                                 {!params.id
                                   ? t(
-                                      "Click here to upload driver profile image"
-                                    )
+                                    "Click here to upload driver profile image"
+                                  )
                                   : t(
-                                      "Click here to change driver profile image"
-                                    )}
+                                    "Click here to change driver profile image"
+                                  )}
                                 <br />
                                 {t("file size below")} 1MB
                               </div>
                             </div>}
 
-                           {!cropperOpen && <input
+                            {!cropperOpen && <input
                               // required
                               accept="image/*"
                               style={{
@@ -1112,6 +1127,11 @@ const DriverForm = () => {
                             />}
                           </label>
                         </div>
+                        {imageerror && (
+                          <div className="error-input">
+                            {imageerror}
+                          </div>
+                        )}
                         <ErrorMessage
                           name="image"
                           component="div"
@@ -1122,7 +1142,7 @@ const DriverForm = () => {
                     <div className="mb-3 ms-6 w-full">
                       <div className="flex flex-row items-start flex-wrap">
 
-                        {visibleDocs.length>0 &&
+                        {visibleDocs.length > 0 &&
                           visibleDocs.map((doc, index) => {
                             return (
                               <>
@@ -1198,8 +1218,8 @@ const DriverForm = () => {
                             );
                           })}
                       </div>
-                       {/* for document overflow */}
-                       {finalDocArray.length > 4 && (
+                      {/* for document overflow */}
+                      {finalDocArray.length > 4 && (
                         <button
                           type="button"
                           className="text-blue-600 underline hover:text-blue-800 mt-3"

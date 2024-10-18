@@ -140,7 +140,7 @@ const VehicleForm: React.FC = () => {
     params.id ? false : false
   );
   const [isImageFile, setIsImageFile] = useState<boolean>(false)
-
+  const [imageerror, setImageError] = useState("");
   // for crop function
   const [cropCompleted, setCropCompleted] = useState(false);
 
@@ -163,10 +163,22 @@ const VehicleForm: React.FC = () => {
   const SUPPORTED_FORMATS_DOC = ["application/pdf"];
 
 // for crop image
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setImageFile(file);
+const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+
+  const file = event.target.files?.[0];
+
+  if (file) {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      if (img.width > 1000 || img.height > 1000) {
+        setImageError("Image dimensions must not exceed 1000x1000 pixels.")
+        setImagePreview(null);
+        return;
+      };
+
+      setImageFile(file); setImageError("");
       const reader = new FileReader();
       reader.onload = (e) => {
         setImagePreview(e.target.result as string);
@@ -174,8 +186,9 @@ const VehicleForm: React.FC = () => {
       };
       reader.readAsDataURL(file);
     }
-  };
+  }
 
+};
 
 // for crop  image
   const handleCropImage = async (e: any) => {
@@ -988,6 +1001,11 @@ const VehicleForm: React.FC = () => {
 
                           </label>
                         </div>
+                        {imageerror && (
+                          <div className="error-input">
+                            {imageerror}
+                          </div>
+                        )}
                         <ErrorMessage
                           name="image"
                           component="div"
