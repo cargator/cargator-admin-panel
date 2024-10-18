@@ -86,6 +86,8 @@ function ColumnsTableAdmins(props: {
         return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
     } else if(numStr.length === 10){
         return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    }else if(numStr.length===13){
+      return `+ ${numStr.slice(1, 3)} ${numStr.slice(3, 8)} ${numStr.slice(8)}`;
     }
 
     return num;

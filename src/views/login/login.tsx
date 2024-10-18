@@ -15,6 +15,7 @@ const LoginPage = () => {
   const [phoneNumber, setPhoneNumber] = useState<string>("")
   const [password, setPassword] = useState<string[]>(Array(4).fill(""));
   const [isvalid,setIsValid]=useState(true);
+  const [isdisabled,setIsDisabled]=useState(true);
 
   const dispatch = useDispatch();
   let navigate = useNavigate();
@@ -27,7 +28,12 @@ const LoginPage = () => {
     firstPhoneInputRef.current?.focus();
   }, []);
 
+  useEffect(() => {
+
+    const isPasswordFilled = password.every(pwd => pwd !== "");
   
+    setIsDisabled(!(isvalid && phoneNumber.trim() !== "" && isPasswordFilled));
+  }, [phoneNumber, password,isvalid]);
 
   const handlePhoneNumberChange = (val: string | undefined) => {
 
@@ -195,8 +201,9 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            className="w-full rounded-md bg-brand-500 p-3 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
+            disabled={isdisabled}
+            className={` w-3/4 ml-20 rounded-md p-3 ${isdisabled ? 'bg-gray-500' : 'bg-brand-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'}`}
+            >
             Login
           </button>
         </form>

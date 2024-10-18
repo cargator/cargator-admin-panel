@@ -360,8 +360,8 @@ const DriverForm = () => {
       setRestaurantOptions(
         res.data.map((option: any) => {
           return {
-            value: option.restaurantName,
-            label: option.restaurantName,
+            value: option.restaurantName.toLowerCase(),
+            label: option.restaurantName.toLowerCase(),
           };
         })
       );
@@ -566,9 +566,9 @@ const DriverForm = () => {
           setImagePreview(data.url);
         }
       }
-
+    
       let docsKeyArray = res?.data?.documentsKey;
-      if (docsKeyArray.length > 0) {
+      if (docsKeyArray && docsKeyArray.length > 0) {
         {
           for (let i = 0; i < docsKeyArray.length; i++) {
             const key = docsKeyArray[i];
@@ -589,7 +589,7 @@ const DriverForm = () => {
         }
       }
 
-      
+     
     
       setInitialFormValues({
         firstName: res.data.firstName,
