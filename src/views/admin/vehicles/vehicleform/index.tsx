@@ -172,11 +172,11 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const img = new Image();
     img.src = URL.createObjectURL(file);
     img.onload = () => {
-      if (img.width > 1000 || img.height > 1000) {
-        setImageError("Image dimensions must not exceed 1000x1000 pixels.")
-        setImagePreview(null);
-        return;
-      };
+      // if (img.width < 1000 || img.height < 1000) {
+      //   setImageError("Image dimensions must be atleast 1000x1000 pixels.")
+      //   // setImagePreview(null);
+      //   // return;
+      // };
 
       setImageFile(file); setImageError("");
       const reader = new FileReader();
@@ -199,7 +199,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (imageFile && croppedAreaPixels && cropCompleted) { // Check if crop is complete
       const imageUrl = await getCroppedImg(imageFile, croppedAreaPixels);
 
-    console.log('this is the imageURL>>>>>>>>>>>>>>>:',imageUrl);
+    
 
       const response = await fetch(imageUrl);
       const blob = await response.blob(); // Get the Blob
@@ -340,7 +340,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           // console.log("image key to upload :>> ", finalProfileImage.url);
           {
             const key = finalProfileImage?.key;
-            console.log("image key to upload :>> ", key);
+       
             const contentType = "image/*";
             const type = "put";
             if(key !== undefined){
@@ -359,6 +359,8 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
             }
           }
         }
+
+        console.log('update update final profile  image is not empty -',finalProfileImage.url);
 
         let docKey: any = [];
         finalDocArray.forEach(async (ele) => {
@@ -920,12 +922,14 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
                                     image={imagePreview!}
                                     crop={crop}
                                     zoom={zoom}
-                                    aspect={1} // 1:1 aspect ratio
+                                    aspect={1/1} // 1:1 aspect ratio
                                     onCropChange={setCrop}
                                     onZoomChange={setZoom}
+                                    objectFit="contain"
+                                    // cropSize={{ width: 500, height: 500 }}
                                     onCropComplete={(croppedArea, croppedAreaPixels) => {
-                                      console.log("hereee in the oncropcomplete")
-                                      setCroppedAreaPixels(croppedAreaPixels);
+
+                                      setCroppedAreaPixels({...croppedAreaPixels});
                                       setCropCompleted(true);
                                     }}
                                   />
@@ -933,16 +937,11 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
                                 {/* Buttons below the cropping area */}
                                 <div className="flex space-x-2"
-                                  onClick={(e) => {console.log('inside div >>>>>>>>>>>>>')}}
                                 >
                                   <button
                                      type="button"
                                     className="bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"
-                                    onClick={(e) => {
-                                      
-                                      console.log('Crop button clicked ------------------------',e.target);
-                                      handleCropImage(e);
-                                    }}
+                                    onClick={(e) => handleCropImage(e)}
                                   >
                                     Crop Image
                                   </button>
@@ -1198,8 +1197,8 @@ const getCroppedImg = (imageSrc: File, pixelCrop: any): Promise<string> => {
 
     img.src = URL.createObjectURL(imageSrc);
     img.onload = () => {
-      canvas.width = pixelCrop.width;
-      canvas.height = pixelCrop.height;
+      canvas.width = 1000;
+      canvas.height = 1000;
       ctx.drawImage(
         img,
         pixelCrop.x,
@@ -1208,8 +1207,8 @@ const getCroppedImg = (imageSrc: File, pixelCrop: any): Promise<string> => {
         pixelCrop.height,
         0,
         0,
-        pixelCrop.width,
-        pixelCrop.height
+        1000,
+        1000
       );
 
       canvas.toBlob((blob) => {

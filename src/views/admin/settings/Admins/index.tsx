@@ -33,7 +33,7 @@ export default function Admins() {
   const [loading, setLoading] = useState(false);
   const [modalState, setModalState] = useState(true);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [pageCount, setPageCount] = useState(1);
   const [pageItemStartNumber, setPageItemStartNumber] = useState<any>(0);
   const [pageItemEndNumber, setPageItemEndNumber] = useState<any>(0);
@@ -41,6 +41,8 @@ export default function Admins() {
   const [isAscending,setIsAscending]=useState(false);
 
   const parser = new DOMParser();
+
+
 
   const successToast = (message: any) => {
     toast.success(`${message}`, {

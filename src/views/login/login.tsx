@@ -137,79 +137,71 @@ const LoginPage = () => {
           alt="Sukam Express Logo"
           className="w-25 mx-auto mb-6 h-16"
         />
-        <h2 className="mb-6 text-center text-3xl font-semibold">Login</h2>
-
+        <h2 className="mb-6 text-center text-6xl font-semibold text-gray-800">Login</h2>
+  
         <form onSubmit={handleLogin} className="space-y-6">
-        <div >
-            <label className=".roboto-mono-font text-xl mb-2 block font-semibold text-gray-700">
+          {/* Mobile Number Section */}
+          <div>
+            <label className="block mb-2 text-xl font-semibold text-gray-700 roboto-mono-font">
               Mobile Number:
             </label>
-            <div ref={firstPhoneInputRef} className=" relative custom-phone-input " >
-
-            {
-              !isvalid &&  <div className="absolute -top-10 left-1/2 transform -translate-x-1/2 z-10 p-2 mb-2 text-sm text-yellow-800 rounded-lg bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300">
-              <div className="flex items-center">
-                <svg className="flex-shrink-0 inline w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-                </svg>
-                <span className="sr-only">Warning</span>
-                <div className="text-xs">
-                  <span className="font-medium "></span> Please enter a valid phone number.
-                </div>
-              </div>
-            </div>
-            }
-
+            <div ref={firstPhoneInputRef} className="relative custom-phone-input mb-4">
               <PhoneInput
-
                 international
                 countries={['US', 'IN', 'AE']}
                 defaultCountry="IN"
                 onChange={handlePhoneNumberChange}
                 countryCallingCodeEditable={false}
                 value={phoneNumber}
-
-
               />
-
-
-              {/* https://github.com/bl00mber/react-phone-input-2#style */}
-
+              <div className={`absolute text-sm text-red-500 ml-20 ${isvalid ? 'hidden' : 'block'}`}>
+                Enter valid Number
+              </div>
             </div>
           </div>
-
-          <div>
-            <label className="mb-2 block font-semibold text-gray-700">
+  
+          {/* OTP Section */}
+          <div className="text-center">
+            <label className="block mb-2 text-xl font-semibold text-gray-700 roboto-mono-font">
               OTP:
             </label>
-            <div className="flex gap-20 ml-20">
+            <div className="flex justify-center gap-2 mb-4">
               {password.map((value, index) => (
                 <input
                   key={index}
                   id={`password-input-${index}`}
                   ref={index === 0 ? firstPasswordInputRef : null}
-                  type="password"
+                  type="number"
                   value={value}
                   onKeyDown={(e) => handlePasswordChange(index, e)}
                   maxLength={1}
-                  className="m-1 h-12 w-12 rounded-md border border-gray-300 p-2 text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="h-12 w-12 rounded-md border border-gray-300 p-2 text-center font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoComplete="off"
                 />
               ))}
             </div>
           </div>
-
-          <button
-            type="submit"
-            disabled={isdisabled}
-            className={` w-3/4 ml-20 rounded-md p-3 ${isdisabled ? 'bg-gray-500' : 'bg-brand-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'}`}
+  
+          {/* Login Button */}
+          <div className="flex justify-center mb-4">
+            <button
+              type="submit"
+              disabled={isdisabled}
+              className={`w-3/4 rounded-md p-3 ${isdisabled ? 'bg-gray-500' : 'bg-brand-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'}`}
             >
-            Login
-          </button>
+              Login
+            </button>
+          </div>
+  
+          {/* Footer Text */}
+          <div className="text-center text-gray-600 roboto-mono-font">© 2024 Sukam Express</div>
         </form>
       </div>
     </div>
   );
+  
+  
+  
 };
 
 export default LoginPage;

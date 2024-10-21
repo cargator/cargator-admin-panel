@@ -32,12 +32,14 @@
 	display: flex;
 	align-items: center;
 	max-width: 35rem;
+
     
 }
 
 .PhoneInputInput {
 	/* The phone number input stretches to fill all empty space */
 	flex: 1;
+	font-family: "Roboto Mono", monospace;
 	/* The phone number input should shrink
 	   to make room for the extension input */
 	min-width: 0;

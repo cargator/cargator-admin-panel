@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import Card from "../../../../components/card";
 import Select from "react-select";
-import { Button } from "@chakra-ui/react";
+import { Button, ChakraProvider, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/react";
 import "./driverform.css";
 import { ErrorMessage, Formik, useFormikContext } from "formik";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import * as Yup from "yup";
+import { parsePhoneNumber } from 'libphonenumber-js';
+import { useDisclosure } from "@chakra-ui/hooks";
 import {
   createDriverApi,
   deleteObjectFromS3Api,
@@ -15,6 +17,7 @@ import {
   getDriverByIdApi,
   getS3SignUrlApi,
   handleCreateDriverApi,
+  updateDriverStatusApi,
 } from "../../../../services/customAPI";
 import Loader from "components/loader/loader";
 import Navbar from "../../../../components/navbar";
@@ -28,6 +31,8 @@ import { t } from "i18next";
 import { vehicleNumberFormat } from "helper/commonFunction";
 import { Link } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa";
+import PhoneInput from 'react-phone-number-input'
+import './phoneinput.css'
 
 //  for crop function 
 import Cropper from 'react-easy-crop';
@@ -50,6 +55,13 @@ const Logger = (props: any): JSX.Element => {
   const formik = useFormikContext<any>();
   const params = useParams();
   const { t } = useTranslation();
+
+
+
+
+
+
+
   React.useEffect(() => {
     if (firstRender.current) {
       firstRender.current = false;
@@ -159,7 +171,15 @@ const DriverForm = () => {
   const [isProfileImage, setIsProfileImage] = useState(
     params.id ? false : false
   );
-  const [imageerror, setImageError] = useState("");
+  const [countryCode, setCountryCode] = useState("IN");
+
+  // const [imageerror, setImageError] = useState("");
+
+  // for status change 
+
+  const [lastRider, setLastRider] = useState(true);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isactive, setIsActive] = useState(true);
 
   const [isImageFile, setIsImageFile] = useState<boolean>(false)
 
@@ -192,13 +212,13 @@ const DriverForm = () => {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = () => {
-        if (img.width > 1000 || img.height > 1000) {
-          setImageError("Image dimensions must not exceed 1000x1000 pixels.")
-          setImagePreview(null);
-          return;
-        };
+        // if (img.width < 1000 || img.height < 1000) {
+        //   setImageError("Image dimensions must be atleast 1000x1000 pixels.")
+        //   setImagePreview(null);
+        //   return;
+        // };
 
-        setImageFile(file); setImageError("");
+        setImageFile(file);
         const reader = new FileReader();
         reader.onload = (e) => {
           setImagePreview(e.target.result as string);
@@ -209,6 +229,7 @@ const DriverForm = () => {
     }
 
   };
+
 
   // for crop  image
   const handleCropImage = async (e: any) => {
@@ -240,80 +261,111 @@ const DriverForm = () => {
     }
   };
 
+  const updateDriverStatus = async (id: string) => {
+    try {
+      onClose();
+      const result: any = await updateDriverStatusApi(id, false);
 
-  const driverSchema = Yup.object().shape({
-    firstName: Yup.string()
-      .min(2, t("First name must be atleast two characters."))
-      .required(t("Name is required")),
-    restaurantName: Yup.string()
-      .min(2, t("Restaurant name must be atleast two characters."))
-      .required(t("Restaurant is required")),
-    // lastName: Yup.string()
-    //   .min(2, "Last name must be atleast two characters.")
-    //   .required("Last name is required"),
-    mobileNumber: Yup.string()
-      .matches(/^[0-9]+$/, t("Invalid mobile number."))
-      .min(10, t("Mobile Number must be 10 digits only."))
-      .max(10, t("Mobile Number must be 10 digits only."))
-      .required(t("Mobile number is Required")),
-    // vehicleNumber: Yup.string()
-    // .min(10, "Vehicle Number must be 10 digits only.")
-    // .max(10, "Vehicle Number must be 10 digits only.")
-    // .matches(
-    //   /^[A-Za-z]{2}\d{2}[A-Za-z]{2}\d{4}$/,
-    //   "Vehicle Number must follow the pattern: XX99XX9999"
-    // )
-    // // .required(t("Vehicle number is required"))
-    // ,
-    // vehicleType: Yup.string().required(t("Vehicle type is required")),
-    // vehicleName: Yup.string().required(t("Vehicle name is required")),
-    image: isProfileImage
-      ? Yup.mixed()
-        // .nullable()
-        .required(t("A file is required"))
-        .test(
-          "fileSize",
-          t("Please upload file below 1 MB size"),
-          (value: any) => {
-            return value && value.size <= FILE_SIZE;
-          }
-        )
-        .test(
-          "fileFormat",
-          t("Unsupported Format"),
-          (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
-        )
-      : Yup.mixed(),
-    documents: isdocuments
-      ? Yup.mixed()
-        .required(t("A file is required"))
-        .test("fileSizeDoc", t("File too large"), (value: any) => {
-          let add = 0;
-          let i = value?.length - 1;
-          while (i >= 0) {
-            add = add + value[i]?.size;
-            i--;
-          }
-          return value && add <= FILE_SIZE_DOC;
-        })
-        .test("fileFormat", t("Unsupported Format"), (value: any) => {
-          let i = value?.length - 1;
-          while (i >= 0) {
-            if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
-              if (i === 0) {
-                return (
-                  value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
-                );
-              }
-            } else {
-              return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+      if (result?.last_driver) {
+        return result;
+      }
+
+      if (result?.message) {
+        successToast("Driver status updated Successfully");
+        setIsActive(prev => !prev);
+      } else {
+        errorToast("Something went wrong");
+      }
+    } catch (error: any) {
+      console.log("error :>> ", error.response.data.message);
+      errorToast(error.response.data.message);
+    }
+  };
+
+  const checkNumberofRiders = async (id: string) => {
+
+    const result: any = await updateDriverStatusApi(id, true);
+
+    if (result?.last_driver) {
+      setLastRider(true);
+    } else {
+      setLastRider(false);
+    }
+
+
+  }
+
+
+  const countryPhoneValidationRules: { [key: string]: RegExp } = {
+    IN: /^\+91\s?\d{5}\s?\d{5}$/,  // +91 followed by 10 digits
+    US: /^\+1\s?\d{3}\s?\d{3}\s?\d{4}$/,  // +1 followed by 10 digits
+    AE: /^\+971\s?\d{2}\s?\d{3}\s?\d{4}$/,  // +971 followed by 9 digits
+  };
+
+  const driverSchema = (countrycode: any) => {
+    const phoneRegex = countryPhoneValidationRules[countrycode] || /^[0-9]+$/;
+    return Yup.object().shape({
+      firstName: Yup.string()
+        .min(2, t("First name must be atleast two characters."))
+        .required(t("Name is required")),
+      restaurantName: Yup.string()
+        .min(2, t("Restaurant name must be atleast two characters."))
+        .required(t("Restaurant is required")),
+      // lastName: Yup.string()
+      //   .min(2, "Last name must be atleast two characters.")
+      //   .required("Last name is required"),
+      mobileNumber: Yup.string()
+        .matches(phoneRegex, 'Invalid mobile number format.')
+        .required(t("Mobile number is Required")),
+
+      image: isProfileImage
+        ? Yup.mixed()
+          // .nullable()
+          .required(t("A file is required"))
+          .test(
+            "fileSize",
+            t("Please upload file below 1 MB size"),
+            (value: any) => {
+              return value && value.size <= FILE_SIZE;
             }
-            i--;
-          }
-        })
-      : Yup.mixed(),
-    // .nullable()
-  });
+          )
+          .test(
+            "fileFormat",
+            t("Unsupported Format"),
+            (value: any) => value && SUPPORTED_FORMATS.includes(value.type)
+          )
+        : Yup.mixed(),
+      documents: isdocuments
+        ? Yup.mixed()
+          .required(t("A file is required"))
+          .test("fileSizeDoc", t("File too large"), (value: any) => {
+            let add = 0;
+            let i = value?.length - 1;
+            while (i >= 0) {
+              add = add + value[i]?.size;
+              i--;
+            }
+            return value && add <= FILE_SIZE_DOC;
+          })
+          .test("fileFormat", t("Unsupported Format"), (value: any) => {
+            let i = value?.length - 1;
+            while (i >= 0) {
+              if (value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)) {
+                if (i === 0) {
+                  return (
+                    value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type)
+                  );
+                }
+              } else {
+                return value && SUPPORTED_FORMATS_DOC.includes(value[i]?.type);
+              }
+              i--;
+            }
+          })
+        : Yup.mixed(),
+      // .nullable()
+    });
+  }
 
   const successToast = (message: string) => {
     // console.log("Inside successToast", message); // Add this line for debugging
@@ -375,8 +427,8 @@ const DriverForm = () => {
       setRestaurantOptions(
         res.data.map((option: any) => {
           return {
-            value: option.restaurantName.toLowerCase(),
-            label: option.restaurantName.toLowerCase(),
+            value: option.restaurantName,
+            label: option.restaurantName,
           };
         })
       );
@@ -605,12 +657,14 @@ const DriverForm = () => {
       }
 
 
-
+      setIsActive(res.data.status == 'active' ? true : false);
+      const phoneNumber = parsePhoneNumber(res.data.mobileNumber);
+      setCountryCode(phoneNumber.country || "IN");
       setInitialFormValues({
         firstName: res.data.firstName,
         restaurantName: res.data.restaurantName,
         lastName: res.data.lastName,
-        mobileNumber: res.data.mobileNumber.slice(2, 12),
+        mobileNumber: res.data.mobileNumber,
         vehicleNumber: res.data.vehicleNumber,
         vehicleType: res.data.vehicleType,
         vehicleName: res.data.vehicleName,
@@ -734,7 +788,7 @@ const DriverForm = () => {
               enableReinitialize={true}
               initialValues={initialFormValues}
               onSubmit={(values) => handleCreateDriver(values)}
-              validationSchema={driverSchema}
+              validationSchema={driverSchema(countryCode)}
             >
               {({
                 handleChange,
@@ -845,23 +899,26 @@ const DriverForm = () => {
                   </div>
 
                   <div className="flex justify-between">
-                    <div className="mb-3 me-6 w-full">
+                    <div className='mb-3  w-full'>
+
                       <label
-                        htmlFor="mobileNumber"
+                        htmlFor="mobilenumber"
                         className="input-custom-label dark:text-white"
                       >
                         {t("Mobile Number")}
                       </label>
-                      <input
-                        required
-                        className="mt-2 h-12 w-full rounded-xl border bg-white/0 p-3 text-sm outline-none"
-                        name="mobileNumber"
-                        type="number"
-                        id="mobileNumber"
-                        placeholder={t("Enter mobile number here")}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values?.mobileNumber}
+
+                      <PhoneInput
+
+                        international
+                        countries={['US', 'IN', 'AE']}
+                        defaultCountry="IN"
+                        onChange={(value) => { setFieldValue("mobileNumber", value) }}
+                        countryCallingCodeEditable={false}
+                        value={values.mobileNumber}
+                        onCountryChange={setCountryCode}
+
+
                       />
                       <div className="error-input">
                         {errors.mobileNumber && touched.mobileNumber
@@ -1045,12 +1102,14 @@ const DriverForm = () => {
                                   image={imagePreview!}
                                   crop={crop}
                                   zoom={zoom}
-                                  aspect={1} // 1:1 aspect ratio
+                                  aspect={1 / 1} // 1:1 aspect ratio
                                   onCropChange={setCrop}
                                   onZoomChange={setZoom}
+                                  objectFit="contain"
+                                  // cropSize={{ width: 500, height: 500 }}
                                   onCropComplete={(croppedArea, croppedAreaPixels) => {
-                                    console.log("hereee in the oncropcomplete")
-                                    setCroppedAreaPixels(croppedAreaPixels);
+                                    console.log('croppedAreaPixels :>> ', croppedAreaPixels);
+                                    setCroppedAreaPixels({ ...croppedAreaPixels });
                                     setCropCompleted(true);
                                   }}
                                 />
@@ -1058,16 +1117,11 @@ const DriverForm = () => {
 
                               {/* Buttons below the cropping area */}
                               <div className="flex space-x-2"
-                                onClick={(e) => { console.log('inside div >>>>>>>>>>>>>') }}
                               >
                                 <button
                                   type="button"
                                   className="bg-green-600 text-white py-2 px-4 rounded-md cursor-pointer"
-                                  onClick={(e) => {
-
-                                    console.log('Crop button clicked ------------------------', e.target);
-                                    handleCropImage(e);
-                                  }}
+                                  onClick={(e) => handleCropImage(e)}
                                 >
                                   Crop Image
                                 </button>
@@ -1127,11 +1181,8 @@ const DriverForm = () => {
                             />}
                           </label>
                         </div>
-                        {imageerror && (
-                          <div className="error-input">
-                            {imageerror}
-                          </div>
-                        )}
+
+                        {/* {imageerror && <div className="error-input">{imageerror}</div>} */}
                         <ErrorMessage
                           name="image"
                           component="div"
@@ -1170,11 +1221,7 @@ const DriverForm = () => {
                                         cursor: "pointer",
                                         padding: "5px",
                                       }}
-                                      onClick={() => {
-                                        if (!doc?.file) {
-                                          handleDivClickDoc(index, doc.key);
-                                        }
-                                      }}
+
                                     />
                                     <a
                                       ref={(el) =>
@@ -1198,9 +1245,7 @@ const DriverForm = () => {
                                         cursor: "pointer",
                                         padding: "-2px -2px 5px 5px",
                                       }}
-                                      onClick={() => {
-                                        values.documents = handleDelete(index);
-                                      }}
+
                                     >
                                       <img
                                         src={cross}
@@ -1288,6 +1333,12 @@ const DriverForm = () => {
 
                   <div className="button-save-cancel mt-3 flex justify-end">
                     <Button
+                      className={`my-2 ms-1 sm:my-0 border bg-shadow-500 rounded-md m-2 px-2 py-1 ${isactive ? 'bg-red-400' : 'bg-green-400'}`}
+                      onClick={() => { checkNumberofRiders(params.id); onOpen(); }}
+                    >
+                      {isactive ? 'Pause' : 'Resume'}
+                    </Button>
+                    <Button
                       className=" cancel-button my-2 ms-1 sm:my-0"
                       onClick={() => navigate("/admin/drivers")}
                     >
@@ -1306,6 +1357,56 @@ const DriverForm = () => {
           </div>
         </Card>
       )}
+
+      <>
+        {isOpen && (
+          <ChakraProvider>
+            <Modal
+              isCentered={true}
+              isOpen={isOpen}
+              onClose={onClose}
+              size="xs"
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader></ModalHeader>
+                {/* <ModalCloseButton /> */}
+                <div className="mb-2 flex justify-center">
+                </div>
+                <ModalBody className="text-center">
+                  {lastRider && (
+                    <div className="text-red-500">Only one Driver is Active</div>
+                  )}
+                  {isactive
+                    ? (lastRider ? "Do you Really want to Pause" : "Do you want to Pause")
+                    : "Do you want to Resume"}
+                  <br />
+                  {initialFormValues.firstName + "'s operations at "}<br />{initialFormValues.restaurantName + "?"}
+                </ModalBody>
+
+                <div className='mt-3 flex justify-center'>
+                  <Button
+                    className="cancel-block-modal-button mx-2"
+                    onClick={() => { setLastRider(false); onClose(); }}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    className="block-modal-button mx-2"
+                    onClick={async () => await updateDriverStatus(params.id)}
+                  >
+                    {isactive
+                      ? "Pause"
+                      : "Resume"}
+                  </Button>
+                </div>
+                <ModalFooter></ModalFooter>
+              </ModalContent>
+            </Modal>
+          </ChakraProvider>
+        )}
+      </>
     </>
   );
 };
@@ -1320,8 +1421,8 @@ const getCroppedImg = (imageSrc: File, pixelCrop: any): Promise<string> => {
 
     img.src = URL.createObjectURL(imageSrc);
     img.onload = () => {
-      canvas.width = pixelCrop.width;
-      canvas.height = pixelCrop.height;
+      canvas.width = 1000;
+      canvas.height = 1000;
       ctx.drawImage(
         img,
         pixelCrop.x,
@@ -1330,8 +1431,8 @@ const getCroppedImg = (imageSrc: File, pixelCrop: any): Promise<string> => {
         pixelCrop.height,
         0,
         0,
-        pixelCrop.width,
-        pixelCrop.height
+        1000,
+        1000
       );
 
       canvas.toBlob((blob) => {

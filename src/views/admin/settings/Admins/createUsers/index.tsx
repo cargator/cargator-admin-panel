@@ -8,38 +8,54 @@ import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from "yup";
 import { Button } from '@chakra-ui/react';
 import { toast } from 'react-toastify';
-import { createCountryCodeApi, createUsersApi, getCountryCodesById, getUsersById, handleCreateCountryCodeApi, updateUsersApi,  } from 'services/customAPI';
+import { createCountryCodeApi, createUsersApi, getCountryCodesById, getUsersById, handleCreateCountryCodeApi, updateUsersApi, } from 'services/customAPI';
 import { Link } from 'react-router-dom';
 import { FaArrowLeft } from 'react-icons/fa';
+import PhoneInput from 'react-phone-number-input'
+import './phoneinput.css'
+import { parsePhoneNumber } from 'libphonenumber-js';
 
 type formvalues = {
   fullName: string;
   mobileNumber: string;
 };
 
+
+
 function CreateUsers() {
   // translation function
   const { t } = useTranslation();
   const params = useParams();
   const [isLoading, setIsLoading] = useState(false);
-  const [initialFormValues, setInitialFormValues] = useState<formvalues>({ fullName: "" ,mobileNumber:"",});
+  const [initialFormValues, setInitialFormValues] = useState<formvalues>({ fullName: "", mobileNumber: "", });
+  const [countryCode,setCountryCode] =useState("IN");
   const navigate = useNavigate();
 
-  const CreateUserSChema = Yup.object().shape({
-    fullName: Yup.string().required(t("Name  is required")),
-    mobileNumber: Yup.string().min(10,"Invalid Mobile Number").max(10,"Invalid Mobile Number").required("Mobile number is required"),
-  });
+
+  const countryPhoneValidationRules: { [key: string]: RegExp } = {
+    IN: /^\+91\s?\d{5}\s?\d{5}$/,  // +91 followed by 10 digits
+    US: /^\+1\s?\d{3}\s?\d{3}\s?\d{4}$/,  // +1 followed by 10 digits
+    AE: /^\+971\s?\d{2}\s?\d{3}\s?\d{4}$/,  // +971 followed by 9 digits
+};
+
+
+  const CreateUserSChema =(countrycode:any)=>{
+    const phoneRegex = countryPhoneValidationRules[countrycode] || /^[0-9]+$/;
+   return Yup.object().shape({
+      fullName: Yup.string().required(t("Name  is required")),
+      mobileNumber:Yup.string().matches(phoneRegex, 'Invalid mobile number format.')
+        .required('Mobile number is required'),
+    });
+  } 
 
 
   React.useEffect(() => {
     if (params.id) {
-      console.log("id", params.id)
       getData(params.id);
     }
   }, [params]);
 
   const getData = async (id: any) => {
-    console.log("get data called for update:>> ");
     setIsLoading(true);
     try {
       const res = await getUsersById(id);
@@ -47,6 +63,11 @@ function CreateUsers() {
         fullName: res.data.name,
         mobileNumber: res.data.mobile_Number,
       });
+
+    // console.log(res.data.mobilenumber)
+      const phoneNumber = parsePhoneNumber(res.data.mobile_Number);
+      setCountryCode(phoneNumber.country||"IN");
+      
       setIsLoading(false);
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -91,6 +112,8 @@ function CreateUsers() {
           fullName: values.fullName,
           mobileNumber: values.mobileNumber,
         });
+
+
 
         if (result.message) {
           successToast("User Updated Successfully");
@@ -150,11 +173,12 @@ function CreateUsers() {
             <Formik
               enableReinitialize={true}
               initialValues={initialFormValues}
-              onSubmit={(values) => handleCreateUsers(values)}
-              validationSchema={CreateUserSChema}
+              onSubmit={handleCreateUsers}
+              validationSchema={()=>CreateUserSChema(countryCode)}
+      
             >
               {({
-                handleChange,
+                setFieldValue,
                 handleBlur,
                 handleSubmit,
                 values,
@@ -162,7 +186,7 @@ function CreateUsers() {
                 touched,
               }) => (
                 <form onSubmit={handleSubmit}>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between ">
                     <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="fullName"
@@ -180,7 +204,7 @@ function CreateUsers() {
                         type="text"
                         id="fullName"
                         placeholder={t("Enter full name here")}
-                        onChange={handleChange}
+                        onChange={e => {setFieldValue(e.target.name, e.target.value)}}
                         onBlur={handleBlur}
                         value={values?.fullName}
                       />
@@ -190,7 +214,7 @@ function CreateUsers() {
                           : null}
                       </div>
                     </div>
-                    <div className="mb-3 ms-6 w-full">
+                    {/* <div className="mb-3 ms-6 w-full">
                       <label
                         htmlFor="mobileNumber"
                         className="input-custom-label dark:text-white"
@@ -216,6 +240,33 @@ function CreateUsers() {
                           ? errors.mobileNumber
                           : null}
                       </div>
+                    </div> */}
+                    <div className='mb-3 ms-6 w-full'>
+
+                    <label
+                        htmlFor="mobilenumber"
+                        className="input-custom-label dark:text-white"
+                      >
+                        {t("Mobile Number")}
+                      </label>
+
+                      <PhoneInput
+
+                        international
+                        countries={['US', 'IN', 'AE']}
+                        defaultCountry="IN"
+                         onChange={(value)=>{setFieldValue("mobileNumber",value)}}
+                        countryCallingCodeEditable={false}
+                        value={values.mobileNumber}
+                        onCountryChange={setCountryCode}
+
+
+                      />
+                        <div className="error-input">
+                        {errors.mobileNumber && touched.mobileNumber
+                          ? errors.mobileNumber
+                          : null}
+                    </div>
                     </div>
                   </div>
                   <div className="button-save-cancel mt-3 flex justify-end">

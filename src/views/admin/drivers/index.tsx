@@ -59,16 +59,26 @@ const Drivers = () => {
 
 
   
-  function formatNumber(num:any) {
+  function formatNumber(num: any) {
+    // Check for null or undefined
+    if (num == null || num==undefined) return "NA";
+    
+    // Convert to string and clean non-digit characters
+    const numStr = num.toString().replace(/[^\d]/g, ''); // Remove everything that's not a digit
 
-    if(num==null || num==undefined) return "NA";
-    const numStr = num.toString();
-    if (numStr.length === 12) {
-        return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else if(numStr.length === 10){
-        return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
+    // Handle formatting based on length and starting digits
+    if (numStr.startsWith('1') && numStr.length === 11) {
+        // US number format: +1 xxx xxx xxxx
+        return `+1 ${numStr.slice(1, 4)} ${numStr.slice(4, 7)} ${numStr.slice(7)}`;
+    } else if (numStr.startsWith('91') && numStr.length === 12) {
+        // India number format: +91 xxxxx xxxxx
+        return `+91 ${numStr.slice(2, 7)} ${numStr.slice(7)}`; // Slicing after skipping +91
+    } else if (numStr.startsWith('971') && numStr.length === 12) {
+        // UAE number format: +971 xx xxx xxxx
+        return `+971 ${numStr.slice(3, 5)} ${numStr.slice(5, 8)} ${numStr.slice(8)}`;
     }
 
+    // Return original number if no format matches
     return num;
 }
 
@@ -300,11 +310,11 @@ const Drivers = () => {
     return res;
   }
 
-  const updateDriverStatus = async (id: string,delete_last:number) => {
+  const updateDriverStatus = async (id: string,getCount:boolean) => {
     setLoading(true);
     try {
       onClose();
-      const result: any = await updateDriverStatusApi(id,delete_last);
+      const result: any = await updateDriverStatusApi(id,getCount);
 
       if(result?.last_driver){
          return result;
@@ -546,7 +556,7 @@ useEffect(()=>{
 
                             if(!lastdriverwarning){
 
-                              const res= await updateDriverStatus(selectedItem.action.id,0);
+                              const res= await updateDriverStatus(selectedItem.action.id,true);
                                     if(res && res?.last_driver){
                                           setLastDriverWarning(true);
                                           setLoading(false);
@@ -555,7 +565,7 @@ useEffect(()=>{
                             }
                             
                             else {
-                              updateDriverStatus(selectedItem.action.id,1);
+                              updateDriverStatus(selectedItem.action.id,false);
                             }                     
                                
                   

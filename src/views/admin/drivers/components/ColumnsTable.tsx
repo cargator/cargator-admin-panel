@@ -238,15 +238,16 @@ function ColumnsTable(props: {
 
         <div 
         style={{backgroundColor:'#f3f6f9'}}
-        className={` relative cursor-pointer text-2xl p-1 rounded-lg group 
+        className={` relative  text-2xl p-1 rounded-lg group 
           ${info.row.original.action.driverStatus=='inactive'?'text-red-500':'text-gray-600'}`}
-           onClick={()=>{console.log('block',info.row.original.action.driverStatus);handleToggleForStatusMOdal(info.row.original)}}>
+          //  onClick={()=>{handleToggleForStatusMOdal(info.row.original)}}
+           >
 
-            <div className="hidden absolute -top-10 -left-4 group-hover:inline-block px-3 py-2 text-sm font-medium
+            {/* <div className="hidden absolute -top-10 -left-4 group-hover:inline-block px-3 py-2 text-sm font-medium
              text-white transition-opacity duration-300 bg-gray-600 rounded-lg  shadow-sm tooltip ">
              {info.getValue().driverStatus}
               
-            </div>          
+            </div>           */}
            <MdBlock />            
           </div>
          
