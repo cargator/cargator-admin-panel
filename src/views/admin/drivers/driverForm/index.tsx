@@ -608,9 +608,14 @@ const DriverForm = () => {
         }
       }
     } catch (error: any) {
+
+      setInitialFormValues(formvalues.current);
+      if(error.response.data?.duplicate){
+        setInitialFormValues(prev => ({ ...prev, mobileNumber: "" }));
+      }
       errorToast(error.response.data.message);
       setInitialFormValues(formvalues.current);
-      setInitialFormValues(prev => ({ ...prev, mobileNumber: "" }));
+      
       setIsLoading(false);
     }
   };
@@ -655,11 +660,11 @@ const DriverForm = () => {
           setFinalDocArray(docsURLandkeyarray);
         }
       }
-
+     
 
       setIsActive(res.data.status == 'active' ? true : false);
-      const phoneNumber = parsePhoneNumber(res.data.mobileNumber);
-      setCountryCode(phoneNumber.country || "IN");
+      const phoneNumber = parsePhoneNumber(res.data.mobileNumber[0]=='+'?res.data.mobileNumber:'+'+res.data.mobileNumber);
+      if(phoneNumber) setCountryCode(phoneNumber?.country || "IN");
       setInitialFormValues({
         firstName: res.data.firstName,
         restaurantName: res.data.restaurantName,
@@ -673,13 +678,11 @@ const DriverForm = () => {
         image: {},
         documents: [],
       });
-
       setParamData(res.data);
       setVehicleNumber(res.data.vehicleNumber);
       setVehicleName(res.data.vehicleName);
       setVehicleType(res.data.vehicleType);
       setRestaurantName(res.data.restaurantName);
-
       setIsLoading(false);
     } catch (error: any) {
       errorToast(error.response.data.message);
@@ -746,6 +749,10 @@ const DriverForm = () => {
       }
     }
   }, [options, paramData]);
+
+  useEffect(()=>{
+    console.log('input',countryCode);
+  },[countryCode])
 
   useEffect(() => {
     if (params.id) {
@@ -916,7 +923,8 @@ const DriverForm = () => {
                         onChange={(value) => { setFieldValue("mobileNumber", value) }}
                         countryCallingCodeEditable={false}
                         value={values.mobileNumber}
-                        onCountryChange={setCountryCode}
+                        onCountryChange={(country)=>{setCountryCode(country) }                       
+                        }
 
 
                       />
@@ -1332,17 +1340,18 @@ const DriverForm = () => {
                   </div>
 
                   <div className="button-save-cancel mt-3 flex justify-end">
-                    <Button
-                      className={`my-2 ms-1 sm:my-0 border bg-shadow-500 rounded-md m-2 px-2 py-1 ${isactive ? 'bg-red-400' : 'bg-green-400'}`}
-                      onClick={() => { checkNumberofRiders(params.id); onOpen(); }}
-                    >
-                      {isactive ? 'Pause' : 'Resume'}
-                    </Button>
+                   
                     <Button
                       className=" cancel-button my-2 ms-1 sm:my-0"
                       onClick={() => navigate("/admin/drivers")}
                     >
                       {t("Cancel")}
+                    </Button>
+                    <Button
+                      className=' cancel-button my-2 ms-1 sm:my-0 border bg-shadow-500 rounded-md m-2 px-2 py-1'
+                      onClick={() => { checkNumberofRiders(params.id); onOpen(); }}
+                    >
+                      {isactive ? 'Pause' : 'Resume'}
                     </Button>
                     <Button
                       type="submit"

@@ -31,7 +31,8 @@
 	/* This is done to stretch the contents of this component. */
 	display: flex;
 	align-items: center;
-	max-width: 35rem;
+	max-width: 25rem;
+	width:25rem;
 
     
 }
@@ -45,11 +46,13 @@
 	min-width: 0;
     outline-color: blue;
     margin: 2px;
-    padding: 2px;
+    padding: 6px;
     width: 3rem;
     height: 2.5rem;
     border: 2px solid rgb(235, 228, 233); /* Solid border, 2px thick, blue color */
     border-radius: 0.5rem;
+	background-color: rgba(240, 248, 255, 1);
+	
 }
 
 .PhoneInputCountryIcon {
@@ -101,6 +104,7 @@
 	display: flex;
 	align-items: center;
 	margin-right: var(--PhoneInputCountrySelect-marginRight);
+	margin-bottom: 10px;
 }
 
 .PhoneInputCountrySelect {

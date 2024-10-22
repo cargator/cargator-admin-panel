@@ -137,24 +137,27 @@ const LoginPage = () => {
           alt="Sukam Express Logo"
           className="w-25 mx-auto mb-6 h-16"
         />
-        <h2 className="mb-6 text-center text-6xl font-semibold text-gray-800">Login</h2>
+        <h2 className="mb-6 text-center text-4xl font-semibold text-gray-800">Login</h2>
   
         <form onSubmit={handleLogin} className="space-y-6">
           {/* Mobile Number Section */}
-          <div>
-            <label className="block mb-2 text-xl font-semibold text-gray-700 roboto-mono-font">
+
+          <div className="flex-col items-center ">
+          <div >
+            {/* <label className=" mb-2 text-xl font-semibold text-gray-700 roboto-mono-font">
               Mobile Number:
-            </label>
-            <div ref={firstPhoneInputRef} className="relative custom-phone-input mb-4">
+            </label> */}
+            <div ref={firstPhoneInputRef} className="relative custom-phone-input mb-4  flex justify-center">
               <PhoneInput
                 international
                 countries={['US', 'IN', 'AE']}
                 defaultCountry="IN"
                 onChange={handlePhoneNumberChange}
                 countryCallingCodeEditable={false}
+                placeholder="Enter phone number"
                 value={phoneNumber}
               />
-              <div className={`absolute text-sm text-red-500 ml-20 ${isvalid ? 'hidden' : 'block'}`}>
+              <div className={`absolute  top-12 left-24 text-sm text-red-500 ml-20 ${isvalid ? 'hidden' : 'block'}`}>
                 Enter valid Number
               </div>
             </div>
@@ -162,8 +165,8 @@ const LoginPage = () => {
   
           {/* OTP Section */}
           <div className="text-center">
-            <label className="block mb-2 text-xl font-semibold text-gray-700 roboto-mono-font">
-              OTP:
+            <label className="block mb-2 text-xl font-semibold text-black roboto-mono-font">
+              Enter OTP:
             </label>
             <div className="flex justify-center gap-2 mb-4">
               {password.map((value, index) => (
@@ -175,6 +178,7 @@ const LoginPage = () => {
                   value={value}
                   onKeyDown={(e) => handlePasswordChange(index, e)}
                   maxLength={1}
+                  style={{ backgroundColor: 'rgba(240, 248, 255, 1)' }}
                   className="h-12 w-12 rounded-md border border-gray-300 p-2 text-center font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoComplete="off"
                 />
@@ -187,7 +191,13 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={isdisabled}
-              className={`w-3/4 rounded-md p-3 ${isdisabled ? 'bg-gray-500' : 'bg-brand-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'}`}
+              // style={{ background: 'rgba(0, 82, 155, 1)' }}
+ className={`w-3/4 rounded-md p-3
+${isdisabled   ? 'bg-[rgba(0,82,155,0.6)] text-gray-400 cursor-not-allowed'
+                    : 'bg-[rgba(0,82,155,1)] text-white' }
+              `}
+//  ${isdisabled ? 'bg-gray-500' : 'bg-brand-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'}
+
             >
               Login
             </button>
@@ -195,6 +205,7 @@ const LoginPage = () => {
   
           {/* Footer Text */}
           <div className="text-center text-gray-600 roboto-mono-font">© 2024 Sukam Express</div>
+          </div>
         </form>
       </div>
     </div>
