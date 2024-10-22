@@ -33,6 +33,8 @@ import {
 import { toast } from "react-toastify";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import { phoneNumberFormat } from "helper/commonFunction";
+
 const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
 const olaMarker = maplibregl.Marker;
@@ -99,18 +101,7 @@ const OrderView = () => {
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
 
-  function formatNumber(num: any) {
 
-    if (num == null || num == undefined) return "NA";
-    const numStr = num.toString();
-    if (numStr.length === 12) {
-      return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else if (numStr.length === 10) {
-      return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
-    }
-
-    return num;
-  }
 
   const errorToast = (message: any) => {
     toast.error(`${message}`, {
@@ -582,7 +573,7 @@ const OrderView = () => {
                             marginLeft: "5px",
                           }}
                         >
-                          {`- ${formatNumber(driverMobileNumber)}`}
+                          {`- ${phoneNumberFormat(driverMobileNumber)}`}
                         </span>
                       </div>
                     </div>
@@ -640,7 +631,7 @@ const OrderView = () => {
                           marginLeft: "5px",
                         }}
                       >
-                        {`- ${formatNumber(customerMobileNumber)}`}
+                        {`- ${phoneNumberFormat(customerMobileNumber)}`}
                       </span>
                     </div>
                     <div style={{ fontSize: "12px" }}>{drop}</div>

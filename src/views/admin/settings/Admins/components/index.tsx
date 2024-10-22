@@ -26,6 +26,7 @@ import {
   updateCurrentMap,
 } from "services/customAPI";
 import { toast } from "react-toastify";
+import { phoneNumberFormat } from "helper/commonFunction";
 
 type RowObj = {
   name: string;
@@ -80,28 +81,6 @@ function ColumnsTableAdmins(props: {
   };
 
   
-  function formatNumber(num: any) {
-    // Check for null or undefined
-    if (num == null || num==undefined) return "NA";
-    
-    // Convert to string and clean non-digit characters
-    const numStr = num.toString().replace(/[^\d]/g, ''); // Remove everything that's not a digit
-
-    // Handle formatting based on length and starting digits
-    if (numStr.startsWith('1') && numStr.length === 11) {
-        // US number format: +1 xxx xxx xxxx
-        return `+1 ${numStr.slice(1, 4)} ${numStr.slice(4, 7)} ${numStr.slice(7)}`;
-    } else if (numStr.startsWith('91') && numStr.length === 12) {
-        // India number format: +91 xxxxx xxxxx
-        return `+91 ${numStr.slice(2, 7)} ${numStr.slice(7)}`; // Slicing after skipping +91
-    } else if (numStr.startsWith('971') && numStr.length === 12) {
-        // UAE number format: +971 xx xxx xxxx
-        return `+971 ${numStr.slice(3, 5)} ${numStr.slice(5, 8)} ${numStr.slice(8)}`;
-    }
-
-    // Return original number if no format matches
-    return num;
-}
 
   const errorToast = (message: any) => {
     toast.error(`${message}`, {
@@ -180,7 +159,7 @@ function ColumnsTableAdmins(props: {
       ),
       cell: (info) => (
         <p className="text-sm font-bold text-navy-700 dark:text-white">
-         { `${formatNumber(info.getValue())}`}
+         { `${phoneNumberFormat(info.getValue())}`}
         </p>
       ),
     }),

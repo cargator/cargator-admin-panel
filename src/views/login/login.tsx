@@ -166,9 +166,9 @@ const LoginPage = () => {
           {/* OTP Section */}
           <div className="text-center">
             <label className="block mb-2 text-xl font-semibold text-black roboto-mono-font">
-              Enter OTP:
+              Enter OTP
             </label>
-            <div className="flex justify-center gap-2 mb-4">
+            <div className="flex justify-center gap-2 mb-4 ">
               {password.map((value, index) => (
                 <input
                   key={index}
@@ -179,7 +179,7 @@ const LoginPage = () => {
                   onKeyDown={(e) => handlePasswordChange(index, e)}
                   maxLength={1}
                   style={{ backgroundColor: 'rgba(240, 248, 255, 1)' }}
-                  className="h-12 w-12 rounded-md border border-gray-300 p-2 text-center font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className=" font-mono h-12 w-12 rounded-md border border-gray-300 p-2 text-center  focus:outline-none focus:ring-2 focus:ring-blue-500"
                   autoComplete="off"
                 />
               ))}

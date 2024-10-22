@@ -6,6 +6,7 @@ import { orderStatusOptions } from "utils/constants";
 import { useLocation } from "react-router-dom";
 import ColumnsOrderTable from "./components/ColumnsTable";
 import ReactPaginate from "react-paginate";
+import { phoneNumberFormat } from "helper/commonFunction";
 
 function Orders() {
   const location = useLocation();
@@ -22,22 +23,6 @@ function Orders() {
 
   const [sortedBy,setSortedBy]=useState("");
   const [isAscending,setIsAscending]=useState(false);
-
-
-  
-  
-  function formatNumber(num:any) {
-
-    if(num==null || num==undefined) return "NA";
-    const numStr = num.toString();
-    if (numStr.length === 12) {
-        return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else if(numStr.length === 10){
-        return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
-    }
-
-    return num;
-}
 
   const setPageItemRange = (currPageNumber: number, maxItemRange: number) => {
     let startNumber = currPageNumber * limit - limit + 1;
@@ -77,11 +62,11 @@ function Orders() {
         orderId: order.order_details.vendor_order_id,
         orderDate: dateTime.substring(0, 10),
         orderTime: dateTime.substring(11, 16),
-        customerMobileNum:`${formatNumber(order?.drop_details?.contact_number
+        customerMobileNum:`${phoneNumberFormat(order?.drop_details?.contact_number
           ? order?.drop_details?.contact_number
           : null)}`,
         DriverMobileNum:order.driver_details?.contact ?
-        `${formatNumber(order?.driver_details?.contact)}`
+        `${phoneNumberFormat(order?.driver_details?.contact)}`
           :null,
         amount: order.order_details.order_total,
         status: order.status,

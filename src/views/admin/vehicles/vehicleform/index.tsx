@@ -335,9 +335,8 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsLoading(true);
     try {
       if (params.id) {
-        let res, res1;
-        if (finalProfileImage?.url === "") {
-          // console.log("image key to upload :>> ", finalProfileImage.url);
+        let res, res1; 
+        if (finalProfileImage && finalProfileImage?.url !== "") {
           {
             const key = finalProfileImage?.key;
        
@@ -360,8 +359,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           }
         }
 
-        console.log('update update final profile  image is not empty -',finalProfileImage.url);
-
+    
         let docKey: any = [];
         finalDocArray.forEach(async (ele) => {
           docKey.push(ele?.key);
@@ -394,8 +392,6 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           }
         }
 
-        // console.log("docs key db:>> ", docKey);
-        // console.log("image key db:>> ", finalProfileImage?.key);
 
         const result: any = await handleCreateVehicleApi(params.id, {
           vehicleNumber: values.vehicleNumber,
@@ -403,7 +399,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           vehicleType: values.vehicleType,
           vehicleMake: values.vehicleMake,
           vehicleModel: values.vehicleModel,
-          profileImageKey: finalProfileImage?.key,
+          profileImageKey: finalProfileImage?.key || initialProfileImage?.key,
           documentsKey: docKey,
         });
         // console.log("result :>> ", result);
@@ -488,7 +484,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           const type = "get";
           const data: any = await getS3SignUrl(key, contentType, type);
           setInitialProfileImage({ key: key, url: data.url });
-          setFinalProfileImage({ key: key, url: data.url });
+          // setFinalProfileImage({ key: key, url: data.url });
           setImagePreview(data.url);
         }
       }

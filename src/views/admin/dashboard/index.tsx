@@ -25,6 +25,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { toast } from "react-toastify";
 import OlaMap from "../../../assets/images/Ola_Map_logo.svg";
 import google_Map_logo from "../../../assets/images/Google_Maps_Logo.svg";
+import { phoneNumberFormat } from '../../../helper/commonFunction'
 // import { Map as MapLibreMap, NavigationControl, Marker, Popup  } from "maplibre-gl";
 const MapLibreMap = maplibregl.Map;
 const NavigationControl = maplibregl.NavigationControl;
@@ -69,20 +70,6 @@ const Dashboard = () => {
   const mapContainerRef = useRef<any>(null);
   const [mapReady, setMapReady] = useState(false);
   const mapRef = useRef<any>(null);
-
-  function formatNumber(num: any) {
-    if (num == null || num == undefined) return "NA";
-
-    const numStr = num.toString();
-
-    if (numStr.length === 12) {
-      return `+ ${numStr.slice(0, 2)} ${numStr.slice(2, 7)} ${numStr.slice(7)}`;
-    } else if (numStr.length === 10) {
-      return `+ 91 ${numStr.slice(0, 5)} ${numStr.slice(5)}`;
-    }
-
-    return num;
-  }
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -265,7 +252,7 @@ const Dashboard = () => {
       <strong>Name:</strong> ${driver.firstName}
     </div>
     <div class="text-md">
-      <strong>Mobile:</strong> ${formatNumber(driver.mobileNumber)}
+      <strong>Mobile:</strong> ${phoneNumberFormat(driver.mobileNumber)}
     </div>
     <div class="text-md">
       <strong>Vehicle Number:</strong> ${driver.vehicleNumber}
@@ -673,7 +660,7 @@ const Dashboard = () => {
                           <p> Mobile Number:</p>
                           <p>
                             {" "}
-                            {formatNumber(
+                            {phoneNumberFormat(
                               selectedDriver?.mobileNumber
                                 ? selectedDriver?.mobileNumber
                                 : "NA"

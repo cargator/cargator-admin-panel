@@ -17,6 +17,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import { updateDriverStatusApi } from "services/customAPI";
+import { FaRegPauseCircle } from "react-icons/fa";
 
 type RowObj = {
   fullName: customFieldType1;
@@ -95,52 +96,89 @@ function ColumnsTable(props: {
           className="text-sm font-bold text-navy-700"
           style={{ display: "flex", alignItems: "center" }}
         >
-          {info.getValue()?.path === "" ? (
+          {info.row.original.action.driverStatus=='inactive'?
+          (  // if inactive show the pause in the image section 
             <div
-              style={{
-                width: "40px",
-                height: "40px",
-                padding: "1px",
-                borderRadius: "4px",
-                display: "inline-block",
-                marginRight: "6px",
-                backgroundColor: "#F4F7FE",
-              }}
-            >
-              <span
+            style={{
+              width: "40px",
+              height: "40px",
+              padding: "1px",
+              borderRadius: "4px",
+              display: "inline-block",
+              marginRight: "6px",
+            }}
+          >
+          <div 
+          style={{ background: "rgba(235, 235, 235, 1)" }}
+          className="w-full h-full  border rounded-md flex items-center justify-center">
+             <MdBlock 
+             style={{ color: " rgba(156, 163, 175, 1)" }}
+             className="w-[30px] h-[30px]"/> 
+              
+            {/* <FaRegPauseCircle  */}
+            
+             
+             </div>   
+            </div>              
+          )
+          :(
+            info.getValue()?.path === "" ?
+             (
+              <div
                 style={{
-                  position: "relative",
-                  left: "14px",
-                  top: "8.5px",
-                  fontSize: "18px",
+                  width: "40px",
+                  height: "40px",
+                  padding: "1px",
+                  borderRadius: "4px",
+                  display: "inline-block",
+                  marginRight: "6px",
+                  backgroundColor: "#F4F7FE",
                 }}
               >
-                {info.getValue()?.name?.slice(0, 1).toUpperCase()}
-              </span>
-            </div>
-          ) : (
-            <div
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "4px",
-                display: "inline-block",
-                marginRight: "6px",
-                alignItems: "center",
-              }}
-            >
-              <img
-                src={info.getValue()?.path}
+                <span
+                  style={{
+                    position: "relative",
+                    left: "14px",
+                    top: "8.5px",
+                    fontSize: "18px",
+                  }}
+                >
+                  {info.getValue()?.name?.slice(0, 1).toUpperCase()}
+                </span>
+              </div>
+            ) 
+            : 
+            (
+              <div
                 style={{
-                  objectFit: "fill",
-                  height: "100%",
-                  width: "auto",
+                  width: "40px",
+                  height: "40px",
                   borderRadius: "4px",
+                  display: "inline-block",
+                  marginRight: "6px",
+                  alignItems: "center",
                 }}
-                alt="img"
-              />
-            </div>
-          )}
+              >
+                
+             
+                <img
+                  src={info.getValue()?.path}
+                  style={{
+                    objectFit: "fill",
+                    height: "100%",
+                    width: "auto",
+                    borderRadius: "4px",
+                  }}
+                  alt="img"
+                />
+                
+                
+              
+                
+              </div>
+            )
+          )       
+          }
 
           <span className="dark:text-white">{info.getValue()?.name}</span>
         </p>
@@ -154,7 +192,7 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="text-sm  font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -235,21 +273,6 @@ function ColumnsTable(props: {
       ),
       cell: (info) => (
         <div className="flex items-center gap-3">
-
-        <div 
-        style={{backgroundColor:'#f3f6f9'}}
-        className={` relative  text-2xl p-1 rounded-lg group 
-          ${info.row.original.action.driverStatus=='inactive'?'text-red-500':'text-gray-600'}`}
-          //  onClick={()=>{handleToggleForStatusMOdal(info.row.original)}}
-           >
-
-            {/* <div className="hidden absolute -top-10 -left-4 group-hover:inline-block px-3 py-2 text-sm font-medium
-             text-white transition-opacity duration-300 bg-gray-600 rounded-lg  shadow-sm tooltip ">
-             {info.getValue().driverStatus}
-              
-            </div>           */}
-           <MdBlock />            
-          </div>
          
           <div className="cursor-pointer">
             <img

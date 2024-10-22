@@ -177,7 +177,7 @@ const DriverForm = () => {
 
   // for status change 
 
-  const [lastRider, setLastRider] = useState(true);
+  const [lastRider, setLastRider] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isactive, setIsActive] = useState(true);
 
@@ -284,6 +284,8 @@ const DriverForm = () => {
 
   const checkNumberofRiders = async (id: string) => {
 
+     setLastRider(false);
+     
     const result: any = await updateDriverStatusApi(id, true);
 
     if (result?.last_driver) {
@@ -470,8 +472,7 @@ const DriverForm = () => {
       formvalues.current = values;
       if (params.id) {
         let res, res1;
-        if (finalProfileImage?.url === "") {
-          console.log("image key to upload :>> ", finalProfileImage?.url);
+        if (finalProfileImage && finalProfileImage?.url !== "") {
           {
             const key = finalProfileImage?.key;
             console.log("image key to upload :>> ", key);
@@ -525,7 +526,7 @@ const DriverForm = () => {
             });
           }
         }
-
+        
         console.log("docs key db:>> ", docKey);
         console.log("image key db:>> ", finalProfileImage?.key);
 
@@ -537,7 +538,7 @@ const DriverForm = () => {
           vehicleNumber: values.vehicleNumber,
           vehicleName: values.vehicleName,
           vehicleType: values.vehicleType,
-          profileImageKey: finalProfileImage?.key,
+          profileImageKey: finalProfileImage?.key || initialProfileImage?.key,
           documentsKey: docKey,
         });
 
@@ -634,7 +635,7 @@ const DriverForm = () => {
           const type = "get";
           const data: any = await getS3SignUrl(key, contentType, type);
           setInitialProfileImage({ key: key, url: data.url });
-          setFinalProfileImage({ key: key, url: data.url });
+          // setFinalProfileImage({ key: key, url: data.url });
           setImagePreview(data.url);
         }
       }
