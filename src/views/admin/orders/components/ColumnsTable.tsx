@@ -20,6 +20,8 @@ import {
 } from "@tanstack/react-table";
 import { useNavigate } from "react-router-dom";
 import { FaCaretDown, FaCaretUp } from "react-icons/fa";
+import { phoneNumberFormat } from "helper/commonFunction";
+
 
 type RowObj = {
   orderId: string;
@@ -71,7 +73,7 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info: any) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -84,7 +86,7 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -98,7 +100,7 @@ function ColumnsOrderTable(props: {
       ),
       cell: (info: any) => (
         <Tooltip text={info.getValue()}>
-          <p className="text-sm font-bold text-navy-700 dark:text-white">
+          <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
             {info.getValue().slice(-6)}
           </p>
         </Tooltip>
@@ -112,20 +114,20 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
-          {info.getValue()}
+        <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
+          {phoneNumberFormat(info.getValue())}
         </p>
       ),
     }),
     columnHelper.accessor("DriverMobileNum", {
       id: "DriverMobileNum",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
+        <p className="font-mono text-sm font-bold text-gray-600 dark:text-white">
           {t("Driver Mobile No.")}
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue() == null ? "N/A" : ` ${info.getValue()}`}
         </p>
       ),
@@ -138,7 +140,7 @@ function ColumnsOrderTable(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className=" font-mono text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),

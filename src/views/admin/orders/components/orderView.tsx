@@ -566,7 +566,7 @@ const OrderView = () => {
                         }}
                       >
                         {driverName || "NA"}
-                        <span
+                        <span className="font-mono"
                           style={{
                             fontSize: "14px",
                             fontWeight: "500",
@@ -624,7 +624,7 @@ const OrderView = () => {
                       }}
                     >
                       {customerName || "NA"}
-                      <span
+                      <span className="font-mono"
                         style={{
                           fontSize: "14px",
                           fontWeight: "500",

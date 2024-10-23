@@ -158,7 +158,7 @@ function ColumnsTableAdmins(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
          { `${phoneNumberFormat(info.getValue())}`}
         </p>
       ),

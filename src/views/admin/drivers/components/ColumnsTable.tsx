@@ -87,16 +87,20 @@ function ColumnsTable(props: {
     columnHelper.accessor("fullName", {
       id: "fullName",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
+        <p className="text-sm font-bold pl-2 text-gray-600 dark:text-white">
           {t("Full Name")}
         </p>
       ),
       cell: (info: any) => (
         <p
-          className="text-sm font-bold text-navy-700"
+          className="text-sm "
           style={{ display: "flex", alignItems: "center" }}
         >
-          {info.row.original.action.driverStatus=='inactive'?
+          <div
+    className={`w-1 h-10 rounded-lg mr-4 ${info.row.original.action.driverStatus === 'inactive' ? 'bg-inactive' : 'bg-active'}`}
+  ></div>
+
+          {info.row.original.action.driverStatus=='-inactive'?
           (  // if inactive show the pause in the image section 
             <div
             style={{
@@ -187,12 +191,12 @@ function ColumnsTable(props: {
     columnHelper.accessor("mobileNumber", {
       id: "mobileNumber",
       header: () => (
-        <p className="text-sm font-bold text-gray-600 dark:text-white">
+        <p className="text font-bold text-gray-600 dark:text-white">
           {t("Mobile Number")}
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm  font-bold text-navy-700 dark:text-white">
+        <p className=" font-mono  dark:text-white">
           {info.getValue()}
         </p>
       ),
@@ -207,7 +211,7 @@ function ColumnsTable(props: {
       cell: (info) => {
         const value = info.getValue();
         return(
-        <p className="text-sm  font-bold text-navy-700 dark:text-white">
+        <p className=" dark:text-white">
           {!value || value.trim() === "None" ? "NA" : info.getValue()}
         </p>
       )},
@@ -220,7 +224,7 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) =>(
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="font-mono dark:text-white">
           {info.getValue() === "   " ? "NA" : info.getValue()}
         </p>
       ),
@@ -233,7 +237,7 @@ function ColumnsTable(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className=" dark:text-white">
           {info.getValue() === "" ? "NA" : info.getValue()}
         </p>
       ),
@@ -250,10 +254,10 @@ function ColumnsTable(props: {
           <p
             className={
               info.getValue() === "online"
-                ? "onlineClass text-sm font-bold text-navy-700 "
+                ? "onlineClass"
                 : info.getValue() === "offline"
-                ? "offlineClass text-sm font-bold text-navy-700 "
-                : "onrideClass text-sm font-bold text-navy-700 "
+                ? "offlineClass "
+                : "onrideClass "
             }
           >
             {" "}
@@ -307,9 +311,9 @@ function ColumnsTable(props: {
   }, [tableData]);
 
   return ( 
-    <Card extra={"w-full pb-10 p-4 h-full"}>
+    <Card extra={"w-full pb-10 pl-2 pr-2 h-full"}>
       <header className="relative flex items-center justify-between">
-        <div className="text-xl font-bold text-navy-700 dark:text-white">
+        <div className="text-xl pl-2 font-bold text-navy-700 dark:text-white">
           {t("Riders")}
         </div>
         <div className="flex items-center">
@@ -431,7 +435,9 @@ function ColumnsTable(props: {
                         return (
                           <td
                             key={cell.id}
-                            className="min-w-[135px] border-white/0 py-3 pr-4 text-start"
+                            // style={{color:``}}
+                            className={`min-w-[135px]  border-white py-3 pr-4 text-start text-sm font-bold text-navy-700
+                              ${cell.row.original.action.driverStatus=='inactive'?'opacity-50':'opacity-100'}`}
                           >
                             {flexRender(
                               cell.column.columnDef.cell,

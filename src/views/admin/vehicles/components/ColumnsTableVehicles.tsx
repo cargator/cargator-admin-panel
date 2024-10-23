@@ -71,7 +71,7 @@ function ColumnsTableVehicles(props: {
       ),
       cell: (info: any) => (
         <p
-          className="text-sm font-bold text-navy-700"
+          className="font-mono text-sm font-bold text-navy-700"
           style={{ display: "flex", alignItems: "center" }}
         > 
           {info.getValue()?.path === "" ? (
@@ -133,7 +133,7 @@ function ColumnsTableVehicles(props: {
         </p>
       ),
       cell: (info) => (
-        <p className="text-sm font-bold text-navy-700 dark:text-white">
+        <p className="font-mono text-sm font-bold text-navy-700 dark:text-white">
           {info.getValue()}
         </p>
       ),

@@ -138,7 +138,7 @@ const Drivers = () => {
 
   const searchDrivers = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response: any = await searchDriversApi({
         page: currentPage.current,
         limit: limit,
@@ -162,7 +162,7 @@ const Drivers = () => {
 
   const searchDriverFunction = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response: any = await searchDrivers();
       if (!response) {
         return;
@@ -377,13 +377,16 @@ const Drivers = () => {
     if (firstRender.current) {
       firstRender.current = false;
     } else {
-      if (searchText.trim() === "") {
-        setNoData(true);
-        currentPage.current = 1;
-        getPaginatedDriverData();
-      }else searchDriverFunction();
+       searchDriverFunction();
     }
-  }, [searchText, status]);
+  }, [ status]);
+
+  useEffect(()=>{
+
+     if(searchText.trim()==="") searchDriverFunction();
+
+  },
+  [searchText])
 
 
 useEffect(()=>{

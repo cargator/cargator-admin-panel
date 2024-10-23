@@ -4,6 +4,10 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      backgroundColor: {
+        'inactive': 'rgba(243, 11, 11, 1)',
+        'active':' rgba(80, 205, 137, 1)'
+      },
       width: {
         "1p": "1%",
         "2p": "2%",

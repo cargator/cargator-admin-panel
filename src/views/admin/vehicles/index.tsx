@@ -161,7 +161,7 @@ const Vehicles: React.FC = () => {
 
   const searchVehicles = async () => {
     try {
-      setIsLoading(true);
+      // setIsLoading(true);
       const response: any = await searchVehiclesApi({
         page: currentPage.current,
         limit: limit,

@@ -80,7 +80,7 @@ function Orders() {
 
   const searchOrders = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response: any = await findOrders({
         page: currentPage,
         limit: limit,
@@ -109,7 +109,7 @@ function Orders() {
     isascending:boolean=true
   ) {
     try {
-      setLoading(true);
+      // setLoading(true);
           const response: any = await findOrders({
         page: page,
         limit: limit,
