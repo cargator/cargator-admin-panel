@@ -30,6 +30,7 @@ const Navbar = (props: {
   const { t }  = useTranslation();
   const [isOpen, setIsOpen] = useState(false)
   const [selectedLanguage, setSelectedLanguage] = useState(i18n.language); // i18n.language contains the language assigned to lng in i18n.js file.
+  const adminName = useSelector((store:any)=> store.app.sukam.AdminName)
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -118,11 +119,9 @@ const Navbar = (props: {
           {/* Profile & Dropdown */}
           <Dropdown
             button={
-              <img
-                className="h-10 w-10 rounded-full cursor-pointer"
-                src={avatar}
-                alt="Elon Musk"
-              />
+              <div className="h-10 w-10 rounded-full cursor-pointer flex items-center justify-center bg-green-500 text-white text-xl ">
+                {adminName?adminName[0]:"A"}
+                </div>
             }
             children={
               <div className="flex h-20 w-56 flex-col justify-start rounded-[20px] bg-white bg-cover bg-no-repeat shadow-xl shadow-shadow-500 dark:!bg-navy-700 dark:text-white dark:shadow-none">

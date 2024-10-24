@@ -55,7 +55,6 @@ function Orders() {
 
   function convertToOrders(orders: any) {
     const response = orders.map((order: any) => {
-      console.log(order);
 
       let dateTime = convertUtcToIst(order.createdAt);
       return {
@@ -90,7 +89,6 @@ function Orders() {
         order:isAscending?1:-1
         
       });
-      console.log("response ===>", response);
       return response;
     } catch (error: any) {
       console.log(error.response.data.success);
@@ -143,7 +141,6 @@ function Orders() {
   }
 
   const handleOrderStatusSelect = async (status: string) => {
-    console.log("status =======> ", status);
     try {
       // setLoading(true);
       let response: any;
@@ -151,7 +148,7 @@ function Orders() {
       if (status === "all") {
         response = await getAllOrders(currentPage, limit, status,searchText.trim());
       } else if (status === "current-order") {
-        console.log("hey am here~~~");
+
 
         response = await getAllOrders(currentPage, limit, status,searchText.trim());
       } else if (status === "completed") {

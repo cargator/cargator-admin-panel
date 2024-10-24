@@ -65,8 +65,15 @@ function CreateUsers() {
       });
 
     // console.log(res.data.mobilenumber)
-      const phoneNumber = parsePhoneNumber(res.data.mobile_Number);
-      setCountryCode(phoneNumber.country||"IN");
+    let mobileNumber = res.data.mobile_Number;
+
+    // Check if the mobile number starts with a '+'
+    if (!mobileNumber.startsWith('+')) {
+      mobileNumber = '+' + mobileNumber; // Add '+' sign if it's missing
+    }
+    
+    const phoneNumber = parsePhoneNumber(mobileNumber);
+    setCountryCode(phoneNumber.country || "IN");
       
       setIsLoading(false);
     } catch (error: any) {

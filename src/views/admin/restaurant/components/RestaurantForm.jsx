@@ -161,7 +161,6 @@ const RestaurantForm = () => {
   
 
   const mapLocation = (coords) => {
-    console.log("inside mapLocation",mapRefStreet.current);
     if (mapRefStreet.current) {
       mapRefStreet.current.flyTo([coords[0], coords[1]], 11);
     }
@@ -178,7 +177,6 @@ const RestaurantForm = () => {
           resp.data.geocodingResults[0].geometry.location
           );
           setSearchTextCoords([arr[1], arr[0]]);
-          console.log("getCoordsFromText>>>>>>", searchText,searchTextCoords);
     } catch (error) {
       console.log("error from Geocode API", error);
     }
@@ -190,7 +188,6 @@ const RestaurantForm = () => {
     try {
       const res = await getCurrentMap();
       setcurrentMap(res.data?.currentMap);
-      console.log("respones:>>>>", res.data);
     } catch (error) {
       errorToast(error?.response?.data?.message || "Something went wrong");
     }
@@ -204,7 +201,6 @@ const RestaurantForm = () => {
   }, []);
 
   useEffect(()=> {
-    console.log("Inside useEffect>>>>>>", searchText);
     if(searchText){
       getCoordsFromText(searchText)
     }
@@ -212,7 +208,6 @@ const RestaurantForm = () => {
 
   
   useEffect(()=> {
-    console.log("Inside useEffect>>>>>>", searchTextCoords);
     if(searchTextCoords){
       mapLocation(searchTextCoords)
     }
@@ -249,7 +244,6 @@ const RestaurantForm = () => {
 
     mapRef.current.on("click", (e) => {
       const { lng, lat } = e.lngLat;
-      console.log(`Clicked at Latitude: ${lat}, Longitude: ${lng}`);
       setMarkerPostion([lng,lat]);
     });
 
@@ -367,8 +361,7 @@ const RestaurantForm = () => {
               type="text"
               placeholder="Search"
               onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                console.log("<<<<<<<<<<<<<<<object>>>>>>>>>>>>>>>",e.target.value);                
+                if (e.key === "Enter") {           
                setSearchText(e.target.value);
                 }
               }}

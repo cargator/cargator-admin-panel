@@ -204,7 +204,6 @@ const Vehicles: React.FC = () => {
   const deleteHandle = async (data: any) => {
     setIsLoading(true);
     onClose();
-    console.log("data", data);
     try {
       // setVisibleModal(false);
       const response: any = await deleteVehicleApi(data);

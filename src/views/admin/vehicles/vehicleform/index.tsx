@@ -57,16 +57,13 @@ const Logger = (props: any): JSX.Element => {
       firstRender.current = false;
     } else {
       if (formik.values?.documents?.length > 0) {
-        console.log("docu true");
         setIsDocuments(true);
       } else {
-        console.log("docu false");
         if (params.id) {
           setIsDocuments(false);
         }
       }
 
-      console.log("documents values in logger :>> ", formik.values?.documents);
     }
   }, [formik.values?.documents]);
   return null;
@@ -284,7 +281,6 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   });
 
   const successToast = (message: string) => {
-    // console.log("Inside successToast", message); // Add this line for debugging
     toast.success(`${message}`, {
       position: toast.POSITION.TOP_RIGHT,
       autoClose: 4000,
@@ -327,7 +323,6 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
   async function pushProfilePhotoToS3(presignedUrl: string, uploadPhoto: any) {
     const response = await axios.put(presignedUrl, uploadPhoto);
-    // console.log("pushProfilePhotoToS3  :>> ", response);
     return response;
   }
 
@@ -364,9 +359,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         finalDocArray.forEach(async (ele) => {
           docKey.push(ele?.key);
           if (ele?.file) {
-            // console.log("docs key to upload :>> ", ele?.key);
             const key = ele?.key;
-            // console.log("docs key to upload :>> ", key);
             const contentType = "application/pdf";
             const type = "put";
             if (key !== undefined) {
@@ -385,7 +378,6 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
         for (const item of initialDocArray) {
           if (!finalDocArray.includes(item)) {
-            // console.log("docs key to delete :>> ", item);
             const res = deleteObjectFromS3Api({
               key: item.key,
             });
@@ -402,7 +394,6 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
           profileImageKey: finalProfileImage?.key || initialProfileImage?.key,
           documentsKey: docKey,
         });
-        // console.log("result :>> ", result);
 
         if (result.message) {
           successToast("Vehicle Updated Successfully");
@@ -1049,7 +1040,7 @@ const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
                                     display: "none",
                                   }}
                                 ></a>
-                                <p>{doc.key.slice(0, 6)}</p>
+                                <p>{doc.key ? doc.key.slice(0, 6) : "Doc"}</p>
                                 <span
                                   style={{
                                     position: "absolute",

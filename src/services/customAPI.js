@@ -67,7 +67,7 @@ export const getRideDetailsApi = (id) => {
 export const deleteVehicleApi = (data) => {
   const headers = {
     "X-Profile-Image-Key": data.profileImageKey,
-    "X-Documents-Key": data.documentsKey.join(","), // Assuming info.documentsKey is an array
+    "X-Documents-Key": data.documentsKey?.join(","), // Assuming info.documentsKey is an array
   };
   return customAxios.delete(`/deleteVehicle/${data.id}`, { headers });
 };

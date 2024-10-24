@@ -9,6 +9,7 @@ import logo from "../../assets/images/sukam-logo 1.png";
 import PhoneInput from 'react-phone-number-input'
 import { isValidPhoneNumber } from 'react-phone-number-input'
 import './login.css'
+import { setAppData } from "redux/reducers/appDataReducer";
 
 const LoginPage = () => {
  
@@ -112,7 +113,7 @@ const LoginPage = () => {
         errorToast("Invalid mobile_Number or password !");
       }
       successToast(`Welcome to sukam-express, ${loginRes.data.fullName}!`);
-      console.log("loginRes :>> ", loginRes);
+      dispatch(setAppData({'AdminName':loginRes.data.fullName}));
       dispatch(setToken(loginRes.data.token));
       navigate("/admin/default");
     } catch (error: any) {
