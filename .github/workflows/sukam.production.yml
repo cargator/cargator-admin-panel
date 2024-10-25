@@ -60,7 +60,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_DEPLOYED_BUCKET_NAME: ${{ secrets.S3_DEPLOYED_BUCKET_NAME }}
         run: |
-          aws s3 sync ./build s3://$S3_DEPLOYED_BUCKET_NAME/prod --delete
+          aws s3 sync ./build s3://$S3_DEPLOYED_BUCKET_NAME/sukam/prod --delete
       # --delete - It deletes any files in the destination that are not present in the source
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
