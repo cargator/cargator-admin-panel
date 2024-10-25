@@ -59,7 +59,7 @@ jobs:
           AWS_REGION: ${{ secrets.AWS_REGION }}
           S3_DEPLOYED_BUCKET_NAME: ${{ secrets.CG_DELTA_S3_DEPLOYED_BUCKET_NAME }}
         run: |
-          aws s3 sync ./build s3://$S3_DEPLOYED_BUCKET_NAME/cg-delta-prod --delete
+          aws s3 sync ./build s3://$S3_DEPLOYED_BUCKET_NAME/cg-delta/prod --delete
       # --delete - It deletes any files in the destination that are not present in the source
       - name: Invalidate CloudFront Cache
         run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CG_DELTA_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
