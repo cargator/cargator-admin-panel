@@ -318,8 +318,11 @@ const Vehicles: React.FC = () => {
                 }}
               >
                 <h5>
-                  {pageItemStartNumber} - {pageItemEndNumber}
-                </h5>
+                {vehicleData.length
+                  ? (currentPage.current - 1) * limit + 1
+                  : vehicleData.length}{" "}
+                - {(currentPage.current - 1) * limit + vehicleData.length}
+              </h5>
                 <div style={{ marginTop: "1rem" }}>
                   <ReactPaginate
                     breakLabel=" .  .  . "

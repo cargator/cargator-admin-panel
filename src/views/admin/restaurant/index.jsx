@@ -79,7 +79,7 @@ const Restaurant = () => {
 
 const searchRides = async () => {
   try {
-    setLoading(true);
+    // setLoading(true);
     const response = await getSearchRestaurantList({
       page: currentPage.current,
       limit: limit,
@@ -305,9 +305,12 @@ const searchRides = async () => {
                   color: "#5E6278",
                 }}
               >
-                <h5>
-                  {pageItemStartNumber} - {pageItemEndNumber}
-                </h5>
+                 <h5>
+                {allRetstaurentData.length
+                  ? (currentPage.current - 1) * limit + 1
+                  : allRetstaurentData.length}{" "}
+                - {(currentPage.current - 1) * limit + allRetstaurentData.length}
+              </h5>
                 <div style={{ marginTop: "1rem" }}>
                   <ReactPaginate
                     breakLabel=" .  .  . "

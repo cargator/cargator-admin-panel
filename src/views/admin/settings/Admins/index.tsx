@@ -163,7 +163,7 @@ export default function Admins() {
 
   const getAllAdmin = async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response = await getAllAdminsData({
         page: currentPage.current,
         limit: limit,
@@ -230,8 +230,11 @@ export default function Admins() {
                 color: "#5E6278",
               }}
             >
-              <h5>
-                {pageItemStartNumber} - {pageItemEndNumber}
+             <h5>
+                {adminData.length
+                  ? (currentPage.current - 1) * limit + 1
+                  : adminData.length}{" "}
+                - {(currentPage.current - 1) * limit + adminData.length}
               </h5>
 
               <div style={{ marginTop: "1rem" }}>

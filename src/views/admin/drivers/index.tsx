@@ -438,9 +438,12 @@ useEffect(()=>{
                   color: "#5E6278",
                 }}
               >
-                <h5>
-                  {pageItemStartNumber} - {pageItemEndNumber}
-                </h5>
+                 <h5>
+                {driverData.length
+                  ? (currentPage.current - 1) * limit + 1
+                  : driverData.length}{" "}
+                - {(currentPage.current - 1) * limit + driverData.length}
+              </h5>
                 <div style={{ marginTop: "1rem" }}>
                   <ReactPaginate
                     breakLabel=" .  .  . "
