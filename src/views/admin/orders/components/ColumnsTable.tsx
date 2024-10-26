@@ -122,7 +122,7 @@ function ColumnsOrderTable(props: {
     columnHelper.accessor("DriverMobileNum", {
       id: "DriverMobileNum",
       header: () => (
-        <p className="font-mono text-sm font-bold text-gray-600 dark:text-white">
+        <p className=" text-sm font-bold text-gray-600 dark:text-white">
           {t("Driver Mobile No.")}
         </p>
       ),
