@@ -209,10 +209,10 @@ const Vehicles: React.FC = () => {
       const response: any = await deleteVehicleApi(data);
       if (response?.message) {
         successToast("Vehicle deleted successfully");
-        if (vehicleData.length % limit === 1) {
+        if (vehicleData.length % limit === 1 && currentPage.current!=1) {
           currentPage.current = currentPage.current - 1;
         }
-        getPaginatedVehicleData();
+        searchVehicleFunction();
       } else {
         errorToast("Something went wrong");
       }
