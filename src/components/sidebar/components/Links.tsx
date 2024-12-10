@@ -97,7 +97,7 @@ export const SidebarLinks = (props: { routes: RoutesType[] }): JSX.Element => {
                     to={route.layout + "/" + "settings" + "/countrycode"}
                   >
                     <div>
-                      <span>{t("Country Code")}</span>
+                      <span>{t("Country Codes")}</span>
                  
                     </div>
                   </Link>
